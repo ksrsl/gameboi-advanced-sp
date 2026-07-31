@@ -1,1 +1,78 @@
-#game-host{background:#101b18}.snake-game{position:absolute;inset:0;color:#ecf7dc}.snake-hud{position:absolute;top:3px;left:31px;right:8px;height:12px;display:flex;justify-content:space-between;font-size:8px;z-index:2}.snake-hud b{color:#ffcf4a}.snake-game canvas{position:absolute;left:30px;top:0;width:240px;height:140px;image-rendering:pixelated}.snake-overlay{position:absolute;z-index:4;inset:18px 54px 13px;background:#0b1410ed;border:2px solid #59d67d;box-shadow:4px 4px #0008;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center}.snake-overlay[hidden]{display:none}.snake-overlay strong{font-size:14px;color:#9af5aa}.snake-overlay small{font-size:7px;color:#ffcf4a}.snake-overlay button{border:0;background:#59d67d;color:#101b18;font-weight:bold;font-size:8px;padding:6px 12px}.snake-overlay em{font-size:6px;font-style:normal;color:#82988a}.snake-exit{position:absolute;top:1px;left:3px;z-index:5;width:20px;height:18px;border:1px solid #5b6b61;background:#17251f;color:#dbe8d6}.snake-pause{position:absolute;z-index:6;left:91px;top:56px;width:118px;padding:10px;background:#0b1410ed;border:2px solid #ffcf4a;text-align:center;font-size:12px}.snake-pause[hidden]{display:none}
+#game-host { background: #101b18; }
+
+.snake-game {
+  position: absolute;
+  inset: 0;
+  color: #ecf7dc;
+}
+
+.snake-hud {
+  position: absolute;
+  top: 7px;
+  right: 12px;
+  left: 42px;
+  z-index: 2;
+  height: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.snake-hud b { color: #ffcf4a; }
+
+.snake-game canvas {
+  position: absolute;
+  top: 27px;
+  left: 10px;
+  width: 300px;
+  height: 200px;
+  image-rendering: pixelated;
+}
+
+.snake-overlay {
+  position: absolute;
+  inset: 43px 51px 35px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  border: 3px solid #59d67d;
+  background: #0b1410ed;
+  box-shadow: 6px 6px #0008;
+  text-align: center;
+}
+
+.snake-overlay[hidden] { display: none; }
+.snake-overlay strong { color: #9af5aa; font-size: 21px; }
+.snake-overlay small { color: #ffcf4a; font-size: 9px; }
+.snake-overlay button { padding: 9px 17px; border: 0; background: #59d67d; color: #101b18; font-size: 11px; font-weight: bold; }
+.snake-overlay em { color: #82988a; font-size: 8px; font-style: normal; }
+
+.snake-exit {
+  position: absolute;
+  top: 4px;
+  left: 7px;
+  z-index: 5;
+  width: 27px;
+  height: 23px;
+  border: 1px solid #5b6b61;
+  background: #17251f;
+  color: #dbe8d6;
+}
+
+.snake-pause {
+  position: absolute;
+  top: 98px;
+  left: 95px;
+  z-index: 6;
+  width: 130px;
+  padding: 15px;
+  border: 3px solid #ffcf4a;
+  background: #0b1410ed;
+  text-align: center;
+  font-size: 16px;
+}
+
+.snake-pause[hidden] { display: none; }

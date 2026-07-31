@@ -6,7 +6,7 @@ registerCartridge(snakeCartridge);
 const $=s=>document.querySelector(s);
 const screens=[...document.querySelectorAll('.screen')];
 const home=$('#home'),host=$('#game-host'),menuButtons=[...document.querySelectorAll('#main-menu button')];
-let menuIndex=0,currentGame=null,currentScreen='boot';
+let menuIndex=0,currentGame=null,currentScreen='boot',currentPanel='';
 let muted=storage.get('muted',false),audio;
 
 function show(id){screens.forEach(s=>s.hidden=s.id!==id);currentScreen=id}
@@ -18,22 +18,31 @@ function setMuted(value){muted=value;storage.set('muted',muted);$('#mute').textC
 function selectMenu(delta){menuIndex=(menuIndex+delta+menuButtons.length)%menuButtons.length;menuButtons.forEach((b,i)=>b.classList.toggle('selected',i===menuIndex));tone(210,.025)}
 async function startGame(){show('loading');$('#loading-name').textContent='SNAKE BYTE';await new Promise(r=>setTimeout(r,350));try{currentGame=await loadCartridge('snake',host,{storage,tone,exit:exitGame});show('game-host')}catch(error){$('#error-message').textContent=error.message;show('error')}}
 function exitGame(){currentGame?.unmount?.();currentGame=null;show('home')}
-function panel(title,html){$('#panel-title').textContent=title;$('#panel-content').innerHTML=html;show('panel')}
+function panel(title,html){currentPanel=title;$('#panel-title').textContent=title;$('#panel-content').innerHTML=html;show('panel')}
 function action(name){
   tone(540,.04);
   if(name==='play')startGame();
   if(name==='scores')panel('HIGH SCORES',`<h2>SNAKE BYTE</h2><div class="big-score">${String(storage.get('snake:highScore',0)).padStart(5,'0')}</div><p>Best local score</p>`);
-  if(name==='settings')panel('SETTINGS',`<div class="setting-row"><span>SOUND</span><button class="toggle" id="sound-setting">${muted?'OFF':'ON'}</button></div><div class="setting-row"><span>SAVE DATA</span><button class="toggle" id="clear-save">CLEAR</button></div>`);
+  if(name==='settings')panel('SETTINGS',`<div class="setting-row"><span>SOUND</span><button class="toggle" id="sound-setting">${muted?'OFF':'ON'}</button></div><div class="setting-row"><span>SAVE DATA</span><button class="toggle" id="clear-save">CLEAR</button></div><p>A TOGGLE SOUND • B BACK</p>`);
   if(name==='about')panel('ABOUT','<h2>GAMEBOI ADVANCED SP</h2><p>KSR SYSTEM SOFTWARE v1.0</p><p>A tiny console built for Second Life Media on a Prim.</p><p>FIRST CARTRIDGE: SNAKE BYTE</p>');
 }
 function input(key,pressed=true){
   if(!pressed){currentGame?.input?.(key,false);return}
   if(currentScreen==='home'){
     if(key==='up')selectMenu(-1);else if(key==='down')selectMenu(1);else if(key==='a'||key==='start')action(menuButtons[menuIndex].dataset.action);
-  }else if(currentScreen==='panel'&&(key==='b'||key==='select'))show('home');
+  }else if(currentScreen==='panel'){
+    if(key==='b'||key==='select')show('home');
+    else if(key==='a'&&currentPanel==='SETTINGS'){setMuted(!muted);const soundButton=$('#sound-setting');if(soundButton)soundButton.textContent=muted?'OFF':'ON'}
+  }
   else currentGame?.input?.(key,true);
 }
 const keyMap={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',z:'a',Z:'a',x:'b',X:'b',Enter:'start',Shift:'select'};
+const validInputs=new Set(['up','down','left','right','a','b','start','select']);
+function pressExternal(key){if(!validInputs.has(key))return;input(key,true);setTimeout(()=>input(key,false),35)}
+function readHashInput(){const key=new URLSearchParams(location.hash.slice(1)).get('input');if(key)pressExternal(key.toLowerCase())}
+window.GameBoiSP=Object.freeze({press:pressExternal});
+window.addEventListener('hashchange',readHashInput);
+document.addEventListener('gameboi-input',event=>pressExternal(String(event.detail?.key||'').toLowerCase()));
 document.addEventListener('keydown',e=>{const key=keyMap[e.key];if(!key||e.repeat)return;e.preventDefault();input(key);document.querySelector(`[data-key="${key}"]`)?.classList.add('pressed')});
 document.addEventListener('keyup',e=>{const key=keyMap[e.key];if(!key)return;e.preventDefault();input(key,false);document.querySelector(`[data-key="${key}"]`)?.classList.remove('pressed')});
 document.querySelectorAll('[data-key]').forEach(button=>{const down=e=>{e.preventDefault();input(button.dataset.key);button.classList.add('pressed')};const up=e=>{e.preventDefault();input(button.dataset.key,false);button.classList.remove('pressed')};button.addEventListener('pointerdown',down);button.addEventListener('pointerup',up);button.addEventListener('pointercancel',up)});

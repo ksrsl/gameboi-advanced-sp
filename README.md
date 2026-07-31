@@ -1,6 +1,6 @@
 # GameBoi Advanced SP
 
-A static, 320 × 240 retro handheld interface made for Second Life Media on a Prim. The first cartridge is **Snake Byte**. It uses only HTML, CSS, and vanilla JavaScript—no build step, framework, or backend.
+A static, screen-only 320 × 240 retro handheld interface made for Second Life Media on a Prim. The physical console and controls are supplied by the in-world mesh. The first cartridge is **Snake Byte**. It uses only HTML, CSS, and vanilla JavaScript—no build step, framework, or backend.
 
 ## Run locally
 
@@ -27,7 +27,17 @@ All project paths are relative, so the console works from a GitHub Pages project
 
 ## Second Life Media on a Prim
 
-Use the same public GitHub Pages address above as the Media URL. Set the media surface to **320 × 240 pixels** (4:3). Disable auto-scale or page scrolling if your viewer exposes those options. Enable mouse interaction so the on-screen controls work.
+Use the same public GitHub Pages address above as the Media URL. Set the media surface to **320 × 240 pixels** (4:3). The included `second-life/GameBoi Mesh Controller.lsl` script configures this automatically.
+
+## Mesh controller setup
+
+1. Link the screen and button meshes into one object.
+2. Name the linked prims exactly: `SCREEN`, `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`.
+3. Put `second-life/GameBoi Mesh Controller.lsl` in the root prim.
+4. Change `SCREEN_FACE` at the top of the script if the display is not face 0.
+5. Reset the script. It installs the Media on a Prim URL and reports that the screen is connected.
+
+The controller changes only the URL fragment for each input. The loaded page listens for those fragment changes, so button commands do not require a backend or full page reload in a normal Shared Media browser.
 
 ## Controls
 

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="games/snake/snake.css">
 </head>
 <body>
-  <main id="console" aria-label="GameBoi Advanced SP">
+  <main id="console" aria-label="GameBoi Advanced SP screen">
     <section id="display" aria-live="polite">
       <div id="boot" class="screen active">
         <div class="boot-logo"><span>K</span>SR</div>
@@ -44,24 +44,6 @@
 
       <div id="game-host" class="screen" hidden></div>
       <button id="mute" aria-label="Toggle sound" title="Toggle sound">♪</button>
-    </section>
-
-    <section id="controls" aria-label="Console controls">
-      <div class="dpad" role="group" aria-label="Directional pad">
-        <button data-key="up" class="up" aria-label="Up">▲</button>
-        <button data-key="left" class="left" aria-label="Left">◀</button>
-        <span></span>
-        <button data-key="right" class="right" aria-label="Right">▶</button>
-        <button data-key="down" class="down" aria-label="Down">▼</button>
-      </div>
-      <div class="action-buttons" role="group" aria-label="Action buttons">
-        <button data-key="b" aria-label="B button">B</button>
-        <button data-key="a" aria-label="A button">A</button>
-      </div>
-      <div class="system-buttons">
-        <button data-key="select">SELECT</button><button data-key="start">START</button>
-      </div>
-      <div class="speaker" aria-hidden="true">••••</div>
     </section>
   </main>
   <script type="module" src="js/console.js"></script>
