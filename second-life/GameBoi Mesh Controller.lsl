@@ -5,7 +5,7 @@
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
-string WEB_VERSION = "2.1.2";
+string WEB_VERSION = "2.2.0";
 integer SCREEN_FACE = 2;
 
 integer gScreenLink;

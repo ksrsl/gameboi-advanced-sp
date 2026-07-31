@@ -1,6 +1,6 @@
 # KSR Gameboi SP
 
-A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes thirteen cartridges:
+A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes twenty cartridges:
 
 - **Snake Byte** - polished classic snake action
 - **Block Drop** - an original falling-block puzzle
@@ -15,10 +15,17 @@ A screen-only retro handheld console for Second Life Media on a Prim. The web co
 - **Mini Golf** - five compact courses with sand, water, par, and a saved best round
 - **Pocket Tennis** - a smooth first-to-five tennis match with standard shots and lobs
 - **Pixel Kart** - an original six-racer kart circuit with drifting, boosts, item boxes, and three laps
+- **Survivor Byte** - an auto-fire arena roguelite with upgrades, dash, pulse attack, bosses, and escalating swarms
+- **Bomb Grid** - a tactical maze battle against three CPU hunters with bombs, breakable crates, and powerups
+- **Pixel Quest** - a three-world platform adventure with coins, enemies, checkpoints, and a final citadel boss
+- **Battle Tanks** - a cover-based tank arena with ricochets, mines, waves, and aggressive flanking CPU tanks
+- **Pocket Fighter** - a best-of-three fighting game against a CPU that blocks, counters, and controls distance
+- **Street Hoops** - a timed basketball shootout with power, aim, dunks, blocks, and a competitive CPU scorer
+- **Pocket Bowling** - a ten-frame bowling match with aim, power, hook, regulation bonuses, and a pro CPU opponent
 
 This release is GitHub-only and requires no backend.
 
-Version 2.1.2 expands the black, white, charcoal, silver, and cool-blue KSR interface to thirteen cartridges. Every new game uses 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data. Maze Muncher's grid movement and pathfinding are deterministic so every drone leaves its spawn and actively hunts the player.
+Version 2.2 expands the black, white, charcoal, silver, and cool-blue KSR interface to twenty cartridges. The seven new games use 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
 
 ## Public addresses
 
@@ -193,9 +200,82 @@ Matches are first to five points. The CPU anticipates the ball, covers the open 
 
 Race three laps against five named original KSR rivals. Turbo, shield, and pulse items appear in boxes. The upgraded racer includes three selectable circuits, rival collisions, lap announcements, reverse, boost pads, roadside lighting, and a separate winning best time for every track.
 
+### Survivor Byte
+
+- D-pad: move in any direction
+- A: dash through danger
+- B: release a charged pulse
+- Start: pause
+- Touch/drag the arena: move toward the touch direction
+
+Weapons fire automatically at the nearest threat. Collect data orbs, choose upgrades, survive escalating swarms, and defeat boss units. High score and best survival time are saved.
+
+### Bomb Grid
+
+- D-pad: move one grid space
+- A: place a bomb
+- Start: pause
+- Touch beside the player: move in that direction
+
+Break crates for range and bomb upgrades while three CPU hunters seek safe paths, pursue the player, and place their own bombs. Match wins are saved.
+
+### Pixel Quest
+
+- Left/Right: run
+- Up or A: jump
+- B: attack
+- Start: pause
+- Touch the upper field to jump; touch the lower sides to move
+
+Clear three scrolling worlds, collect coins, activate checkpoints, and defeat the citadel boss. High score and the furthest world reached are saved.
+
+### Battle Tanks
+
+- D-pad: drive and turn
+- A: fire a ricocheting shell
+- B: place a mine
+- Start: pause
+- Touch/click the arena: aim and fire toward that point
+
+Fight increasingly difficult waves. Enemy tanks aim ahead, strafe, flank, use cover, and vary their attack timing. High score is saved.
+
+### Pocket Fighter
+
+- Left/Right: move
+- Up: jump
+- Hold Down: block
+- A: punch
+- B: kick
+- Down+B or quick A then B: special attack
+- Start: pause
+
+Matches are best of three. The pro CPU manages distance, blocks predictable attacks, counters openings, and uses jump and special attacks. Career wins are saved.
+
+### Street Hoops
+
+- Left/Right: move on the court
+- Up/Down: adjust shot aim
+- A once: start the power meter; A again: release the shot
+- B near the hoop: dunk
+- Start: pause
+- Touch/click the court: move and charge or release a shot
+
+Outscore the CPU in 45 seconds. The defender tracks the player, contests shots, and maintains scoring pressure. High score and tournament wins are saved.
+
+### Pocket Bowling
+
+- Left/Right: aim
+- Up/Down: adjust power
+- A: roll
+- B: cycle straight, right-hook, and left-hook shots
+- Start: pause
+- Touch/click the lane: aim and roll
+
+Bowl a full ten-frame match with strikes, spares, and tenth-frame bonus rolls against a high-scoring CPU. Personal best is saved.
+
 ## Multiplayer direction
 
-The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared race positions, inputs, scores, and join/leave events. Pixel Kart and Pocket Tennis are the recommended first multiplayer cartridges. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
+The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared positions, inputs, scores, and join/leave events. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Street Hoops, and Pocket Bowling are designed so online modes can be added later. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
 
 Select returns to the console from every cartridge.
 

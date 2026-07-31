@@ -14,6 +14,13 @@ import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=2.1.2'
 import miniGolfCartridge from '../games/mini-golf/mini-golf.js?v=2.1.0';
 import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=2.1.2';
 import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=2.1.2';
+import survivorByteCartridge from '../games/survivor-byte/survivor-byte.js?v=2.2.0';
+import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=2.2.0';
+import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=2.2.0';
+import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=2.2.0';
+import pocketFighterCartridge from '../games/pocket-fighter/pocket-fighter.js?v=2.2.0';
+import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=2.2.0';
+import pocketBowlingCartridge from '../games/pocket-bowling/pocket-bowling.js?v=2.2.0';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -28,6 +35,13 @@ registerCartridge(mazeMuncherCartridge);
 registerCartridge(miniGolfCartridge);
 registerCartridge(pocketTennisCartridge);
 registerCartridge(pixelKartCartridge);
+registerCartridge(survivorByteCartridge);
+registerCartridge(bombGridCartridge);
+registerCartridge(pixelQuestCartridge);
+registerCartridge(battleTanksCartridge);
+registerCartridge(pocketFighterCartridge);
+registerCartridge(streetHoopsCartridge);
+registerCartridge(pocketBowlingCartridge);
 
 const $ = selector => document.querySelector(selector);
 const screens = [...document.querySelectorAll('.screen')];
@@ -103,19 +117,21 @@ function selectCartridge(delta) {
 
 function moveCartridge(key) {
   const count = cartridgeButtons.length;
-  const column = cartridgeIndex % 2;
+  const columns = 3;
+  const column = cartridgeIndex % columns;
   let next = cartridgeIndex;
-  if (key === 'left' && column === 1) next -= 1;
-  if (key === 'right' && column === 0 && next + 1 < count) next += 1;
+  if (key === 'left' && column > 0) next -= 1;
+  if (key === 'right' && column < columns - 1 && next + 1 < count) next += 1;
   if (key === 'up') {
-    next -= 2;
+    next -= columns;
     if (next < 0) {
       next = count - 1;
-      if (next % 2 !== column) next -= 1;
+      while (next >= 0 && next % columns !== column) next -= 1;
+      if (next < 0) next = count - 1;
     }
   }
   if (key === 'down') {
-    next += 2;
+    next += columns;
     if (next >= count) next = column < count ? column : 0;
   }
   if (next === cartridgeIndex) return;
@@ -246,6 +262,13 @@ function action(name) {
         <div><span>MINI GOLF</span><b>${storage.get('miniGolf:bestScore', 0) || '--'} STROKES</b></div>
         <div><span>POCKET TENNIS</span><b>${String(storage.get('pocketTennis:wins', 0)).padStart(3, '0')} WINS</b></div>
         <div><span>PIXEL KART</span><b>${storage.get('pixelKart:bestTime', 0) ? (storage.get('pixelKart:bestTime', 0) / 1000).toFixed(1) + 'S' : '--'}</b></div>
+        <div><span>SURVIVOR BYTE</span><b>${String(storage.get('survivorByte:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>BOMB GRID</span><b>${String(storage.get('bombGrid:wins', 0)).padStart(3, '0')} WINS</b></div>
+        <div><span>PIXEL QUEST</span><b>${String(storage.get('pixelQuest:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>BATTLE TANKS</span><b>${String(storage.get('battleTanks:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>POCKET FIGHTER</span><b>${String(storage.get('pocketFighter:wins', 0)).padStart(3, '0')} WINS</b></div>
+        <div><span>STREET HOOPS</span><b>${String(storage.get('streetHoops:highScore', 0)).padStart(3, '0')}</b></div>
+        <div><span>POCKET BOWLING</span><b>${String(storage.get('pocketBowling:bestScore', 0)).padStart(3, '0')}</b></div>
       </div>
     `);
   }
@@ -257,7 +280,7 @@ function action(name) {
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.1.2</p><p>HIGH-DEFINITION RENDERING</p><p>13 CARTRIDGES INSTALLED</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.2</p><p>HIGH-DEFINITION RENDERING</p><p>20 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }
@@ -425,6 +448,16 @@ $('#panel-content').addEventListener('click', event => {
     storage.remove('pixelKart:bestTime');
     storage.remove('pixelKart:bestTimes');
     storage.remove('pixelKart:track');
+    storage.remove('survivorByte:highScore');
+    storage.remove('survivorByte:bestTime');
+    storage.remove('bombGrid:wins');
+    storage.remove('pixelQuest:highScore');
+    storage.remove('pixelQuest:bestStage');
+    storage.remove('battleTanks:highScore');
+    storage.remove('pocketFighter:wins');
+    storage.remove('streetHoops:highScore');
+    storage.remove('streetHoops:wins');
+    storage.remove('pocketBowling:bestScore');
     event.target.textContent = 'CLEARED';
   }
 });
