@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=2.0.2';
+import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=2.0.3';
 
 const WIDTH = 320;
 const HEIGHT = 240;
@@ -88,9 +88,8 @@ export default {
     }
 
     function laneX(which, y = PLAYER_Y) {
-      const depth = depthAt(y);
-      const spread = 16 + depth * 38;
-      return roadCenter(y) + (which - 1) * spread;
+      const laneCenterSpacing = roadHalfWidth(y) * (2 / 3);
+      return roadCenter(y) + (which - 1) * laneCenterSpacing;
     }
 
     function save() {
@@ -389,12 +388,15 @@ export default {
       ctx.lineTo(bottomCenter + bottomHalf, HEIGHT);
       ctx.stroke();
 
-      for (let step = -2; step < 8; step += 1) {
-        const y = HORIZON + ((step * 42 + roadOffset) % 294);
-        if (y < HORIZON || y > HEIGHT + 18) continue;
-        const depth = depthAt(y);
-        const markerHeight = 4 + depth * 16;
-        const markerWidth = 1 + depth * 2.4;
+      const markerPhase = roadOffset / 42;
+      for (let step = -1; step <= 11; step += 1) {
+        const worldDepth = (step + markerPhase) / 10;
+        if (worldDepth < 0 || worldDepth > 1) continue;
+
+        const perspectiveDepth = worldDepth * worldDepth;
+        const y = HORIZON + perspectiveDepth * (HEIGHT - HORIZON);
+        const markerHeight = 2 + perspectiveDepth * 17;
+        const markerWidth = 0.8 + perspectiveDepth * 2.5;
         ctx.fillStyle = '#f2f3f4';
         [0.5, 1.5].forEach(boundary => {
           const x = laneX(boundary, y);

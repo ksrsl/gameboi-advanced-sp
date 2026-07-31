@@ -1,15 +1,15 @@
 import { storage } from './storage.js';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
 import { GameSync, syncConfigFromLocation } from './sync.js';
-import snakeCartridge from '../games/snake/snake.js?v=2.0.2';
-import blockDropCartridge from '../games/block-drop/block-drop.js?v=2.0.2';
-import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=2.0.2';
-import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=2.0.2';
-import petByteCartridge from '../games/pet-byte/pet-byte.js?v=2.0.2';
-import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=2.0.2';
-import roadRushCartridge from '../games/road-rush/road-rush.js?v=2.0.2';
-import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=2.0.2';
-import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=2.0.2';
+import snakeCartridge from '../games/snake/snake.js?v=2.0.3';
+import blockDropCartridge from '../games/block-drop/block-drop.js?v=2.0.3';
+import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=2.0.3';
+import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=2.0.3';
+import petByteCartridge from '../games/pet-byte/pet-byte.js?v=2.0.3';
+import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=2.0.3';
+import roadRushCartridge from '../games/road-rush/road-rush.js?v=2.0.3';
+import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=2.0.3';
+import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=2.0.3';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -46,8 +46,7 @@ let viewerCount = 1;
 function fitConsole() {
   const scaleX = window.innerWidth / 320;
   const scaleY = window.innerHeight / 240;
-  const scale = Math.min(scaleX, scaleY);
-  $('#console').style.transform = `scale(${scale})`;
+  $('#console').style.transform = `scale(${scaleX},${scaleY})`;
 }
 
 function show(id) {

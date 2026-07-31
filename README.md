@@ -48,7 +48,7 @@ All website paths are relative, so the console works from a GitHub Pages project
 
 ## Second Life setup
 
-The interface has a logical **320 x 240** game layout and scales cleanly on any prim screen without distorting the games. The controller requests a high-quality **1024 x 768** Media on a Prim texture, matching the 4:3 display ratio.
+The interface has a logical **320 x 240** game layout and stretches edge-to-edge to fill the configured prim face. The controller requests a high-quality **1024 x 1024** Media on a Prim texture so it matches the existing Second Life face mapping.
 
 1. Place `second-life/GameBoi Mesh Controller.lsl` into the object.
 2. The current test display uses **face 2**. Change `SCREEN_FACE` at the top only if the final mesh uses another face.

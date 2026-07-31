@@ -5,7 +5,7 @@
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
-string WEB_VERSION = "2.0.2";
+string WEB_VERSION = "2.0.3";
 integer SCREEN_FACE = 2;
 
 integer gScreenLink;
@@ -58,7 +58,7 @@ configureScreen()
         PRIM_MEDIA_AUTO_ZOOM, FALSE,
         PRIM_MEDIA_FIRST_CLICK_INTERACT, TRUE,
         PRIM_MEDIA_WIDTH_PIXELS, 1024,
-        PRIM_MEDIA_HEIGHT_PIXELS, 768,
+        PRIM_MEDIA_HEIGHT_PIXELS, 1024,
 
         // Open testing: everyone can see and click the media.
         PRIM_MEDIA_PERMS_INTERACT, PRIM_MEDIA_PERM_ANYONE,

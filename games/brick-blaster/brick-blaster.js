@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta } from '../../js/render-utils.js?v=2.0.2';
+import { createGameContext, safeDelta } from '../../js/render-utils.js?v=2.0.3';
 
 const WIDTH = 320;
 const HEIGHT = 240;

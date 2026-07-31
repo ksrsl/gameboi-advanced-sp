@@ -1,4 +1,4 @@
-import { createGameContext } from '../../js/render-utils.js?v=2.0.2';
+import { createGameContext } from '../../js/render-utils.js?v=2.0.3';
 
 const COLS = 10;
 const ROWS = 18;
