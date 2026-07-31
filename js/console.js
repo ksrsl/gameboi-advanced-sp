@@ -10,6 +10,10 @@ import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=2.0.3';
 import roadRushCartridge from '../games/road-rush/road-rush.js?v=2.0.3';
 import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=2.0.3';
 import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=2.0.3';
+import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=2.1.0';
+import miniGolfCartridge from '../games/mini-golf/mini-golf.js?v=2.1.0';
+import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=2.1.0';
+import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=2.1.0';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -20,6 +24,10 @@ registerCartridge(byteFlyerCartridge);
 registerCartridge(roadRushCartridge);
 registerCartridge(dungeonByteCartridge);
 registerCartridge(fishingByteCartridge);
+registerCartridge(mazeMuncherCartridge);
+registerCartridge(miniGolfCartridge);
+registerCartridge(pocketTennisCartridge);
+registerCartridge(pixelKartCartridge);
 
 const $ = selector => document.querySelector(selector);
 const screens = [...document.querySelectorAll('.screen')];
@@ -234,6 +242,10 @@ function action(name) {
         <div><span>ROAD RUSH</span><b>${String(storage.get('roadRush:highScore', 0)).padStart(5, '0')}</b></div>
         <div><span>DUNGEON BYTE</span><b>F${String(storage.get('dungeonByte:bestFloor', 1)).padStart(2, '0')}</b></div>
         <div><span>FISHING BYTE</span><b>${String(storage.get('fishingByte:species', 0))}/8 • ${String(Math.floor(storage.get('fishingByte:bestSize', 0))).padStart(3, '0')}CM</b></div>
+        <div><span>MAZE MUNCHER</span><b>${String(storage.get('mazeMuncher:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>MINI GOLF</span><b>${storage.get('miniGolf:bestScore', 0) || '--'} STROKES</b></div>
+        <div><span>POCKET TENNIS</span><b>${String(storage.get('pocketTennis:wins', 0)).padStart(3, '0')} WINS</b></div>
+        <div><span>PIXEL KART</span><b>${storage.get('pixelKart:bestTime', 0) ? (storage.get('pixelKart:bestTime', 0) / 1000).toFixed(1) + 'S' : '--'}</b></div>
       </div>
     `);
   }
@@ -245,7 +257,7 @@ function action(name) {
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.0</p><p>HIGH-DEFINITION RENDERING</p><p>9 CARTRIDGES INSTALLED</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.1</p><p>HIGH-DEFINITION RENDERING</p><p>13 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }
@@ -376,6 +388,7 @@ cartridgeButtons.forEach((button, index) => button.addEventListener('click', () 
 }));
 
 $('#panel-back').addEventListener('click', () => requestCommand('back', {}, () => { show('home'); publishConsole('home'); }));
+$('#cartridge-back').addEventListener('click', () => requestCommand('back', {}, () => { show('home'); publishConsole('home'); }));
 $('#error-back').addEventListener('click', () => requestCommand('back', {}, () => exitGame()));
 $('#power-on').addEventListener('click', () => requestCommand('powerOn', {}, () => powerOn()));
 $('#mute').addEventListener('click', () => setMuted(!muted));
@@ -406,6 +419,10 @@ $('#panel-content').addEventListener('click', event => {
     storage.remove('fishingByte:save');
     storage.remove('fishingByte:species');
     storage.remove('fishingByte:bestSize');
+    storage.remove('mazeMuncher:highScore');
+    storage.remove('miniGolf:bestScore');
+    storage.remove('pocketTennis:wins');
+    storage.remove('pixelKart:bestTime');
     event.target.textContent = 'CLEARED';
   }
 });

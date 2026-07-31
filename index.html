@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#050607">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22><rect width=%22100%25%22 height=%22100%25%22 rx=%2220%22 fill=%22%23050607%22/><text x=%2250%25%22 y=%2268%25%22 text-anchor=%22middle%22 font-size=%2264%22 fill=%22white%22>K</text></svg>">
   <title>KSR Gameboi SP</title>
-  <link rel="stylesheet" href="css/console.css?v=2.0.3">
+  <link rel="stylesheet" href="css/console.css?v=2.1.0">
   <link rel="stylesheet" href="games/snake/snake.css?v=2.0.3">
   <link rel="stylesheet" href="games/block-drop/block-drop.css?v=2.0.3">
   <link rel="stylesheet" href="games/brick-blaster/brick-blaster.css?v=2.0.3">
@@ -16,6 +16,10 @@
   <link rel="stylesheet" href="games/road-rush/road-rush.css?v=2.0.3">
   <link rel="stylesheet" href="games/dungeon-byte/dungeon-byte.css?v=2.0.3">
   <link rel="stylesheet" href="games/fishing-byte/fishing-byte.css?v=2.0.3">
+  <link rel="stylesheet" href="games/maze-muncher/maze-muncher.css?v=2.1.0">
+  <link rel="stylesheet" href="games/mini-golf/mini-golf.css?v=2.1.0">
+  <link rel="stylesheet" href="games/pocket-tennis/pocket-tennis.css?v=2.1.0">
+  <link rel="stylesheet" href="games/pixel-kart/pixel-kart.css?v=2.1.0">
   <link rel="stylesheet" href="css/ksr-quality.css?v=2.0.3">
 </head>
 <body>
@@ -53,8 +57,12 @@
           <button data-game="road-rush"><b>ROAD RUSH</b><small>RACING</small></button>
           <button data-game="dungeon-byte"><b>DUNGEON BYTE</b><small>RPG</small></button>
           <button data-game="fishing-byte"><b>FISHING BYTE</b><small>COLLECTION</small></button>
+          <button data-game="maze-muncher"><b>MAZE MUNCHER</b><small>MAZE CHASE</small></button>
+          <button data-game="mini-golf"><b>MINI GOLF</b><small>SPORTS</small></button>
+          <button data-game="pocket-tennis"><b>POCKET TENNIS</b><small>SPORTS</small></button>
+          <button data-game="pixel-kart"><b>PIXEL KART</b><small>KART RACING</small></button>
         </nav>
-        <footer><span>D-PAD MOVE</span><span>A LOAD • B BACK</span></footer>
+        <footer><span>D-PAD MOVE</span><button id="cartridge-back" type="button">BACK</button></footer>
       </div>
 
       <div id="panel" class="screen panel-screen" hidden>
@@ -79,6 +87,6 @@
       <button id="mute" aria-label="Toggle sound" title="Toggle sound">♪</button>
     </section>
   </main>
-  <script type="module" src="js/console.js?v=2.0.3"></script>
+  <script type="module" src="js/console.js?v=2.1.0"></script>
 </body>
 </html>

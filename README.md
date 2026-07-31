@@ -1,6 +1,6 @@
 # KSR Gameboi SP
 
-A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes nine cartridges:
+A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes thirteen cartridges:
 
 - **Snake Byte** - polished classic snake action
 - **Block Drop** - an original falling-block puzzle
@@ -11,10 +11,14 @@ A screen-only retro handheld console for Second Life Media on a Prim. The web co
 - **Road Rush** - a three-lane endless racer with boost, shields, and unlockable cars
 - **Dungeon Byte** - a turn-based dungeon adventure with persistent runs
 - **Fishing Byte** - timing-based fishing with rarity, records, and a saved collection
+- **Maze Muncher** - an original maze chase with power cores, four drone behaviors, and escalating levels
+- **Mini Golf** - five compact courses with sand, water, par, and a saved best round
+- **Pocket Tennis** - a smooth first-to-five tennis match with standard shots and lobs
+- **Pixel Kart** - an original six-racer kart circuit with drifting, boosts, item boxes, and three laps
 
 This release is GitHub-only and requires no backend.
 
-Version 2.0 introduces a black, white, charcoal, and silver KSR interface, a white-on-black boot sequence, 2x supersampled game rendering, smoother animation timing, and a rebuilt Road Rush cartridge.
+Version 2.1 expands the black, white, charcoal, silver, and cool-blue KSR interface to thirteen cartridges. Every new game uses 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data.
 
 ## Public addresses
 
@@ -126,7 +130,7 @@ The music-note button mutes the retro sound effects. Mute state, progress, colle
 
 - Left/Right: change lanes
 - A: boost
-- Down: brake
+- Hold Down: brake, then reverse after stopping
 - Start: pause
 - B on the title screen: choose an unlocked car
 
@@ -147,6 +151,46 @@ The current run is saved after every turn and can be continued after reopening t
 - B: open the album when on shore
 
 Fish species, best sizes, coins, and total catches are stored in the collection album.
+
+### Maze Muncher
+
+- D-pad: steer through the maze
+- A or Start: begin or restart
+- Start during play: pause
+
+Collect every data bit, use the four power cores to disable drones, and clear increasingly fast levels. High score is saved.
+
+### Mini Golf
+
+- Left/Right: aim
+- Up/Down: adjust shot power
+- A: shoot
+- B: reset the stopped ball without a penalty
+- Start: pause
+- Touch/click the course: aim and shoot toward that point
+
+The lowest completed five-hole round is saved.
+
+### Pocket Tennis
+
+- Left/Right: move along the baseline
+- A: standard swing
+- B: lob
+- Start: pause
+- Touch/click the court: move toward the touch and swing
+
+Matches are first to five points. Match wins are saved.
+
+### Pixel Kart
+
+- Left/Right: steer
+- Down: brake
+- A: use the held item
+- Hold B while steering: drift; release B for a charged mini-boost
+- Start: pause
+- Touch the left or right side of the track: steer; touch the center: use an item
+
+Race three laps against five original KSR rivals. Turbo, shield, and pulse items appear in boxes; the winning best time is saved.
 
 Select returns to the console from every cartridge.
 

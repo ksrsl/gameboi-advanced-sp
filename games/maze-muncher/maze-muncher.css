@@ -1,0 +1,7 @@
+.maze-game { position:absolute; inset:0; overflow:hidden; background:#050607; color:#fff; }
+.maze-game canvas { position:absolute; inset:0; width:320px; height:240px; image-rendering:auto; }
+.maze-hud { position:absolute; z-index:3; top:6px; right:39px; left:39px; display:flex; justify-content:space-between; font-size:8px; text-shadow:0 1px 2px #000; }
+.maze-hud b { color:#fff; }
+.maze-overlay { position:absolute; z-index:6; inset:48px 45px 36px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; border:1px solid #aeb4ba; border-radius:4px; background:linear-gradient(145deg,#08090af5,#1b1e22f5); box-shadow:0 12px 28px #000b; text-align:center; }
+.maze-overlay[hidden],.maze-pause[hidden]{display:none}.maze-overlay strong{font-size:19px;letter-spacing:1px}.maze-overlay small{color:#d5d9dd;font-size:8px;line-height:1.5}.maze-overlay em{color:#8e969f;font-size:7px;font-style:normal}.maze-overlay button{padding:8px 15px;border:1px solid #fff;background:#fff;color:#090a0b;font-size:9px;font-weight:bold}
+.maze-exit{position:absolute;z-index:8;top:3px;left:6px;width:27px;height:23px;border:1px solid #626a73;background:#08090ae8;color:#fff}.maze-pause{position:absolute;z-index:7;top:98px;left:95px;width:130px;padding:15px;border:1px solid #fff;background:#070809f4;text-align:center;font-size:15px}

@@ -171,7 +171,7 @@ button {
 .cartridge-screen .pixel-menu button {
   position: relative;
   min-width: 0;
-  height: 25px;
+  height: 18px;
   padding-right: 5px;
   padding-left: 21px;
   display: grid;
@@ -190,14 +190,14 @@ button {
 .cartridge-screen .pixel-menu button b {
   min-width: 0;
   overflow: hidden;
-  font-size: 9px;
+  font-size: 8px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cartridge-screen .pixel-menu button small {
   padding-right: 0;
-  font-size: 5px;
+  font-size: 4px;
 }
 
 .menu-screen footer {
@@ -210,6 +210,16 @@ button {
   justify-content: space-between;
   border-top: 1px dashed #718067;
   font-size: 8px;
+}
+
+.menu-screen footer button {
+  margin: -4px -7px -4px 0;
+  padding: 3px 9px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-size: 7px;
+  font-weight: bold;
 }
 
 .panel-screen header {
@@ -234,7 +244,7 @@ button {
 }
 
 .panel-screen #panel-content {
-  padding: 20px 26px;
+  padding: 12px 18px;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -251,8 +261,8 @@ button {
 
 .score-list div {
   min-width: 0;
-  min-height: 25px;
-  padding: 4px 5px;
+  min-height: 20px;
+  padding: 3px 5px;
   display: flex;
   align-items: center;
   justify-content: space-between;
