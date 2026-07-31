@@ -3,7 +3,8 @@
 // Name the linked prims exactly:
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
 
-string MEDIA_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
+// The version query forces viewers to fetch the current high-quality layout.
+string MEDIA_URL = "https://ksrsl.github.io/gameboi-advanced-sp/?v=1.2.1";
 integer SCREEN_FACE = 2;
 
 integer gScreenLink;
