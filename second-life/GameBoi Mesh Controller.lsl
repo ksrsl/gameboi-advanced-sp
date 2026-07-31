@@ -1,16 +1,30 @@
-// GameBoi Advanced SP - Mesh Controller v1.0
+// GameBoi Advanced SP - Mesh Controller v1.1
 // Put this script in the ROOT prim of the linked console.
 // Name the linked prims exactly:
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
 
 string MEDIA_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
-integer SCREEN_FACE = 0; // Change this if the media screen uses another face.
+integer SCREEN_FACE = 2;
 
 integer gScreenLink;
 integer gSequence;
 
 integer findLink(string wantedName)
 {
+    // A one-prim test screen is always the media target.
+    if (llGetNumberOfPrims() == 1)
+    {
+        return LINK_THIS;
+    }
+
+    // llGetLinkName(1) does not reliably address an unlinked root prim.
+    // Because this script belongs in the root, LINK_THIS safely covers both
+    // a single-prim screen and a linked root prim named SCREEN.
+    if (llToUpper(llGetObjectName()) == llToUpper(wantedName))
+    {
+        return LINK_THIS;
+    }
+
     integer count = llGetNumberOfPrims();
     integer link = 1;
 
@@ -31,7 +45,7 @@ configureScreen()
 
     if (gScreenLink == 0)
     {
-        llOwnerSay("Setup error: rename the display prim SCREEN.");
+        llOwnerSay("Setup error: no prim in this linkset is named SCREEN. Use Edit Linked to rename the display prim, not only the whole object.");
         return;
     }
 
@@ -52,7 +66,14 @@ configureScreen()
 
     if (status == STATUS_OK)
     {
-        llOwnerSay("GameBoi screen connected. Mesh buttons are ready.");
+        if (llGetNumberOfPrims() == 1)
+        {
+            llOwnerSay("Screen connected. Now link the mesh buttons into this same object so they can control it.");
+        }
+        else
+        {
+            llOwnerSay("GameBoi screen connected. Mesh buttons are ready.");
+        }
     }
     else
     {
