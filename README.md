@@ -27,7 +27,7 @@ All project paths are relative, so the console works from a GitHub Pages project
 
 ## Second Life Media on a Prim
 
-Use the same public GitHub Pages address above as the Media URL. The interface has a logical **320 × 240** layout but automatically scales to fit the available media viewport without scrolling or cropping. The included `second-life/GameBoi Mesh Controller.lsl` script renders it at **1024 × 768** for a sharper 4:3 in-world display.
+Use the same public GitHub Pages address above as the Media URL. The interface has a logical **320 × 240** layout but stretches edge-to-edge to the available media viewport without scrolling, cropping, or unused space. The included `second-life/GameBoi Mesh Controller.lsl` script uses a high-quality **1024 × 1024** power-of-two media texture; the prim face supplies the final screen proportions.
 
 ## Mesh controller setup
 
@@ -50,6 +50,8 @@ Use **Edit Linked** when naming the individual mesh pieces. The name shown in lo
 | B | X | Back |
 | Start | Enter | Start / pause |
 | Select | Shift | Exit game / back |
+
+Choose **Turn Off** from the home screen for a CRT-style shutdown animation. Press **Start** or **A** on the mesh controls to power the display back on.
 
 The music-note button mutes all sounds. Mute state and the Snake high score are saved in local storage for that browser/viewer.
 

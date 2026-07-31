@@ -130,13 +130,13 @@ button {
 
 .pixel-menu {
   width: 240px;
-  padding: 14px 24px;
+  padding: 9px 24px;
   display: grid;
-  gap: 4px;
+  gap: 3px;
 }
 
 .pixel-menu button {
-  height: 28px;
+  height: 24px;
   padding-left: 28px;
   border: 0;
   background: transparent;
@@ -256,4 +256,61 @@ button {
   background: #0008;
   color: #fff;
   font-size: 14px;
+}
+
+.power-off-screen {
+  z-index: 40;
+  background: #010302;
+}
+
+.screen.tv-off {
+  z-index: 60;
+  pointer-events: none;
+  animation: tvOff .7s cubic-bezier(.7, 0, .9, 1) forwards;
+}
+
+.screen.tv-on {
+  z-index: 60;
+  animation: tvOn .48s steps(7) both;
+}
+
+@keyframes tvOff {
+  0% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1, .018);
+    filter: brightness(3.5) saturate(0);
+    opacity: 1;
+  }
+  72% {
+    transform: scale(.13, .012);
+    filter: brightness(6) saturate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(.005, .005);
+    filter: brightness(8) saturate(0);
+    opacity: 0;
+  }
+}
+
+@keyframes tvOn {
+  0% {
+    transform: scale(.01, .008);
+    filter: brightness(7) saturate(0);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1, .015);
+    filter: brightness(4) saturate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+    opacity: 1;
+  }
 }

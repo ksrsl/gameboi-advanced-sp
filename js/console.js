@@ -8,10 +8,12 @@ const screens=[...document.querySelectorAll('.screen')];
 const home=$('#home'),host=$('#game-host'),menuButtons=[...document.querySelectorAll('#main-menu button')];
 let menuIndex=0,currentGame=null,currentScreen='boot',currentPanel='';
 let muted=storage.get('muted',false),audio;
+let powerTimer=null;
 
 function fitConsole(){
-  const scale=Math.min(window.innerWidth/320,window.innerHeight/240);
-  $('#console').style.transform=`scale(${scale})`;
+  const scaleX=window.innerWidth/320;
+  const scaleY=window.innerHeight/240;
+  $('#console').style.transform=`scale(${scaleX},${scaleY})`;
 }
 window.addEventListener('resize',fitConsole);
 fitConsole();
@@ -25,6 +27,30 @@ function setMuted(value){muted=value;storage.set('muted',muted);$('#mute').textC
 function selectMenu(delta){menuIndex=(menuIndex+delta+menuButtons.length)%menuButtons.length;menuButtons.forEach((b,i)=>b.classList.toggle('selected',i===menuIndex));tone(210,.025)}
 async function startGame(){show('loading');$('#loading-name').textContent='SNAKE BYTE';await new Promise(r=>setTimeout(r,350));try{currentGame=await loadCartridge('snake',host,{storage,tone,exit:exitGame});show('game-host')}catch(error){$('#error-message').textContent=error.message;show('error')}}
 function exitGame(){currentGame?.unmount?.();currentGame=null;show('home')}
+function powerOff(){
+  if(currentScreen==='power-off'||currentScreen==='powering-off')return;
+  const visible=screens.find(screen=>!screen.hidden);
+  if(!visible)return;
+  currentScreen='powering-off';
+  $('#mute').hidden=true;
+  visible.classList.remove('tv-off');
+  void visible.offsetWidth;
+  visible.classList.add('tv-off');
+  tone(150,.18,'sawtooth');
+  clearTimeout(powerTimer);
+  powerTimer=setTimeout(()=>{show('power-off');visible.classList.remove('tv-off')},700);
+}
+function powerOn(){
+  clearTimeout(powerTimer);
+  $('#mute').hidden=false;
+  home.classList.remove('tv-on');
+  void home.offsetWidth;
+  home.classList.add('tv-on');
+  show('home');
+  tone(420,.06);
+  setTimeout(()=>tone(720,.08),80);
+  setTimeout(()=>home.classList.remove('tv-on'),500);
+}
 function panel(title,html){currentPanel=title;$('#panel-title').textContent=title;$('#panel-content').innerHTML=html;show('panel')}
 function action(name){
   tone(540,.04);
@@ -32,9 +58,15 @@ function action(name){
   if(name==='scores')panel('HIGH SCORES',`<h2>SNAKE BYTE</h2><div class="big-score">${String(storage.get('snake:highScore',0)).padStart(5,'0')}</div><p>Best local score</p>`);
   if(name==='settings')panel('SETTINGS',`<div class="setting-row"><span>SOUND</span><button class="toggle" id="sound-setting">${muted?'OFF':'ON'}</button></div><div class="setting-row"><span>SAVE DATA</span><button class="toggle" id="clear-save">CLEAR</button></div><p>A TOGGLE SOUND • B BACK</p>`);
   if(name==='about')panel('ABOUT','<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v1.0</p><p>A tiny console built for Second Life Media on a Prim.</p><p>FIRST CARTRIDGE: SNAKE BYTE</p>');
+  if(name==='power')powerOff();
 }
 function input(key,pressed=true){
   if(!pressed){currentGame?.input?.(key,false);return}
+  if(currentScreen==='power-off'){
+    if(key==='start'||key==='a')powerOn();
+    return;
+  }
+  if(currentScreen==='powering-off')return;
   if(currentScreen==='home'){
     if(key==='up')selectMenu(-1);else if(key==='down')selectMenu(1);else if(key==='a'||key==='start')action(menuButtons[menuIndex].dataset.action);
   }else if(currentScreen==='panel'){
