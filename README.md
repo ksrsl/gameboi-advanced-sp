@@ -50,14 +50,17 @@ The interface has a logical **320 x 240** game layout and scales edge-to-edge on
 
 1. Place `second-life/GameBoi Mesh Controller.lsl` into the object.
 2. The current test display uses **face 2**. Change `SCREEN_FACE` at the top only if the final mesh uses another face.
-3. For a one-prim test, no prim naming is required. Right-click it and choose **Focus Screen** to enter the centered camera view.
-4. For true one-left-click focus directly on the screen, rename the current display prim `SCREEN`, link any extra child prim named `FOCUS`, and keep `SCREEN` as the root by selecting it last when linking. On reset, the controller automatically sizes, aligns, and hides the click-catcher over face 2.
-5. For a linked final console, name the display prim `SCREEN` and the button prims `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`. An optional visible camera button can be named `CAMERA`.
-6. Reset the script.
+3. Add **one** camera script: use `second-life/GameBoi Sit Camera Focus.lsl` for reliable standard Second Life operation, or the requested standing attempt in `second-life/GameBoi Direct Camera Focus.lsl`.
+4. For a one-prim test, no prim naming is required. With the recommended sit script, right-click it and choose **Enter Game View**.
+5. For true one-left-click focus, link a spare child prim over the screen and enter its link number in `FOCUS_CATCHER_LINK_NUMBER`. The camera script automatically sizes, aligns, and hides it on face 2.
+6. For a linked final console, name the display prim `SCREEN` and the button prims `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`. An optional visible camera button can be named `CAMERA`.
+7. Reset the scripts.
 
-Second Life does not deliver LSL touch events from a Shared Media face, so the invisible `FOCUS` child prim is required for true one-left-click behavior. It seats the resident behind the display, moves out of the way, and smoothly centers the entire screen. The next click interacts directly with the game. Use the viewer's **Stand** button to leave focus mode. The optional `CAMERA` mesh button also exits focus mode when clicked while seated.
+Second Life does not deliver LSL touch events from a Shared Media face, so the invisible `FOCUS` child prim is required for true one-left-click behavior. With the default mesh-button setup, clicking that invisible screen catcher again exits Game View. If direct web-page clicks are required, disable `CATCHER_STAYS_FOR_EXIT` and use **Stand** or the optional `CAMERA` mesh button to exit.
 
-For a standard box, face 2 points along local +X and works with the included camera setting. If a custom screen mesh faces the opposite direction, change `CAMERA_FRONT_LOCAL` in the controller from `<1.0, 0.0, 0.0>` to `<-1.0, 0.0, 0.0>`.
+Detailed link/face discovery, camera adjustment, debug, and fallback instructions are in `second-life/CAMERA_SETUP.md`.
+
+For a standard box, face 2 points along local +X and works with the included camera setting. If a custom screen mesh faces the opposite direction, change `SCREEN_FRONT_LOCAL` in the camera script from `<1.0, 0.0, 0.0>` to `<-1.0, 0.0, 0.0>`.
 
 GitHub Pages does not mirror one resident's active media browser to another resident's viewer. Live shared game state will require the synchronization service when that feature is resumed.
 
