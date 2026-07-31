@@ -1,0 +1,115 @@
+#game-host { background: #78c8df; }
+
+.fish-game {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #fff;
+  background: #78c8df;
+}
+
+.fish-game canvas {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
+  image-rendering: pixelated;
+}
+
+.fish-hud {
+  position: absolute;
+  top: 6px;
+  right: 40px;
+  left: 39px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  text-shadow: 1px 1px #174355;
+  font-size: 9px;
+}
+
+.fish-hud b { color: #fff176; }
+
+.fish-message {
+  position: absolute;
+  top: 30px;
+  left: 75px;
+  z-index: 3;
+  width: 170px;
+  padding: 5px;
+  border: 1px solid #d8f8ff;
+  background: #174355d9;
+  text-align: center;
+  font-size: 7px;
+}
+
+.fish-action {
+  position: absolute;
+  right: 7px;
+  bottom: 6px;
+  z-index: 5;
+  min-width: 64px;
+  height: 27px;
+  border: 2px solid #fff176;
+  background: #174355;
+  color: #fff176;
+  font-size: 8px;
+  font-weight: bold;
+}
+
+.fish-overlay {
+  position: absolute;
+  inset: 44px 43px 38px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 3px solid #fff176;
+  background: #174355f2;
+  box-shadow: 6px 6px #0008;
+  text-align: center;
+}
+
+.fish-overlay[hidden] { display: none; }
+.fish-overlay strong { color: #fff176; font-size: 20px; }
+.fish-overlay small { color: #d8f8ff; font-size: 8px; line-height: 1.5; }
+.fish-overlay em { color: #8db9c6; font-size: 8px; font-style: normal; }
+
+.fish-overlay button {
+  padding: 9px 16px;
+  border: 0;
+  background: #fff176;
+  color: #174355;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.fish-exit {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  z-index: 8;
+  width: 27px;
+  height: 23px;
+  border: 1px solid #d8f8ff;
+  background: #174355;
+  color: #fff;
+}
+
+.fish-pause {
+  position: absolute;
+  top: 98px;
+  left: 95px;
+  z-index: 7;
+  width: 130px;
+  padding: 15px;
+  border: 3px solid #fff176;
+  background: #174355f3;
+  text-align: center;
+  font-size: 15px;
+}
+
+.fish-pause[hidden] { display: none; }

@@ -1,0 +1,89 @@
+#game-host { background: #17263c; }
+
+.road-game {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #fff;
+  background: #17263c;
+}
+
+.road-game canvas {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
+  image-rendering: pixelated;
+}
+
+.road-hud {
+  position: absolute;
+  top: 6px;
+  right: 40px;
+  left: 39px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  text-shadow: 1px 1px #17263c;
+  font-size: 9px;
+}
+
+.road-hud b { color: #ffe66d; }
+
+.road-overlay {
+  position: absolute;
+  inset: 47px 47px 37px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 3px solid #ff6e7f;
+  background: #111d32f1;
+  box-shadow: 6px 6px #0008;
+  text-align: center;
+}
+
+.road-overlay[hidden] { display: none; }
+.road-overlay strong { color: #ff8997; font-size: 21px; }
+.road-overlay small { color: #ffe66d; font-size: 8px; line-height: 1.5; }
+.road-overlay em { color: #8596b4; font-size: 8px; font-style: normal; }
+
+.road-overlay button {
+  padding: 9px 16px;
+  border: 0;
+  background: #ff6e7f;
+  color: #111d32;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.road-exit,
+.road-boost {
+  position: absolute;
+  z-index: 7;
+  height: 23px;
+  border: 1px solid #526683;
+  background: #17263c;
+  color: #fff;
+}
+
+.road-exit { top: 3px; left: 6px; width: 27px; }
+.road-boost { right: 7px; bottom: 5px; width: 53px; color: #ffe66d; font-size: 7px; }
+
+.road-pause {
+  position: absolute;
+  top: 98px;
+  left: 95px;
+  z-index: 6;
+  width: 130px;
+  padding: 15px;
+  border: 3px solid #ffe66d;
+  background: #111d32f2;
+  text-align: center;
+  font-size: 15px;
+}
+
+.road-pause[hidden] { display: none; }

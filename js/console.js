@@ -6,12 +6,20 @@ import blockDropCartridge from '../games/block-drop/block-drop.js';
 import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js';
 import astroDefenderCartridge from '../games/astro-defender/astro-defender.js';
 import petByteCartridge from '../games/pet-byte/pet-byte.js';
+import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js';
+import roadRushCartridge from '../games/road-rush/road-rush.js';
+import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js';
+import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
 registerCartridge(brickBlasterCartridge);
 registerCartridge(astroDefenderCartridge);
 registerCartridge(petByteCartridge);
+registerCartridge(byteFlyerCartridge);
+registerCartridge(roadRushCartridge);
+registerCartridge(dungeonByteCartridge);
+registerCartridge(fishingByteCartridge);
 
 const $ = selector => document.querySelector(selector);
 const screens = [...document.querySelectorAll('.screen')];
@@ -82,6 +90,27 @@ function selectCartridge(delta) {
   cartridgeButtons.forEach((button, index) => button.classList.toggle('selected', index === cartridgeIndex));
   tone(235, 0.025);
   publishConsole('cartridges', { cartridgeIndex });
+}
+
+function moveCartridge(key) {
+  const count = cartridgeButtons.length;
+  const column = cartridgeIndex % 2;
+  let next = cartridgeIndex;
+  if (key === 'left' && column === 1) next -= 1;
+  if (key === 'right' && column === 0 && next + 1 < count) next += 1;
+  if (key === 'up') {
+    next -= 2;
+    if (next < 0) {
+      next = count - 1;
+      if (next % 2 !== column) next -= 1;
+    }
+  }
+  if (key === 'down') {
+    next += 2;
+    if (next >= count) next = column < count ? column : 0;
+  }
+  if (next === cartridgeIndex) return;
+  selectCartridge(next - cartridgeIndex);
 }
 
 function publishConsole(screen, extra = {}) {
@@ -200,6 +229,10 @@ function action(name) {
         <div><span>BRICK BLASTER</span><b>${String(storage.get('brickBlaster:highScore', 0)).padStart(6, '0')} / L${String(storage.get('brickBlaster:bestLevel', 1)).padStart(2, '0')}</b></div>
         <div><span>ASTRO DEFENDER</span><b>${String(storage.get('astroDefender:highScore', 0)).padStart(6, '0')} / W${String(storage.get('astroDefender:bestWave', 1)).padStart(2, '0')}</b></div>
         <div><span>PET BYTE</span><b>LEVEL ${String(storage.get('petByte:bestLevel', 1)).padStart(2, '0')}</b></div>
+        <div><span>BYTE FLYER</span><b>${String(storage.get('byteFlyer:highScore', 0)).padStart(3, '0')}</b></div>
+        <div><span>ROAD RUSH</span><b>${String(storage.get('roadRush:highScore', 0)).padStart(5, '0')}</b></div>
+        <div><span>DUNGEON BYTE</span><b>F${String(storage.get('dungeonByte:bestFloor', 1)).padStart(2, '0')}</b></div>
+        <div><span>FISHING BYTE</span><b>${String(storage.get('fishingByte:species', 0))}/8 • ${String(Math.floor(storage.get('fishingByte:bestSize', 0))).padStart(3, '0')}CM</b></div>
       </div>
     `);
   }
@@ -211,7 +244,7 @@ function action(name) {
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v1.5</p><p>OPEN TEST CONTROLS</p><p>5 CARTRIDGES INSTALLED</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v1.6</p><p>OPEN TEST CONTROLS</p><p>9 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }
@@ -232,8 +265,7 @@ function applyInput(key, pressed = true) {
     else if (key === 'down') selectMenu(1);
     else if (key === 'a' || key === 'start') action(menuButtons[menuIndex].dataset.action);
   } else if (currentScreen === 'cartridges') {
-    if (key === 'up') selectCartridge(-1);
-    else if (key === 'down') selectCartridge(1);
+    if (key === 'up' || key === 'down' || key === 'left' || key === 'right') moveCartridge(key);
     else if (key === 'a' || key === 'start') startGame(cartridgeButtons[cartridgeIndex].dataset.game);
     else if (key === 'b' || key === 'select') { show('home'); publishConsole('home'); }
   } else if (currentScreen === 'panel') {
@@ -361,6 +393,18 @@ $('#panel-content').addEventListener('click', event => {
     storage.remove('astroDefender:bestWave');
     storage.remove('petByte:bestLevel');
     storage.remove('petByte:save');
+    storage.remove('byteFlyer:highScore');
+    storage.remove('byteFlyer:coins');
+    storage.remove('byteFlyer:skin');
+    storage.remove('roadRush:highScore');
+    storage.remove('roadRush:tokens');
+    storage.remove('roadRush:car');
+    storage.remove('dungeonByte:run');
+    storage.remove('dungeonByte:bestFloor');
+    storage.remove('dungeonByte:highGold');
+    storage.remove('fishingByte:save');
+    storage.remove('fishingByte:species');
+    storage.remove('fishingByte:bestSize');
     event.target.textContent = 'CLEARED';
   }
 });

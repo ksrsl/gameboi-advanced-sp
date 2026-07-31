@@ -1,0 +1,115 @@
+#game-host { background: #12151a; }
+
+.dungeon-game {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #f4ead3;
+  background: #12151a;
+}
+
+.dungeon-game canvas {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
+  image-rendering: pixelated;
+}
+
+.dungeon-hud {
+  position: absolute;
+  top: 6px;
+  right: 40px;
+  left: 39px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+}
+
+.dungeon-hud b { color: #f6cc64; }
+
+.dungeon-side {
+  position: absolute;
+  top: 32px;
+  right: 5px;
+  z-index: 3;
+  width: 62px;
+  padding: 6px;
+  border: 1px solid #665b50;
+  background: #1d2025e8;
+  color: #d9cdbb;
+  font-size: 7px;
+  line-height: 1.6;
+}
+
+.dungeon-side b { color: #f6cc64; }
+
+.dungeon-log {
+  position: absolute;
+  right: 5px;
+  bottom: 33px;
+  z-index: 3;
+  width: 62px;
+  min-height: 45px;
+  padding: 5px;
+  border: 1px solid #665b50;
+  background: #1d2025e8;
+  color: #e9dec9;
+  font-size: 6px;
+  line-height: 1.35;
+}
+
+.dungeon-potion {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  z-index: 4;
+  width: 62px;
+  height: 24px;
+  border: 1px solid #b05d72;
+  background: #4b2632;
+  color: #ffd8df;
+  font-size: 7px;
+}
+
+.dungeon-overlay {
+  position: absolute;
+  inset: 45px 45px 38px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 3px solid #f6cc64;
+  background: #17191df3;
+  box-shadow: 6px 6px #0009;
+  text-align: center;
+}
+
+.dungeon-overlay[hidden] { display: none; }
+.dungeon-overlay strong { color: #f6cc64; font-size: 20px; }
+.dungeon-overlay small { color: #d9cdbb; font-size: 8px; line-height: 1.5; }
+.dungeon-overlay em { color: #81796f; font-size: 8px; font-style: normal; }
+
+.dungeon-overlay button {
+  padding: 9px 16px;
+  border: 0;
+  background: #f6cc64;
+  color: #17191d;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.dungeon-exit {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  z-index: 8;
+  width: 27px;
+  height: 23px;
+  border: 1px solid #665b50;
+  background: #242126;
+  color: #f4ead3;
+}

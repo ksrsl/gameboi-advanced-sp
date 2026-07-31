@@ -1,0 +1,88 @@
+#game-host { background: #76cbd4; }
+
+.flyer-game {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #fff;
+  background: #76cbd4;
+}
+
+.flyer-game canvas {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
+  image-rendering: pixelated;
+}
+
+.flyer-hud {
+  position: absolute;
+  top: 6px;
+  right: 40px;
+  left: 39px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  text-shadow: 1px 1px #183b43;
+  font-size: 9px;
+}
+
+.flyer-hud b { color: #fff176; }
+
+.flyer-overlay {
+  position: absolute;
+  inset: 48px 48px 37px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 3px solid #fff176;
+  background: #173c46ee;
+  box-shadow: 6px 6px #0007;
+  text-align: center;
+}
+
+.flyer-overlay[hidden] { display: none; }
+.flyer-overlay strong { color: #fff176; font-size: 21px; }
+.flyer-overlay small { color: #d5fbff; font-size: 8px; line-height: 1.5; }
+.flyer-overlay em { color: #8dc7cc; font-size: 8px; font-style: normal; }
+
+.flyer-overlay button {
+  padding: 9px 17px;
+  border: 0;
+  background: #fff176;
+  color: #173c46;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.flyer-exit {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  z-index: 7;
+  width: 27px;
+  height: 23px;
+  border: 1px solid #d5fbff;
+  background: #173c46;
+  color: #fff;
+}
+
+.flyer-pause {
+  position: absolute;
+  top: 98px;
+  left: 95px;
+  z-index: 6;
+  width: 130px;
+  padding: 15px;
+  border: 3px solid #fff176;
+  background: #173c46f2;
+  text-align: center;
+  font-size: 15px;
+}
+
+.flyer-pause[hidden] { display: none; }
