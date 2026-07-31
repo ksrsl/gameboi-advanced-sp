@@ -5,7 +5,7 @@
 
 // --------------------------- CONFIGURATION ---------------------------
 
-integer SCREEN_LINK_NUMBER = 1;
+integer SCREEN_LINK_NUMBER = 2;
 integer SCREEN_FACE_NUMBER = 2;
 
 // Set this to the link number of a spare child prim named FOCUS.
@@ -25,8 +25,8 @@ integer CAMERA_BUTTON_LINK_NUMBER = 0;
 // Standard box face 2 points along local +X.
 vector SCREEN_FRONT_LOCAL = <1.0, 0.0, 0.0>;
 
-// Set CAMERA_DISTANCE to 0.0 for automatic tight framing.
-float CAMERA_DISTANCE = 0.0;
+// Set VIEW_DISTANCE to 0.0 for automatic tight framing.
+float VIEW_DISTANCE = 0.0;
 float CAMERA_HEIGHT = 0.0;
 float CAMERA_SIDE_OFFSET = 0.0;
 vector FOCUS_OFFSET = <0.0, 0.0, 0.0>;
@@ -65,7 +65,13 @@ debugMessage(string message)
 
 list screenDetails()
 {
-    return llGetLinkPrimitiveParams(SCREEN_LINK_NUMBER,
+    integer screenLink = SCREEN_LINK_NUMBER;
+    if (llGetObjectPrimCount(llGetKey()) == 1)
+    {
+        screenLink = LINK_THIS;
+    }
+
+    return llGetLinkPrimitiveParams(screenLink,
     [
         PRIM_POSITION,
         PRIM_ROTATION,
@@ -190,7 +196,7 @@ integer applyCamera()
     vector up = <0.0, 0.0, 1.0> * screenRotation;
     vector focusPoint = screenPosition + (FOCUS_OFFSET * screenRotation);
 
-    float distance = CAMERA_DISTANCE;
+    float distance = VIEW_DISTANCE;
     if (distance <= 0.0)
     {
         float halfFovTangent = llTan(CAMERA_VERTICAL_FOV * 0.5);

@@ -9,7 +9,7 @@ Use `GameBoi Sit Camera Focus.lsl`. Standard Second Life grants camera-control p
 ### Single-prim test
 
 1. Put `GameBoi Mesh Controller.lsl` and `GameBoi Sit Camera Focus.lsl` in the prim.
-2. Keep `SCREEN_LINK_NUMBER = 1`, `SCREEN_FACE_NUMBER = 2`, and `FOCUS_CATCHER_LINK_NUMBER = 0`.
+2. `SCREEN_LINK_NUMBER` is currently set to `2` for the linked test object. A single-prim object is detected automatically. Keep `SCREEN_FACE_NUMBER = 2` and `FOCUS_CATCHER_LINK_NUMBER = 0`.
 3. Reset both scripts.
 4. Right-click the prim and select **Enter Game View**.
 5. Use the viewer's **Stand** button to exit.
@@ -51,7 +51,7 @@ You can also temporarily put `GameBoi Link Face Finder.lsl` in the root and touc
 Both camera scripts use the same settings:
 
 - `SCREEN_FRONT_LOCAL`: the outward-facing local direction. Standard box face 2 is `<1.0, 0.0, 0.0>`. Use `<-1.0, 0.0, 0.0>` if the camera appears behind the display.
-- `CAMERA_DISTANCE`: distance straight out from the screen. Keep `0.0` for automatic tight framing. Increase it if the mesh clips into view.
+- `VIEW_DISTANCE`: distance straight out from the screen. Keep `0.0` for automatic tight framing. Increase it if the mesh clips into view.
 - `CAMERA_HEIGHT`: positive moves the camera toward the screen prim's local top; negative moves it down.
 - `CAMERA_SIDE_OFFSET`: positive moves toward local +Y; negative moves toward local -Y.
 - `FOCUS_OFFSET`: local `<front, side, height>` adjustment for the point the camera looks at. Start at `<0.0, 0.0, 0.0>`.
