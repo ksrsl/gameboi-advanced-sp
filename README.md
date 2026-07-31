@@ -14,6 +14,8 @@ A screen-only retro handheld console for Second Life Media on a Prim. The web co
 
 This release is GitHub-only and requires no backend.
 
+Version 2.0 introduces a black, white, charcoal, and silver KSR interface, a white-on-black boot sequence, 2x supersampled game rendering, smoother animation timing, and a rebuilt Road Rush cartridge.
+
 ## Public addresses
 
 - Console: `https://ksrsl.github.io/gameboi-advanced-sp/`
@@ -46,7 +48,7 @@ All website paths are relative, so the console works from a GitHub Pages project
 
 ## Second Life setup
 
-The interface has a logical **320 x 240** game layout and scales edge-to-edge on any prim screen. The controller requests a high-quality **1024 x 1024** Media on a Prim texture; the prim face supplies the final shape.
+The interface has a logical **320 x 240** game layout and scales cleanly on any prim screen without distorting the games. The controller requests a high-quality **1024 x 768** Media on a Prim texture, matching the 4:3 display ratio.
 
 1. Place `second-life/GameBoi Mesh Controller.lsl` into the object.
 2. The current test display uses **face 2**. Change `SCREEN_FACE` at the top only if the final mesh uses another face.

@@ -13,7 +13,7 @@
   inset: 0;
   width: 320px;
   height: 240px;
-  image-rendering: pixelated;
+  image-rendering: auto;
 }
 
 .dungeon-hud {

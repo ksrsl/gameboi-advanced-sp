@@ -1,3 +1,5 @@
+import { createGameContext, safeDelta } from '../../js/render-utils.js?v=2.0.2';
+
 const WIDTH = 320;
 const HEIGHT = 240;
 const FISH = [
@@ -358,7 +360,7 @@ export default {
     }
 
     function loop(time) {
-      const dt = Math.min(0.034, (time - previousTime) / 1000 || 0);
+      const dt = safeDelta(time, previousTime);
       previousTime = time;
       update(dt);
       draw(time);
@@ -373,7 +375,7 @@ export default {
         host.innerHTML = markup();
         root = host.firstElementChild;
         canvas = root.querySelector('canvas');
-        ctx = canvas.getContext('2d');
+        ctx = createGameContext(canvas, 320, 240);
         state = 'intro';
         renderUi();
         previousTime = performance.now();

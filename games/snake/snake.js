@@ -1,3 +1,5 @@
+import { createGameContext } from '../../js/render-utils.js?v=2.0.2';
+
 const WIDTH = 30;
 const HEIGHT = 20;
 const CELL = 10;
@@ -5,18 +7,21 @@ const CELL = 10;
 export default {
   id: 'snake',
   title: 'Snake Byte',
-  version: '1.1.0',
+  version: '2.0.0',
   create() {
     let root;
     let canvas;
     let ctx;
     let services;
     let timer = null;
+    let frame = 0;
     let authority = true;
     let state = 'title';
     let score = 0;
     let high = 0;
     let snake = [];
+    let previousSnake = [];
+    let moveStartedAt = 0;
     let food = {};
     let direction = { x: 1, y: 0 };
     let nextDirection = { x: 1, y: 0 };
@@ -26,7 +31,7 @@ export default {
       <div class="snake-game">
         <div class="snake-hud"><span>SCORE <b id="snake-score">0000</b></span><span>HI <b id="snake-hi">0000</b></span></div>
         <canvas width="300" height="200" aria-label="Snake game board"></canvas>
-        <div class="snake-overlay" id="snake-overlay"><strong>SNAKE BYTE</strong><small>THE NEON GARDEN</small><button data-snake="start">START GAME</button><em>START / A</em></div>
+        <div class="snake-overlay" id="snake-overlay"><strong>SNAKE BYTE</strong><small>KSR DATA GRID</small><button data-snake="start">START GAME</button><em>START / A</em></div>
         <button class="snake-exit" data-snake="exit" aria-label="Exit game">×</button>
         <div class="snake-pause" id="snake-pause" hidden>PAUSED</div>
       </div>`;
@@ -60,24 +65,39 @@ export default {
       score = 0;
       speed = 145;
       snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+      previousSnake = snake.map(part => ({ ...part }));
+      moveStartedAt = performance.now();
       direction = nextDirection = { x: 1, y: 0 };
       spawnFood();
       updateHud();
     }
 
-    function draw() {
-      ctx.fillStyle = '#101b18';
+    function draw(time = performance.now()) {
+      ctx.fillStyle = '#070809';
       ctx.fillRect(0, 0, 300, 200);
-      ctx.fillStyle = '#182721';
+      ctx.fillStyle = '#22262a';
       for (let x = 0; x < WIDTH; x += 2) {
         for (let y = 0; y < HEIGHT; y += 2) ctx.fillRect(x * CELL, y * CELL, 1, 1);
       }
-      ctx.fillStyle = '#ffcf4a';
-      ctx.fillRect(food.x * CELL + 2, food.y * CELL + 2, 6, 6);
+      ctx.fillStyle = '#8fcfff';
+      ctx.beginPath();
+      ctx.arc(food.x * CELL + 5, food.y * CELL + 5, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      const progress = state === 'play' ? Math.min(1, Math.max(0, (time - moveStartedAt) / speed)) : 1;
       snake.forEach((part, index) => {
-        ctx.fillStyle = index ? '#43b967' : '#9af5aa';
-        ctx.fillRect(part.x * CELL + 1, part.y * CELL + 1, 8, 8);
+        const source = previousSnake[Math.min(index, previousSnake.length - 1)] || part;
+        let drawX = source.x + (part.x - source.x) * progress;
+        let drawY = source.y + (part.y - source.y) * progress;
+        if (Math.abs(part.x - source.x) > 1) drawX = part.x;
+        if (Math.abs(part.y - source.y) > 1) drawY = part.y;
+        ctx.fillStyle = index ? '#cbd0d5' : '#ffffff';
+        ctx.fillRect(drawX * CELL + 1.5, drawY * CELL + 1.5, 7, 7);
       });
+    }
+
+    function renderLoop(time) {
+      draw(time);
+      frame = requestAnimationFrame(renderLoop);
     }
 
     function renderState() {
@@ -88,7 +108,7 @@ export default {
       paused.hidden = state !== 'pause';
       if (state === 'title') {
         overlay.hidden = false;
-        overlay.innerHTML = '<strong>SNAKE BYTE</strong><small>THE NEON GARDEN</small><button data-snake="start">START GAME</button><em>START / A</em>';
+        overlay.innerHTML = '<strong>SNAKE BYTE</strong><small>KSR DATA GRID</small><button data-snake="start">START GAME</button><em>START / A</em>';
       } else if (state === 'over') {
         overlay.hidden = false;
         overlay.innerHTML = `<strong>GAME OVER</strong><small>SCORE ${String(score).padStart(4, '0')}</small><button data-snake="start">RESTART</button><em>A / START</em>`;
@@ -106,6 +126,7 @@ export default {
     function loop() {
       clearTimeout(timer);
       if (!authority || state !== 'play') return;
+      previousSnake = snake.map(part => ({ ...part }));
       direction = nextDirection;
       const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
@@ -125,6 +146,8 @@ export default {
       } else {
         snake.pop();
       }
+
+      moveStartedAt = performance.now();
 
       renderState();
       publish();
@@ -178,9 +201,10 @@ export default {
         host.innerHTML = markup();
         root = host.firstElementChild;
         canvas = root.querySelector('canvas');
-        ctx = canvas.getContext('2d');
+        ctx = createGameContext(canvas, 300, 200);
         reset();
         renderState();
+        frame = requestAnimationFrame(renderLoop);
         root.addEventListener('click', event => {
           const action = event.target.dataset.snake;
           if (action === 'start') services.requestInput('a');
@@ -206,6 +230,8 @@ export default {
         high = Number(remote.high) || 0;
         speed = Number(remote.speed) || 145;
         snake = Array.isArray(remote.snake) ? remote.snake.map(part => ({ x: part.x, y: part.y })) : [];
+        previousSnake = snake.map(part => ({ ...part }));
+        moveStartedAt = performance.now();
         food = remote.food ? { x: remote.food.x, y: remote.food.y } : { x: 5, y: 5 };
         direction = remote.direction ? { ...remote.direction } : { x: 1, y: 0 };
         nextDirection = remote.nextDirection ? { ...remote.nextDirection } : { ...direction };
@@ -219,6 +245,7 @@ export default {
       },
       unmount() {
         clearTimeout(timer);
+        cancelAnimationFrame(frame);
       }
     };
   }

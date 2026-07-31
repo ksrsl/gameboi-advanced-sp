@@ -1,15 +1,15 @@
 import { storage } from './storage.js';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
 import { GameSync, syncConfigFromLocation } from './sync.js';
-import snakeCartridge from '../games/snake/snake.js';
-import blockDropCartridge from '../games/block-drop/block-drop.js';
-import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js';
-import astroDefenderCartridge from '../games/astro-defender/astro-defender.js';
-import petByteCartridge from '../games/pet-byte/pet-byte.js';
-import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js';
-import roadRushCartridge from '../games/road-rush/road-rush.js';
-import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js';
-import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js';
+import snakeCartridge from '../games/snake/snake.js?v=2.0.2';
+import blockDropCartridge from '../games/block-drop/block-drop.js?v=2.0.2';
+import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=2.0.2';
+import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=2.0.2';
+import petByteCartridge from '../games/pet-byte/pet-byte.js?v=2.0.2';
+import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=2.0.2';
+import roadRushCartridge from '../games/road-rush/road-rush.js?v=2.0.2';
+import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=2.0.2';
+import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=2.0.2';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -46,7 +46,8 @@ let viewerCount = 1;
 function fitConsole() {
   const scaleX = window.innerWidth / 320;
   const scaleY = window.innerHeight / 240;
-  $('#console').style.transform = `scale(${scaleX},${scaleY})`;
+  const scale = Math.min(scaleX, scaleY);
+  $('#console').style.transform = `scale(${scale})`;
 }
 
 function show(id) {
@@ -63,7 +64,8 @@ function tone(frequency = 440, duration = 0.06, type = 'square') {
     const gain = audio.createGain();
     oscillator.type = type;
     oscillator.frequency.value = frequency;
-    gain.gain.setValueAtTime(0.045, audio.currentTime);
+    gain.gain.setValueAtTime(0.0001, audio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.04, audio.currentTime + Math.min(0.008, duration * 0.2));
     gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + duration);
     oscillator.connect(gain).connect(audio.destination);
     oscillator.start();
@@ -244,7 +246,7 @@ function action(name) {
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v1.6</p><p>OPEN TEST CONTROLS</p><p>9 CARTRIDGES INSTALLED</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.0</p><p>HIGH-DEFINITION RENDERING</p><p>9 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }

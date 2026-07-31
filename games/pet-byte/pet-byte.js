@@ -1,3 +1,5 @@
+import { createGameContext } from '../../js/render-utils.js?v=2.0.2';
+
 const SAVE_KEY = 'petByte:save';
 const ACTIONS = [
   { id: 'feed', label: 'FEED', icon: '◆' },
@@ -388,7 +390,7 @@ export default {
         host.innerHTML = markup();
         root = host.firstElementChild;
         canvas = root.querySelector('canvas');
-        ctx = canvas.getContext('2d');
+        ctx = createGameContext(canvas, 320, 240);
         state = 'intro';
         renderState();
         previousTime = performance.now();

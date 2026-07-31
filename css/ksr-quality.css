@@ -1,0 +1,345 @@
+:root {
+  --screen: #f1f1ef;
+  --pixel: #08090a;
+  --gold: #d6d9dd;
+  --ksr-black: #050607;
+  --ksr-charcoal: #15171a;
+  --ksr-steel: #747d87;
+  --ksr-silver: #c9ced4;
+  --ksr-white: #f7f8f9;
+}
+
+html,
+body,
+#console,
+#display {
+  background: var(--ksr-black);
+}
+
+#display::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, #fff0 68%, #0000001a 100%);
+  mix-blend-mode: multiply;
+}
+
+#game-host { background: #050607; }
+
+#boot {
+  background:
+    linear-gradient(115deg, transparent 0 44%, #ffffff0b 45% 46%, transparent 47%),
+    #030405;
+  color: var(--ksr-white);
+}
+
+.boot-logo {
+  font-size: 42px;
+  letter-spacing: 9px;
+  text-shadow: 0 0 18px #ffffff4d;
+  animation: ksrBootLogo .72s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.boot-logo span { color: var(--ksr-white); }
+
+.boot-model {
+  margin-top: 5px;
+  color: var(--ksr-silver);
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  animation: ksrBootModel .5s .45s ease-out both;
+}
+
+.boot-bar {
+  width: 144px;
+  height: 4px;
+  margin-top: 20px;
+  overflow: hidden;
+  border: 1px solid #7e858d;
+  background: #111316;
+}
+
+.boot-bar i {
+  background: linear-gradient(90deg, #717984, #ffffff);
+  box-shadow: 0 0 9px #fff8;
+  animation: ksrLoad 1.25s .2s cubic-bezier(.25, .8, .25, 1) forwards;
+}
+
+@keyframes ksrBootLogo {
+  from { opacity: 0; transform: scale(.82); filter: blur(5px); }
+  to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+@keyframes ksrBootModel {
+  from { opacity: 0; transform: translateY(5px); }
+}
+
+@keyframes ksrLoad { to { width: 100%; } }
+
+.menu-screen {
+  background:
+    linear-gradient(135deg, #ffffff 0%, #eceeed 58%, #d8dce0 100%);
+  color: var(--ksr-black);
+}
+
+.menu-screen header,
+.panel-screen header {
+  background: linear-gradient(90deg, #030405, #181b1f);
+  color: var(--ksr-white);
+  border-bottom: 1px solid #5f666e;
+}
+
+.menu-screen header span {
+  font-size: 24px;
+  letter-spacing: 2px;
+  text-shadow: 0 1px #000;
+}
+
+.menu-copy {
+  color: #5f666e;
+  letter-spacing: 1px;
+}
+
+.pixel-menu button {
+  color: #111315;
+  transition: color .12s ease, background .12s ease, transform .12s ease;
+}
+
+.pixel-menu button.selected,
+.pixel-menu button:hover {
+  background: linear-gradient(90deg, #060708, #24282d);
+  color: #fff;
+  transform: translateX(2px);
+  box-shadow: inset 2px 0 #fff;
+}
+
+.menu-screen footer {
+  border-color: #899099;
+  background: #e2e4e4cc;
+  color: #3a3f44;
+}
+
+.panel-screen {
+  background: #eceeed;
+  color: #0a0b0c;
+}
+
+.score-list div {
+  border-color: #a3a8ae;
+  background: linear-gradient(90deg, #f8f8f7, #dfe2e4);
+}
+
+.score-list b,
+.panel-screen .big-score { color: #111315; }
+
+.setting-row { border-color: #969ca3; }
+
+.toggle {
+  border-color: #15171a;
+  background: #f7f8f9;
+  color: #111315;
+}
+
+.toggle:hover {
+  background: #111315;
+  color: #fff;
+}
+
+.status-screen,
+.error-screen {
+  background: radial-gradient(circle at center, #25292e, #050607 72%);
+  color: #fff;
+}
+
+.status-screen small { color: #aab0b7; }
+.spinner { border-color: #fff #4c5259 #4c5259; animation: spin .75s linear infinite; }
+
+#mute {
+  border: 1px solid #626a73;
+  background: #050607e8;
+  color: #fff;
+  box-shadow: 0 2px 6px #0008;
+}
+
+#live-status {
+  border-color: #d7dbe0;
+  background: #050607e8;
+  color: #fff;
+}
+
+#live-status.offline {
+  border-color: #747b83;
+  color: #aeb4ba;
+}
+
+.power-off-screen { background: #000; }
+#power-on { color: #fff; }
+#power-on span { border-color: #666; box-shadow: 0 0 8px #fff3; }
+
+#game-host canvas {
+  image-rendering: auto !important;
+  filter: contrast(1.035) saturate(.88);
+  transform: translateZ(0);
+}
+
+#game-host:not([hidden]) {
+  animation: ksrGameReveal .2s ease-out both;
+}
+
+@keyframes ksrGameReveal {
+  from { opacity: 0; filter: brightness(1.8) grayscale(1); }
+}
+
+.snake-overlay,
+.blockdrop-overlay,
+.brick-overlay,
+.astro-overlay,
+.pet-overlay,
+.flyer-overlay,
+.road-overlay,
+.dungeon-overlay,
+.fish-overlay {
+  border: 1px solid #aeb4ba;
+  border-radius: 4px;
+  background: linear-gradient(145deg, #08090af5, #1b1e22f5);
+  box-shadow: 0 12px 28px #000b, inset 0 0 0 1px #ffffff0d;
+  color: #fff;
+  backdrop-filter: blur(3px);
+  animation: ksrOverlayIn .18s ease-out both;
+}
+
+@keyframes ksrOverlayIn {
+  from { opacity: 0; transform: translateY(4px) scale(.985); }
+}
+
+.snake-overlay strong,
+.blockdrop-overlay strong,
+.brick-overlay strong,
+.astro-overlay strong,
+.pet-overlay strong,
+.flyer-overlay strong,
+.road-overlay strong,
+.dungeon-overlay strong,
+.fish-overlay strong {
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px #fff3;
+}
+
+.snake-overlay small,
+.blockdrop-overlay small,
+.brick-overlay small,
+.astro-overlay small,
+.pet-overlay small,
+.flyer-overlay small,
+.road-overlay small,
+.dungeon-overlay small,
+.fish-overlay small { color: #d5d9dd; }
+
+.snake-overlay em,
+.blockdrop-overlay em,
+.brick-overlay em,
+.astro-overlay em,
+.pet-overlay em,
+.flyer-overlay em,
+.road-overlay em,
+.dungeon-overlay em,
+.fish-overlay em { color: #8e969f; }
+
+.snake-overlay button,
+.blockdrop-overlay button,
+.brick-overlay button,
+.astro-overlay button,
+.pet-overlay button,
+.flyer-overlay button,
+.road-overlay button,
+.dungeon-overlay button,
+.fish-overlay button {
+  border: 1px solid #fff;
+  border-radius: 2px;
+  background: #f6f7f8;
+  color: #090a0b;
+  box-shadow: 0 3px 0 #7a8189;
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+
+.snake-overlay button:active,
+.blockdrop-overlay button:active,
+.brick-overlay button:active,
+.astro-overlay button:active,
+.pet-overlay button:active,
+.flyer-overlay button:active,
+.road-overlay button:active,
+.dungeon-overlay button:active,
+.fish-overlay button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #7a8189;
+}
+
+.snake-hud,
+.blockdrop-hud,
+.brick-hud,
+.astro-hud,
+.pet-hud,
+.flyer-hud,
+.road-hud,
+.dungeon-hud,
+.fish-hud {
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+}
+
+.snake-hud b,
+.blockdrop-hud b,
+.brick-hud b,
+.astro-hud b,
+.pet-hud b,
+.flyer-hud b,
+.road-hud b,
+.dungeon-hud b,
+.fish-hud b { color: #fff; }
+
+.snake-exit,
+.blockdrop-exit,
+.brick-exit,
+.astro-exit,
+.pet-exit,
+.flyer-exit,
+.road-exit,
+.dungeon-exit,
+.fish-exit,
+.astro-bomb,
+.road-boost,
+.fish-action,
+.dungeon-potion {
+  border-color: #626a73;
+  border-radius: 2px;
+  background: #08090ae8;
+  color: #fff;
+  box-shadow: 0 2px 6px #0008;
+}
+
+.snake-pause,
+.blockdrop-pause,
+.brick-pause,
+.astro-pause,
+.flyer-pause,
+.road-pause,
+.fish-pause {
+  border: 1px solid #fff;
+  border-radius: 3px;
+  background: #070809f4;
+  color: #fff;
+  box-shadow: 0 10px 26px #000b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

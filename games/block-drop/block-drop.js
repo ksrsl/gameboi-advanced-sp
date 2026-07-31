@@ -1,3 +1,5 @@
+import { createGameContext } from '../../js/render-utils.js?v=2.0.2';
+
 const COLS = 10;
 const ROWS = 18;
 const CELL = 10;
@@ -337,7 +339,7 @@ export default {
         host.innerHTML = markup();
         root = host.firstElementChild;
         canvas = root.querySelector('canvas');
-        ctx = canvas.getContext('2d');
+        ctx = createGameContext(canvas, 300, 200);
         renderState();
         root.addEventListener('click', event => {
           const action = event.target.dataset.blockdrop;
