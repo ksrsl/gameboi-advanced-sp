@@ -1,4 +1,4 @@
-// GameBoi Advanced SP - Mesh Controller v1.1
+// KSR Gameboi SP - Mesh Controller v1.2
 // Put this script in the ROOT prim of the linked console.
 // Name the linked prims exactly:
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
@@ -54,12 +54,12 @@ configureScreen()
         PRIM_MEDIA_CURRENT_URL, MEDIA_URL,
         PRIM_MEDIA_HOME_URL, MEDIA_URL,
         PRIM_MEDIA_AUTO_PLAY, TRUE,
-        // FALSE preserves the requested non-power-of-two 320 x 240 viewport.
+        // Render at 1024 x 768 for a sharp 4:3 Media-on-a-Prim display.
         PRIM_MEDIA_AUTO_SCALE, FALSE,
         PRIM_MEDIA_AUTO_ZOOM, FALSE,
         PRIM_MEDIA_FIRST_CLICK_INTERACT, FALSE,
-        PRIM_MEDIA_WIDTH_PIXELS, 320,
-        PRIM_MEDIA_HEIGHT_PIXELS, 240,
+        PRIM_MEDIA_WIDTH_PIXELS, 1024,
+        PRIM_MEDIA_HEIGHT_PIXELS, 768,
         PRIM_MEDIA_PERMS_INTERACT, PRIM_MEDIA_PERM_NONE,
         PRIM_MEDIA_PERMS_CONTROL, PRIM_MEDIA_PERM_NONE
     ]);

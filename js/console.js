@@ -9,6 +9,13 @@ const home=$('#home'),host=$('#game-host'),menuButtons=[...document.querySelecto
 let menuIndex=0,currentGame=null,currentScreen='boot',currentPanel='';
 let muted=storage.get('muted',false),audio;
 
+function fitConsole(){
+  const scale=Math.min(window.innerWidth/320,window.innerHeight/240);
+  $('#console').style.transform=`scale(${scale})`;
+}
+window.addEventListener('resize',fitConsole);
+fitConsole();
+
 function show(id){screens.forEach(s=>s.hidden=s.id!==id);currentScreen=id}
 function tone(freq=440,duration=.06,type='square'){
   if(muted)return;
@@ -24,7 +31,7 @@ function action(name){
   if(name==='play')startGame();
   if(name==='scores')panel('HIGH SCORES',`<h2>SNAKE BYTE</h2><div class="big-score">${String(storage.get('snake:highScore',0)).padStart(5,'0')}</div><p>Best local score</p>`);
   if(name==='settings')panel('SETTINGS',`<div class="setting-row"><span>SOUND</span><button class="toggle" id="sound-setting">${muted?'OFF':'ON'}</button></div><div class="setting-row"><span>SAVE DATA</span><button class="toggle" id="clear-save">CLEAR</button></div><p>A TOGGLE SOUND • B BACK</p>`);
-  if(name==='about')panel('ABOUT','<h2>GAMEBOI ADVANCED SP</h2><p>KSR SYSTEM SOFTWARE v1.0</p><p>A tiny console built for Second Life Media on a Prim.</p><p>FIRST CARTRIDGE: SNAKE BYTE</p>');
+  if(name==='about')panel('ABOUT','<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v1.0</p><p>A tiny console built for Second Life Media on a Prim.</p><p>FIRST CARTRIDGE: SNAKE BYTE</p>');
 }
 function input(key,pressed=true){
   if(!pressed){currentGame?.input?.(key,false);return}

@@ -27,7 +27,7 @@ All project paths are relative, so the console works from a GitHub Pages project
 
 ## Second Life Media on a Prim
 
-Use the same public GitHub Pages address above as the Media URL. Set the media surface to **320 × 240 pixels** (4:3). The included `second-life/GameBoi Mesh Controller.lsl` script configures this automatically.
+Use the same public GitHub Pages address above as the Media URL. The interface has a logical **320 × 240** layout but automatically scales to fit the available media viewport without scrolling or cropping. The included `second-life/GameBoi Mesh Controller.lsl` script renders it at **1024 × 768** for a sharper 4:3 in-world display.
 
 ## Mesh controller setup
 

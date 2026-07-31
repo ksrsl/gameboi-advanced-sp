@@ -23,8 +23,7 @@ body {
 }
 
 body {
-  display: grid;
-  place-items: center;
+  position: relative;
 }
 
 button {
@@ -40,6 +39,15 @@ button {
   height: 240px;
   overflow: hidden;
   background: #10151b;
+}
+
+#console {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -120px;
+  margin-left: -160px;
+  transform-origin: center;
 }
 
 .screen {
@@ -248,11 +256,4 @@ button {
   background: #0008;
   color: #fff;
   font-size: 14px;
-}
-
-@media (max-width: 319px), (max-height: 239px) {
-  #console {
-    transform: scale(min(calc(100vw / 320), calc(100vh / 240)));
-    transform-origin: center;
-  }
 }
