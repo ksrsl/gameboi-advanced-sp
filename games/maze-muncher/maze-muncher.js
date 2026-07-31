@@ -1,7 +1,5 @@
 import { createGameContext, safeDelta } from '../../js/render-utils.js?v=2.1.0';
 
-const COLS = 21;
-const ROWS = 15;
 const TILE = 11;
 const BOARD_X = 44.5;
 const BOARD_Y = 42;
@@ -27,17 +25,15 @@ const DIRS = [
   { x: -1, y: 0, name: 'left' }, { x: 0, y: -1, name: 'up' }
 ];
 const DRONES = [
-  { x: 9, y: 8, color: '#ff6f91', brain: 0 },
-  { x: 10, y: 8, color: '#79d9ff', brain: 1 },
-  { x: 11, y: 8, color: '#ffb45e', brain: 2 },
-  { x: 10, y: 9, color: '#b99aff', brain: 3 }
+  { x: 9, y: 7, color: '#ff6f91', brain: 0 },
+  { x: 11, y: 7, color: '#79d9ff', brain: 1 },
+  { x: 8, y: 9, color: '#ffb45e', brain: 2 },
+  { x: 12, y: 9, color: '#b99aff', brain: 3 }
 ];
-const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-
 export default {
   id: 'maze-muncher',
   title: 'Maze Muncher',
-  version: '1.0.0',
+  version: '1.1.0',
   create() {
     let root;
     let canvas;
@@ -67,23 +63,52 @@ export default {
       </div>`;
 
     const keyFor = (x, y) => `${x},${y}`;
-    const isWall = (x, y) => MAP[Math.round(y)]?.[Math.round(x)] === '#';
-    const nearCenter = actor => Math.abs(actor.x - Math.round(actor.x)) < 0.075 && Math.abs(actor.y - Math.round(actor.y)) < 0.075;
+    const nearCenter = actor => Math.abs(actor.x - Math.round(actor.x)) < 0.22 && Math.abs(actor.y - Math.round(actor.y)) < 0.22;
 
-    function canMove(actor, direction, distance = 0.12) {
-      const testX = actor.x + direction.x * (0.48 + distance);
-      const testY = actor.y + direction.y * (0.48 + distance);
-      return !isWall(testX, testY);
+    function canStep(actor, direction) {
+      const x = Math.round(actor.x) + direction.x;
+      const y = Math.round(actor.y) + direction.y;
+      const cell = MAP[y]?.[x];
+      return Boolean(cell && cell !== '#');
+    }
+
+    function isOpenCell(x, y) {
+      const cell = MAP[y]?.[x];
+      return Boolean(cell && cell !== '#');
+    }
+
+    function pathDistance(fromX, fromY, targetX, targetY) {
+      const goalX = Math.round(targetX);
+      const goalY = Math.round(targetY);
+      if (!isOpenCell(goalX, goalY)) return 999;
+      const queue = [[Math.round(fromX), Math.round(fromY), 0]];
+      const visited = new Set([keyFor(Math.round(fromX), Math.round(fromY))]);
+      for (let index = 0; index < queue.length; index += 1) {
+        const [x, y, distance] = queue[index];
+        if (x === goalX && y === goalY) return distance;
+        DIRS.forEach(direction => {
+          const nextX = x + direction.x;
+          const nextY = y + direction.y;
+          const key = keyFor(nextX, nextY);
+          if (!visited.has(key) && isOpenCell(nextX, nextY)) {
+            visited.add(key);
+            queue.push([nextX, nextY, distance + 1]);
+          }
+        });
+      }
+      return 999;
     }
 
     function resetActors() {
-      player = { x: 10, y: 11, dir: DIRS[2], wanted: DIRS[2] };
+      player = { x: 10, y: 11, dir: DIRS[2], wanted: DIRS[2], targetX: null, targetY: null };
       drones = DRONES.map((drone, index) => ({
         ...drone,
         homeX: drone.x,
         homeY: drone.y,
         dir: DIRS[index % DIRS.length],
-        delay: 0.7 + index * 0.45
+        targetX: null,
+        targetY: null,
+        delay: 0.15 + index * 0.2
       }));
       powerTime = 0;
       invulnerable = 1.2;
@@ -137,8 +162,8 @@ export default {
 
     function chooseDroneDirection(drone) {
       const reverse = { x: -drone.dir.x, y: -drone.dir.y };
-      let options = DIRS.filter(dir => canMove(drone, dir, 0.02) && (dir.x !== reverse.x || dir.y !== reverse.y));
-      if (!options.length) options = DIRS.filter(dir => canMove(drone, dir, 0.02));
+      let options = DIRS.filter(dir => canStep(drone, dir) && (dir.x !== reverse.x || dir.y !== reverse.y));
+      if (!options.length) options = DIRS.filter(dir => canStep(drone, dir));
 
       let targetX = player.x;
       let targetY = player.y;
@@ -146,31 +171,61 @@ export default {
         targetX += player.dir.x * 3;
         targetY += player.dir.y * 3;
       } else if (drone.brain === 2) {
-        targetX = COLS - 1 - player.x;
-        targetY = ROWS - 1 - player.y;
+        targetX += -player.dir.y * 4;
+        targetY += player.dir.x * 4;
+      } else if (drone.brain === 3) {
+        targetX -= player.dir.x * 2;
+        targetY -= player.dir.y * 2;
+      }
+
+      if (!isOpenCell(Math.round(targetX), Math.round(targetY))) {
+        targetX = player.x;
+        targetY = player.y;
       }
 
       options.sort((a, b) => {
-        const distanceA = Math.abs(drone.x + a.x - targetX) + Math.abs(drone.y + a.y - targetY);
-        const distanceB = Math.abs(drone.x + b.x - targetX) + Math.abs(drone.y + b.y - targetY);
-        if (powerTime > 0 || drone.brain === 3) return distanceB - distanceA;
+        const distanceA = pathDistance(drone.x + a.x, drone.y + a.y, targetX, targetY);
+        const distanceB = pathDistance(drone.x + b.x, drone.y + b.y, targetX, targetY);
+        if (powerTime > 0) return distanceB - distanceA;
         return distanceA - distanceB;
       });
-      if (drone.brain === 2 && Math.random() < 0.35) return options[Math.floor(Math.random() * options.length)];
+      if (drone.brain === 2 && Math.random() < 0.12) return options[Math.floor(Math.random() * options.length)];
       return options[0] || drone.dir;
     }
 
-    function moveActor(actor, speed, dt) {
-      if (nearCenter(actor)) {
-        actor.x = Math.round(actor.x);
-        actor.y = Math.round(actor.y);
-        if (actor.wanted && canMove(actor, actor.wanted, 0.01)) actor.dir = actor.wanted;
-        if (!canMove(actor, actor.dir, 0.01)) return;
-      }
-      const step = speed * dt;
-      if (canMove(actor, actor.dir, step)) {
-        actor.x += actor.dir.x * step;
-        actor.y += actor.dir.y * step;
+    function choosePlayerDirection(actor) {
+      if (actor.wanted && canStep(actor, actor.wanted)) return actor.wanted;
+      if (canStep(actor, actor.dir)) return actor.dir;
+      return null;
+    }
+
+    function advanceActor(actor, speed, dt, chooseDirection) {
+      let travel = speed * dt;
+      let guard = 0;
+      while (travel > 0 && guard < 4) {
+        if (actor.targetX === null || actor.targetY === null) {
+          actor.x = Math.round(actor.x);
+          actor.y = Math.round(actor.y);
+          const direction = chooseDirection(actor);
+          if (!direction || !canStep(actor, direction)) return;
+          actor.dir = direction;
+          actor.targetX = actor.x + direction.x;
+          actor.targetY = actor.y + direction.y;
+        }
+
+        const distance = Math.abs(actor.targetX - actor.x) + Math.abs(actor.targetY - actor.y);
+        if (travel < distance) {
+          actor.x += actor.dir.x * travel;
+          actor.y += actor.dir.y * travel;
+          return;
+        }
+
+        actor.x = actor.targetX;
+        actor.y = actor.targetY;
+        actor.targetX = null;
+        actor.targetY = null;
+        travel -= distance;
+        guard += 1;
       }
     }
 
@@ -204,6 +259,9 @@ export default {
           score += 250;
           drone.x = drone.homeX;
           drone.y = drone.homeY;
+          drone.targetX = null;
+          drone.targetY = null;
+          drone.dir = DIRS[drone.brain % DIRS.length];
           drone.delay = 1;
           services.tone(920, 0.07, 'triangle');
         } else {
@@ -222,19 +280,14 @@ export default {
       if (state !== 'play') return;
       powerTime = Math.max(0, powerTime - dt);
       invulnerable = Math.max(0, invulnerable - dt);
-      moveActor(player, 5.1 + level * 0.08, dt);
+      advanceActor(player, 5.1 + level * 0.08, dt, choosePlayerDirection);
       collect();
       drones.forEach(drone => {
         if (drone.delay > 0) {
           drone.delay -= dt;
           return;
         }
-        if (nearCenter(drone)) {
-          drone.x = Math.round(drone.x);
-          drone.y = Math.round(drone.y);
-          drone.dir = chooseDroneDirection(drone);
-        }
-        moveActor(drone, (powerTime > 0 ? 3.15 : 3.75) + level * 0.13, dt);
+        advanceActor(drone, (powerTime > 0 ? 3.25 : 4.05) + level * 0.13, dt, chooseDroneDirection);
       });
       collide();
       updateHud();

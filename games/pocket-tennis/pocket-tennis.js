@@ -6,7 +6,7 @@ const COURT = { left: 39, right: 281, top: 34, bottom: 226, net: 126 };
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 export default {
-  id: 'pocket-tennis', title: 'Pocket Tennis', version: '1.0.0',
+  id: 'pocket-tennis', title: 'Pocket Tennis', version: '1.1.0',
   create() {
     let root, canvas, ctx, services, frame = 0, previousTime = 0;
     let state = 'title', playerX = 160, playerTarget = 160, opponentX = 160;
@@ -65,7 +65,11 @@ export default {
     function launch(from, lob = false) {
       const isPlayer = from === 'player';
       const hitterX = isPlayer ? playerX : opponentX;
-      const targetX = isPlayer ? opponentX + (Math.random() - .5) * 75 : playerX + (Math.random() - .5) * 52;
+      let targetX = opponentX + (Math.random() - .5) * 75;
+      if (!isPlayer) {
+        const openCourt = playerX < 160 ? 236 : 84;
+        targetX = openCourt + (Math.random() - .5) * 24;
+      }
       ball.last = from; ball.moving = true; ball.bounces = 0;
       ball.z = Math.max(ball.z, 7); ball.vz = lob ? 112 : 88;
       ball.vy = isPlayer ? (lob ? -91 : -112) : (lob ? 91 : 108);
@@ -142,9 +146,11 @@ export default {
         services.tone(235, .028, 'triangle'); makeBurst(ball.x, ball.y, '#a9d5e8');
         if (ball.bounces >= 2) scorePoint(ball.last === 'player' ? 'player' : 'opponent');
       }
-      opponentX = smoothToward(opponentX, clamp(ball.x + Math.sin(performance.now() * .004) * 8, 58, 262), 5.8, dt);
-      if (ball.last === 'player' && ball.vy < 0 && ball.y < 91 && ball.y > 42 && Math.abs(ball.x - opponentX) < 35 && ball.z < 30 && opponentSwing <= 0) {
-        opponentSwing = .2; launch('opponent', Math.random() < .22);
+      let interceptX = ball.x;
+      if (ball.vy < -1) interceptX += ball.vx * clamp((ball.y - 61) / -ball.vy, 0, .6);
+      opponentX = smoothToward(opponentX, clamp(interceptX + Math.sin(performance.now() * .004) * 4, 54, 266), 7.6, dt);
+      if (ball.last === 'player' && ball.vy < 0 && ball.y < 96 && ball.y > 39 && Math.abs(ball.x - opponentX) < 43 && ball.z < 36 && opponentSwing <= 0) {
+        opponentSwing = .17; launch('opponent', Math.random() < .3);
       }
       awardForOut();
     }

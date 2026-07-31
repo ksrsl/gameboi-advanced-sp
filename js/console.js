@@ -10,10 +10,10 @@ import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=2.0.3';
 import roadRushCartridge from '../games/road-rush/road-rush.js?v=2.0.3';
 import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=2.0.3';
 import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=2.0.3';
-import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=2.1.0';
+import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=2.1.2';
 import miniGolfCartridge from '../games/mini-golf/mini-golf.js?v=2.1.0';
-import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=2.1.0';
-import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=2.1.0';
+import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=2.1.2';
+import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=2.1.2';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -257,7 +257,7 @@ function action(name) {
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.1</p><p>HIGH-DEFINITION RENDERING</p><p>13 CARTRIDGES INSTALLED</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.1.2</p><p>HIGH-DEFINITION RENDERING</p><p>13 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }
@@ -423,6 +423,8 @@ $('#panel-content').addEventListener('click', event => {
     storage.remove('miniGolf:bestScore');
     storage.remove('pocketTennis:wins');
     storage.remove('pixelKart:bestTime');
+    storage.remove('pixelKart:bestTimes');
+    storage.remove('pixelKart:track');
     event.target.textContent = 'CLEARED';
   }
 });

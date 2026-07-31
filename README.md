@@ -18,7 +18,7 @@ A screen-only retro handheld console for Second Life Media on a Prim. The web co
 
 This release is GitHub-only and requires no backend.
 
-Version 2.1 expands the black, white, charcoal, silver, and cool-blue KSR interface to thirteen cartridges. Every new game uses 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data.
+Version 2.1.2 expands the black, white, charcoal, silver, and cool-blue KSR interface to thirteen cartridges. Every new game uses 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data. Maze Muncher's grid movement and pathfinding are deterministic so every drone leaves its spawn and actively hunts the player.
 
 ## Public addresses
 
@@ -179,7 +179,7 @@ The lowest completed five-hole round is saved.
 - Start: pause
 - Touch/click the court: move toward the touch and swing
 
-Matches are first to five points. Match wins are saved.
+Matches are first to five points. The CPU anticipates the ball, covers the open court, and aims away from the player instead of returning easy center shots. Match wins are saved.
 
 ### Pixel Kart
 
@@ -187,10 +187,15 @@ Matches are first to five points. Match wins are saved.
 - Down: brake
 - A: use the held item
 - Hold B while steering: drift; release B for a charged mini-boost
+- B on the title screen: choose Night Circuit, Silver Coast, or Neon Foundry
 - Start: pause
 - Touch the left or right side of the track: steer; touch the center: use an item
 
-Race three laps against five original KSR rivals. Turbo, shield, and pulse items appear in boxes; the winning best time is saved.
+Race three laps against five named original KSR rivals. Turbo, shield, and pulse items appear in boxes. The upgraded racer includes three selectable circuits, rival collisions, lap announcements, reverse, boost pads, roadside lighting, and a separate winning best time for every track.
+
+## Multiplayer direction
+
+The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared race positions, inputs, scores, and join/leave events. Pixel Kart and Pocket Tennis are the recommended first multiplayer cartridges. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
 
 Select returns to the console from every cartridge.
 
