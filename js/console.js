@@ -3,9 +3,15 @@ import { registerCartridge, loadCartridge, listCartridges } from './game-loader.
 import { GameSync, syncConfigFromLocation } from './sync.js';
 import snakeCartridge from '../games/snake/snake.js';
 import blockDropCartridge from '../games/block-drop/block-drop.js';
+import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js';
+import astroDefenderCartridge from '../games/astro-defender/astro-defender.js';
+import petByteCartridge from '../games/pet-byte/pet-byte.js';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
+registerCartridge(brickBlasterCartridge);
+registerCartridge(astroDefenderCartridge);
+registerCartridge(petByteCartridge);
 
 const $ = selector => document.querySelector(selector);
 const screens = [...document.querySelectorAll('.screen')];
@@ -188,8 +194,13 @@ function action(name) {
   if (name === 'play') showCartridges();
   if (name === 'scores') {
     panel('HIGH SCORES', `
-      <h2>SNAKE BYTE</h2><div class="big-score">${String(storage.get('snake:highScore', 0)).padStart(5, '0')}</div>
-      <h2>BLOCK DROP</h2><div class="big-score">${String(storage.get('blockDrop:highScore', 0)).padStart(5, '0')}</div>
+      <div class="score-list">
+        <div><span>SNAKE BYTE</span><b>${String(storage.get('snake:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>BLOCK DROP</span><b>${String(storage.get('blockDrop:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>BRICK BLASTER</span><b>${String(storage.get('brickBlaster:highScore', 0)).padStart(6, '0')} / L${String(storage.get('brickBlaster:bestLevel', 1)).padStart(2, '0')}</b></div>
+        <div><span>ASTRO DEFENDER</span><b>${String(storage.get('astroDefender:highScore', 0)).padStart(6, '0')} / W${String(storage.get('astroDefender:bestWave', 1)).padStart(2, '0')}</b></div>
+        <div><span>PET BYTE</span><b>LEVEL ${String(storage.get('petByte:bestLevel', 1)).padStart(2, '0')}</b></div>
+      </div>
     `);
   }
   if (name === 'settings') {
@@ -200,7 +211,7 @@ function action(name) {
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v1.4</p><p>OPEN TEST CONTROLS</p><p>CARTRIDGES: SNAKE BYTE + BLOCK DROP</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v1.5</p><p>OPEN TEST CONTROLS</p><p>5 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }
@@ -344,6 +355,12 @@ $('#panel-content').addEventListener('click', event => {
   if (event.target.id === 'clear-save' && confirm('Clear all KSR Gameboi save data?')) {
     storage.remove('snake:highScore');
     storage.remove('blockDrop:highScore');
+    storage.remove('brickBlaster:highScore');
+    storage.remove('brickBlaster:bestLevel');
+    storage.remove('astroDefender:highScore');
+    storage.remove('astroDefender:bestWave');
+    storage.remove('petByte:bestLevel');
+    storage.remove('petByte:save');
     event.target.textContent = 'CLEARED';
   }
 });

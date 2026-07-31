@@ -1,9 +1,12 @@
 # KSR Gameboi SP
 
-A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes two cartridges:
+A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes five cartridges:
 
 - **Snake Byte** - a polished Snake-style game
 - **Block Drop** - an original falling-block puzzle game
+- **Brick Blaster** - multi-level brick-breaking action with collectible power cores
+- **Astro Defender** - a wave-based space shooter with bombs and ship upgrades
+- **Pet Byte** - a persistent virtual pet with care, training, coins, and levels
 
 This release is GitHub-only and requires no backend.
 
@@ -71,6 +74,37 @@ The music-note button mutes the retro sound effects. Mute state and game high sc
 - B: hard drop
 - Start: pause
 - Select: return to console
+
+### Brick Blaster controls
+
+- Left/Right: move the paddle
+- A: launch the ball
+- Start: pause
+- Select: return to console
+- Touch/click the game field to position the paddle
+
+Power cores can widen the paddle, slow the ball, or award an extra life.
+
+### Astro Defender controls
+
+- Left/Right: move the ship
+- A: fire
+- B: use a screen-clearing bomb
+- Start: pause
+- Select: return to console
+- Touch/drag the game field to move and fire
+
+Tech cores provide rapid fire, spread fire, or a shield.
+
+### Pet Byte controls
+
+- D-pad: choose an activity
+- A: perform the selected activity
+- Start: view pet status
+- Select: return to console
+- Touch/click an activity or pet directly
+
+Pet needs, coins, XP, and level are saved locally and change based on elapsed time between visits.
 
 ## Add another cartridge
 

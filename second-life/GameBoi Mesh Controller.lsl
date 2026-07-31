@@ -1,11 +1,11 @@
-// KSR Gameboi SP - Open Testing Controller v1.4
+// KSR Gameboi SP - Open Testing Controller v1.5
 // Put this script in the root prim of the linked console.
 // Single-prim testing defaults to media face 2.
 // Final linked buttons should be named:
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
-string WEB_VERSION = "1.4.0";
+string WEB_VERSION = "1.5.0";
 integer SCREEN_FACE = 2;
 
 integer gScreenLink;

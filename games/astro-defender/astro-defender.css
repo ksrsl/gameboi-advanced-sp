@@ -1,0 +1,98 @@
+#game-host { background: #070914; }
+
+.astro-game {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #f5f2ff;
+  background: #070914;
+}
+
+.astro-hud {
+  position: absolute;
+  top: 6px;
+  right: 40px;
+  left: 39px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+}
+
+.astro-hud b { color: #7bffca; }
+
+.astro-game canvas {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
+  image-rendering: pixelated;
+}
+
+.astro-overlay {
+  position: absolute;
+  inset: 47px 46px 35px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 3px solid #7bffca;
+  background: #080817f1;
+  box-shadow: 6px 6px #0009;
+  text-align: center;
+}
+
+.astro-overlay[hidden] { display: none; }
+.astro-overlay strong { color: #7bffca; font-size: 19px; }
+.astro-overlay small { color: #ffdf6b; font-size: 8px; line-height: 1.5; }
+.astro-overlay em { color: #8586a7; font-size: 8px; font-style: normal; }
+
+.astro-overlay button {
+  padding: 9px 16px;
+  border: 0;
+  background: #7bffca;
+  color: #080817;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.astro-exit,
+.astro-bomb {
+  position: absolute;
+  z-index: 7;
+  height: 23px;
+  border: 1px solid #424365;
+  background: #15162c;
+  color: #f5f2ff;
+}
+
+.astro-exit {
+  top: 3px;
+  left: 6px;
+  width: 27px;
+}
+
+.astro-bomb {
+  right: 7px;
+  bottom: 5px;
+  width: 50px;
+  color: #ffdf6b;
+  font-size: 7px;
+}
+
+.astro-pause {
+  position: absolute;
+  top: 97px;
+  left: 95px;
+  z-index: 6;
+  width: 130px;
+  padding: 15px;
+  border: 3px solid #ffdf6b;
+  background: #080817f2;
+  text-align: center;
+  font-size: 15px;
+}
+
+.astro-pause[hidden] { display: none; }

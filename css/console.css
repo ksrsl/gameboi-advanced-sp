@@ -159,24 +159,37 @@ button {
 }
 
 .cartridge-screen .pixel-menu {
-  width: 276px;
-  padding-top: 22px;
-  gap: 8px;
+  position: absolute;
+  top: 59px;
+  left: 0;
+  width: 287px;
+  padding: 6px 12px;
+  gap: 3px;
 }
 
 .cartridge-screen .pixel-menu button {
-  height: 48px;
+  position: relative;
+  height: 27px;
+  padding-left: 22px;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
 }
+
+.cartridge-screen .pixel-menu button.selected::before {
+  position: absolute;
+  left: 8px;
+  margin: 0;
+}
+
+.cartridge-screen .menu-copy { display: none; }
 
 .cartridge-screen .pixel-menu button b {
   font-size: 13px;
 }
 
 .cartridge-screen .pixel-menu button small {
-  padding-right: 8px;
+  padding-right: 5px;
   font-size: 7px;
 }
 
@@ -222,6 +235,24 @@ button {
 .panel-screen h2 { margin: 0 0 9px; font-size: 16px; }
 .panel-screen p { margin: 6px 0; }
 .panel-screen .big-score { color: #7d2232; font-size: 40px; font-weight: bold; }
+
+.score-list {
+  display: grid;
+  gap: 4px;
+}
+
+.score-list div {
+  min-height: 25px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #819071;
+  background: #b7c7a0;
+  font-size: 9px;
+}
+
+.score-list b { color: #7d2232; }
 
 .setting-row {
   padding: 12px 0;

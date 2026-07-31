@@ -1,0 +1,96 @@
+#game-host { background: #0b1326; }
+
+.brick-game {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #edf6ff;
+  background: #0b1326;
+}
+
+.brick-hud {
+  position: absolute;
+  top: 6px;
+  right: 40px;
+  left: 40px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+}
+
+.brick-hud b { color: #ffe16a; }
+
+.brick-game canvas {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
+  image-rendering: pixelated;
+}
+
+.brick-overlay {
+  position: absolute;
+  inset: 49px 47px 37px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 3px solid #5ce1e6;
+  background: #081126f0;
+  box-shadow: 6px 6px #0008;
+  text-align: center;
+}
+
+.brick-overlay[hidden] { display: none; }
+.brick-overlay strong { color: #7cf6fa; font-size: 20px; }
+.brick-overlay small { color: #ffe16a; font-size: 8px; line-height: 1.5; }
+.brick-overlay em { color: #8295b7; font-size: 8px; font-style: normal; }
+
+.brick-overlay button {
+  padding: 9px 16px;
+  border: 0;
+  background: #5ce1e6;
+  color: #081126;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.brick-exit {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  z-index: 7;
+  width: 27px;
+  height: 23px;
+  border: 1px solid #46617c;
+  background: #111e39;
+  color: #edf6ff;
+}
+
+.brick-pause {
+  position: absolute;
+  top: 97px;
+  left: 95px;
+  z-index: 6;
+  width: 130px;
+  padding: 15px;
+  border: 3px solid #ffe16a;
+  background: #081126f2;
+  text-align: center;
+  font-size: 15px;
+}
+
+.brick-pause[hidden] { display: none; }
+
+.brick-touch-hint {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+  z-index: 3;
+  color: #6f83a6;
+  font-size: 7px;
+  pointer-events: none;
+}

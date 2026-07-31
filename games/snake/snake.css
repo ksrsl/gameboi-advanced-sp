@@ -9,7 +9,7 @@
 .snake-hud {
   position: absolute;
   top: 7px;
-  right: 12px;
+  right: 40px;
   left: 42px;
   z-index: 2;
   height: 16px;
