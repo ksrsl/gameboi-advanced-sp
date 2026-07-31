@@ -158,6 +158,28 @@ button {
   margin-right: 8px;
 }
 
+.cartridge-screen .pixel-menu {
+  width: 276px;
+  padding-top: 22px;
+  gap: 8px;
+}
+
+.cartridge-screen .pixel-menu button {
+  height: 48px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.cartridge-screen .pixel-menu button b {
+  font-size: 13px;
+}
+
+.cartridge-screen .pixel-menu button small {
+  padding-right: 8px;
+  font-size: 7px;
+}
+
 .menu-screen footer {
   position: absolute;
   right: 0;
@@ -256,6 +278,27 @@ button {
   background: #0008;
   color: #fff;
   font-size: 14px;
+}
+
+#live-status {
+  position: absolute;
+  top: 8px;
+  left: 143px;
+  z-index: 30;
+  min-width: 34px;
+  padding: 4px 6px;
+  border: 1px solid #63e58a;
+  border-radius: 2px;
+  background: #07150ddd;
+  color: #78f09b;
+  text-align: center;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+#live-status.offline {
+  border-color: #ffcf4a;
+  color: #ffcf4a;
 }
 
 .power-off-screen {

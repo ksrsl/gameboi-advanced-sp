@@ -1,26 +1,24 @@
-// KSR Gameboi SP - Mesh Controller v1.3.1
-// Put this script in the ROOT prim of the linked console.
-// Name the linked prims exactly:
+// KSR Gameboi SP - Open Testing Controller v1.4
+// Put this script in the root prim of the linked console.
+// Single-prim testing defaults to media face 2.
+// Final linked buttons should be named:
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
 
-// The version query forces viewers to fetch the current high-quality layout.
-string MEDIA_URL = "https://ksrsl.github.io/gameboi-advanced-sp/?v=1.3.1";
+string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
+string WEB_VERSION = "1.4.0";
 integer SCREEN_FACE = 2;
 
 integer gScreenLink;
 integer gSequence;
+string gMediaURL;
 
 integer findLink(string wantedName)
 {
-    // A one-prim test screen is always the media target.
     if (llGetNumberOfPrims() == 1)
     {
         return LINK_THIS;
     }
 
-    // llGetLinkName(1) does not reliably address an unlinked root prim.
-    // Because this script belongs in the root, LINK_THIS safely covers both
-    // a single-prim screen and a linked root prim named SCREEN.
     if (llToUpper(llGetObjectName()) == llToUpper(wantedName))
     {
         return LINK_THIS;
@@ -42,39 +40,34 @@ integer findLink(string wantedName)
 
 configureScreen()
 {
+    gMediaURL = SITE_URL + "?v=" + WEB_VERSION;
     gScreenLink = findLink("SCREEN");
 
     if (gScreenLink == 0)
     {
-        llOwnerSay("Setup error: no prim in this linkset is named SCREEN. Use Edit Linked to rename the display prim, not only the whole object.");
+        llOwnerSay("Setup error: no prim in this linkset is named SCREEN. Use Edit Linked to rename the display prim.");
         return;
     }
 
     integer status = llSetLinkMedia(gScreenLink, SCREEN_FACE,
     [
-        PRIM_MEDIA_CURRENT_URL, MEDIA_URL,
-        PRIM_MEDIA_HOME_URL, MEDIA_URL,
+        PRIM_MEDIA_CURRENT_URL, gMediaURL,
+        PRIM_MEDIA_HOME_URL, gMediaURL,
         PRIM_MEDIA_AUTO_PLAY, TRUE,
-        // A full power-of-two texture fills the face without unused space.
         PRIM_MEDIA_AUTO_SCALE, TRUE,
         PRIM_MEDIA_AUTO_ZOOM, FALSE,
         PRIM_MEDIA_FIRST_CLICK_INTERACT, TRUE,
         PRIM_MEDIA_WIDTH_PIXELS, 1024,
         PRIM_MEDIA_HEIGHT_PIXELS, 1024,
+
+        // Open testing: everyone can see and click the media.
         PRIM_MEDIA_PERMS_INTERACT, PRIM_MEDIA_PERM_ANYONE,
         PRIM_MEDIA_PERMS_CONTROL, PRIM_MEDIA_PERM_NONE
     ]);
 
     if (status == STATUS_OK)
     {
-        if (llGetNumberOfPrims() == 1)
-        {
-            llOwnerSay("Screen connected. Now link the mesh buttons into this same object so they can control it.");
-        }
-        else
-        {
-            llOwnerSay("GameBoi screen connected. Mesh buttons are ready.");
-        }
+        llOwnerSay("KSR Gameboi SP ready for open testing on face " + (string)SCREEN_FACE + ".");
     }
     else
     {
@@ -91,7 +84,7 @@ sendButton(string buttonName)
     }
 
     ++gSequence;
-    string commandURL = MEDIA_URL
+    string commandURL = gMediaURL
         + "#input=" + llToLower(buttonName)
         + "&seq=" + (string)gSequence;
 

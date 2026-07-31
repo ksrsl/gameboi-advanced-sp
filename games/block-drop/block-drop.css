@@ -1,0 +1,78 @@
+#game-host { background: #12111f; }
+
+.blockdrop-game {
+  position: absolute;
+  inset: 0;
+  color: #ebe8ff;
+}
+
+.blockdrop-hud {
+  position: absolute;
+  top: 7px;
+  right: 12px;
+  left: 42px;
+  z-index: 2;
+  height: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+.blockdrop-hud b { color: #ffe06a; }
+
+.blockdrop-game canvas {
+  position: absolute;
+  top: 27px;
+  left: 10px;
+  width: 300px;
+  height: 200px;
+  image-rendering: pixelated;
+}
+
+.blockdrop-overlay {
+  position: absolute;
+  inset: 43px 48px 35px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  border: 3px solid #c879ef;
+  background: #12111ff2;
+  box-shadow: 6px 6px #0008;
+  text-align: center;
+}
+
+.blockdrop-overlay[hidden] { display: none; }
+.blockdrop-overlay strong { color: #e4a4ff; font-size: 20px; }
+.blockdrop-overlay small { color: #ffe06a; font-size: 8px; }
+.blockdrop-overlay button { padding: 9px 17px; border: 0; background: #c879ef; color: #151323; font-size: 11px; font-weight: bold; }
+.blockdrop-overlay em { color: #9994b6; font-size: 8px; font-style: normal; }
+
+.blockdrop-exit {
+  position: absolute;
+  top: 4px;
+  left: 7px;
+  z-index: 5;
+  width: 27px;
+  height: 23px;
+  border: 1px solid #615b7d;
+  background: #211f34;
+  color: #ebe8ff;
+}
+
+.blockdrop-pause {
+  position: absolute;
+  top: 98px;
+  left: 95px;
+  z-index: 6;
+  width: 130px;
+  padding: 15px;
+  border: 3px solid #ffe06a;
+  background: #12111ff2;
+  text-align: center;
+  font-size: 16px;
+}
+
+.blockdrop-pause[hidden] { display: none; }
