@@ -87,6 +87,7 @@ document.addEventListener('keyup',e=>{const key=keyMap[e.key];if(!key)return;e.p
 document.querySelectorAll('[data-key]').forEach(button=>{const down=e=>{e.preventDefault();input(button.dataset.key);button.classList.add('pressed')};const up=e=>{e.preventDefault();input(button.dataset.key,false);button.classList.remove('pressed')};button.addEventListener('pointerdown',down);button.addEventListener('pointerup',up);button.addEventListener('pointercancel',up)});
 menuButtons.forEach((button,i)=>button.addEventListener('click',()=>{menuIndex=i;action(button.dataset.action)}));
 $('#panel-back').addEventListener('click',()=>show('home'));$('#error-back').addEventListener('click',()=>show('home'));
+$('#power-on').addEventListener('click',powerOn);
 $('#mute').addEventListener('click',()=>setMuted(!muted));
 $('#panel-content').addEventListener('click',e=>{if(e.target.id==='sound-setting'){setMuted(!muted);e.target.textContent=muted?'OFF':'ON'}if(e.target.id==='clear-save'&&confirm('Clear all GameBoi save data?')){storage.remove('snake:highScore');e.target.textContent='CLEARED'}});
 setMuted(muted);setTimeout(()=>{show('home');tone(660,.08);setTimeout(()=>tone(880,.1),90)},1900);

@@ -1,10 +1,10 @@
-// KSR Gameboi SP - Mesh Controller v1.3
+// KSR Gameboi SP - Mesh Controller v1.3.1
 // Put this script in the ROOT prim of the linked console.
 // Name the linked prims exactly:
 // SCREEN, UP, DOWN, LEFT, RIGHT, A, B, START, SELECT
 
 // The version query forces viewers to fetch the current high-quality layout.
-string MEDIA_URL = "https://ksrsl.github.io/gameboi-advanced-sp/?v=1.3.0";
+string MEDIA_URL = "https://ksrsl.github.io/gameboi-advanced-sp/?v=1.3.1";
 integer SCREEN_FACE = 2;
 
 integer gScreenLink;
@@ -58,10 +58,10 @@ configureScreen()
         // A full power-of-two texture fills the face without unused space.
         PRIM_MEDIA_AUTO_SCALE, TRUE,
         PRIM_MEDIA_AUTO_ZOOM, FALSE,
-        PRIM_MEDIA_FIRST_CLICK_INTERACT, FALSE,
+        PRIM_MEDIA_FIRST_CLICK_INTERACT, TRUE,
         PRIM_MEDIA_WIDTH_PIXELS, 1024,
         PRIM_MEDIA_HEIGHT_PIXELS, 1024,
-        PRIM_MEDIA_PERMS_INTERACT, PRIM_MEDIA_PERM_NONE,
+        PRIM_MEDIA_PERMS_INTERACT, PRIM_MEDIA_PERM_ANYONE,
         PRIM_MEDIA_PERMS_CONTROL, PRIM_MEDIA_PERM_NONE
     ]);
 

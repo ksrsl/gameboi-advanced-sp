@@ -51,7 +51,7 @@ Use **Edit Linked** when naming the individual mesh pieces. The name shown in lo
 | Start | Enter | Start / pause |
 | Select | Shift | Exit game / back |
 
-Choose **Turn Off** from the home screen for a CRT-style shutdown animation. Press **Start** or **A** on the mesh controls to power the display back on.
+Choose **Turn Off** from the home screen for a CRT-style shutdown animation. Touch anywhere on the powered-off Media-on-a-Prim screen to turn it back on. Start or A still works once mesh controls are added.
 
 The music-note button mutes all sounds. Mute state and the Snake high score are saved in local storage for that browser/viewer.
 
