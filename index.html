@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <meta name="theme-color" content="#050607">
-  <meta name="author" content="KSR">
+  <meta name="author" content="Corp">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22><rect width=%22100%25%22 height=%22100%25%22 rx=%2220%22 fill=%22%23050607%22/><text x=%2250%25%22 y=%2268%25%22 text-anchor=%22middle%22 font-size=%2264%22 fill=%22white%22>K</text></svg>">
   <title>KSR Gameboi SP</title>
-  <link rel="stylesheet" href="css/console.css?v=3.0.0">
+  <link rel="stylesheet" href="css/console.css?v=3.1.1">
   <link rel="stylesheet" href="games/snake/snake.css?v=3.0.0">
   <link rel="stylesheet" href="games/block-drop/block-drop.css?v=3.0.0">
   <link rel="stylesheet" href="games/brick-blaster/brick-blaster.css?v=3.0.0">
@@ -26,23 +26,28 @@
   <link rel="stylesheet" href="games/pixel-quest/pixel-quest.css?v=3.0.0">
   <link rel="stylesheet" href="games/battle-tanks/battle-tanks.css?v=3.0.0">
   <link rel="stylesheet" href="games/pocket-fighter/pocket-fighter.css?v=3.0.0">
-  <link rel="stylesheet" href="games/street-hoops/street-hoops.css?v=3.0.0">
+  <link rel="stylesheet" href="games/street-hoops/street-hoops.css?v=3.1.1">
   <link rel="stylesheet" href="games/pocket-bowling/pocket-bowling.css?v=3.0.0">
-  <link rel="stylesheet" href="css/ksr-quality.css?v=3.0.0">
+  <link rel="stylesheet" href="games/neon-cycle/neon-cycle.css?v=3.1.1">
+  <link rel="stylesheet" href="css/ksr-quality.css?v=3.1.1">
 </head>
 <body>
   <main id="console" aria-label="KSR Gameboi SP screen">
     <section id="display" aria-live="polite">
       <div id="boot" class="screen active">
+        <div class="boot-grid" aria-hidden="true"></div>
+        <div class="boot-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <div class="boot-kicker">KSR INDUSTRIES PRESENTS</div>
         <div class="boot-logo"><span>K</span>SR</div>
         <div class="boot-model">GAMEBOI SP // ARCADE</div>
         <div class="boot-checks" aria-hidden="true">
-          <span>VIDEO CORE ........ OK</span>
-          <span>AUDIO CHIP ........ OK</span>
-          <span>CARTRIDGE BUS ..... 20 READY</span>
+          <span>PIXEL CORE ........ <b>ONLINE</b></span>
+          <span>ARCADE AUDIO ...... <b>ONLINE</b></span>
+          <span>MESH INPUT ........ <b>READY</b></span>
+          <span>CARTRIDGE VAULT ... <b>21 LOADED</b></span>
         </div>
         <div class="boot-bar"><i></i></div>
+        <div class="boot-marquee">ARCADE POWER // MAXIMUM FUN</div>
         <div class="boot-ready">ARCADE SYSTEM READY</div>
       </div>
 
@@ -83,6 +88,7 @@
           <button data-game="pocket-fighter"><b>POCKET FIGHTER</b><small>FIGHTING</small></button>
           <button data-game="street-hoops"><b>STREET HOOPS</b><small>SPORTS</small></button>
           <button data-game="pocket-bowling"><b>POCKET BOWLING</b><small>SPORTS</small></button>
+          <button data-game="neon-cycle"><b>NEON CYCLE</b><small>LIGHT GRID</small></button>
         </nav>
         <footer><span>D-PAD MOVE</span><span id="cartridge-page">PAGE 1/2</span><button id="cartridge-back" type="button">BACK</button></footer>
       </div>
@@ -109,6 +115,6 @@
       <button id="mute" aria-label="Toggle sound" title="Toggle sound">♪</button>
     </section>
   </main>
-  <script type="module" src="js/console.js?v=3.0.0"></script>
+  <script type="module" src="js/console.js?v=3.1.3"></script>
 </body>
 </html>

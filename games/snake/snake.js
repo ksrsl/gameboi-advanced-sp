@@ -3,6 +3,7 @@ import { createGameContext } from '../../js/render-utils.js?v=3.0.0';
 const WIDTH = 30;
 const HEIGHT = 20;
 const CELL = 10;
+const TURN_RESPONSE_MS = 32;
 
 export default {
   id: 'snake',
@@ -26,6 +27,7 @@ export default {
     let direction = { x: 1, y: 0 };
     let nextDirection = { x: 1, y: 0 };
     let speed = 145;
+    let turnResponseQueued = false;
 
     const markup = () => `
       <div class="snake-game">
@@ -68,8 +70,21 @@ export default {
       previousSnake = snake.map(part => ({ ...part }));
       moveStartedAt = performance.now();
       direction = nextDirection = { x: 1, y: 0 };
+      turnResponseQueued = false;
       spawnFood();
       updateHud();
+    }
+
+    function currentDrawPositions(time = performance.now()) {
+      const progress = state === 'play' ? Math.min(1, Math.max(0, (time - moveStartedAt) / speed)) : 1;
+      return snake.map((part, index) => {
+        const source = previousSnake[Math.min(index, previousSnake.length - 1)] || part;
+        let x = source.x + (part.x - source.x) * progress;
+        let y = source.y + (part.y - source.y) * progress;
+        if (Math.abs(part.x - source.x) > 1) x = part.x;
+        if (Math.abs(part.y - source.y) > 1) y = part.y;
+        return { x, y };
+      });
     }
 
     function draw(time = performance.now()) {
@@ -83,15 +98,11 @@ export default {
       ctx.beginPath();
       ctx.arc(food.x * CELL + 5, food.y * CELL + 5, 3.5, 0, Math.PI * 2);
       ctx.fill();
-      const progress = state === 'play' ? Math.min(1, Math.max(0, (time - moveStartedAt) / speed)) : 1;
+      const drawPositions = currentDrawPositions(time);
       snake.forEach((part, index) => {
-        const source = previousSnake[Math.min(index, previousSnake.length - 1)] || part;
-        let drawX = source.x + (part.x - source.x) * progress;
-        let drawY = source.y + (part.y - source.y) * progress;
-        if (Math.abs(part.x - source.x) > 1) drawX = part.x;
-        if (Math.abs(part.y - source.y) > 1) drawY = part.y;
+        const position = drawPositions[index] || part;
         ctx.fillStyle = index ? '#cbd0d5' : '#ffffff';
-        ctx.fillRect(drawX * CELL + 1.5, drawY * CELL + 1.5, 7, 7);
+        ctx.fillRect(position.x * CELL + 1.5, position.y * CELL + 1.5, 7, 7);
       });
     }
 
@@ -126,7 +137,8 @@ export default {
     function loop() {
       clearTimeout(timer);
       if (!authority || state !== 'play') return;
-      previousSnake = snake.map(part => ({ ...part }));
+      previousSnake = currentDrawPositions();
+      turnResponseQueued = false;
       direction = nextDirection;
       const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
@@ -190,7 +202,16 @@ export default {
 
     function move(x, y) {
       if (!authority || state !== 'play') return;
-      if (x !== -direction.x || y !== -direction.y) nextDirection = { x, y };
+      if (x === -direction.x && y === -direction.y) return;
+      if (x === nextDirection.x && y === nextDirection.y) return;
+      nextDirection = { x, y };
+
+      const remaining = speed - (performance.now() - moveStartedAt);
+      if (!turnResponseQueued && remaining > TURN_RESPONSE_MS) {
+        clearTimeout(timer);
+        timer = setTimeout(loop, TURN_RESPONSE_MS);
+        turnResponseQueued = true;
+      }
     }
 
     return {
@@ -235,6 +256,7 @@ export default {
         food = remote.food ? { x: remote.food.x, y: remote.food.y } : { x: 5, y: 5 };
         direction = remote.direction ? { ...remote.direction } : { x: 1, y: 0 };
         nextDirection = remote.nextDirection ? { ...remote.nextDirection } : { ...direction };
+        turnResponseQueued = false;
         renderState();
         scheduleLoop();
       },

@@ -3,7 +3,7 @@ import { registerCartridge, loadCartridge, listCartridges } from './game-loader.
 import { GameSync, syncConfigFromLocation } from './sync.js';
 import { setupLslBridge } from './lsl-bridge.js?v=3.0.0';
 import { createArcadeFX } from './arcade-fx.js?v=3.0.0';
-import snakeCartridge from '../games/snake/snake.js?v=3.0.0';
+import snakeCartridge from '../games/snake/snake.js?v=3.1.1';
 import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.0';
 import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.0';
 import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=3.0.0';
@@ -21,8 +21,9 @@ import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=3.0.0';
 import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=3.0.0';
 import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=3.0.0';
 import pocketFighterCartridge from '../games/pocket-fighter/pocket-fighter.js?v=3.0.0';
-import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=3.0.0';
+import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=3.1.1';
 import pocketBowlingCartridge from '../games/pocket-bowling/pocket-bowling.js?v=3.0.0';
+import neonCycleCartridge from '../games/neon-cycle/neon-cycle.js?v=3.1.3';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -44,6 +45,7 @@ registerCartridge(battleTanksCartridge);
 registerCartridge(pocketFighterCartridge);
 registerCartridge(streetHoopsCartridge);
 registerCartridge(pocketBowlingCartridge);
+registerCartridge(neonCycleCartridge);
 
 const $ = selector => document.querySelector(selector);
 const screens = [...document.querySelectorAll('.screen')];
@@ -56,7 +58,7 @@ const cartridgeInfo = new Map(listCartridges().map(item => [item.id, item]));
 const validInputs = new Set(['up', 'down', 'left', 'right', 'a', 'b', 'start', 'select']);
 const sync = new GameSync(syncConfigFromLocation());
 const arcadeFx = createArcadeFX({ display: $('#display'), host, storage });
-const CARTRIDGE_PAGE_SIZE = 10;
+const CARTRIDGE_PAGE_SIZE = 7;
 const CARTRIDGE_COLUMNS = 2;
 
 let menuIndex = 0;
@@ -332,6 +334,7 @@ function action(name) {
         <div><span>POCKET FIGHTER</span><b>${String(storage.get('pocketFighter:wins', 0)).padStart(3, '0')} WINS</b></div>
         <div><span>STREET HOOPS</span><b>${String(storage.get('streetHoops:highScore', 0)).padStart(3, '0')}</b></div>
         <div><span>POCKET BOWLING</span><b>${String(storage.get('pocketBowling:bestScore', 0)).padStart(3, '0')}</b></div>
+        <div><span>NEON CYCLE</span><b>${String(storage.get('neonCycle:highScore', 0)).padStart(6, '0')}</b></div>
       </div>
     `);
   }
@@ -344,7 +347,7 @@ function action(name) {
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>CREATED BY KSR</p><p>KSR ARCADE SYSTEM v3.0</p><p>HIGH-DEFINITION ARCADE RENDERING</p><p>LOW-LATENCY MESH INPUT</p><p>20 CARTRIDGES INSTALLED</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>CREATED BY CORP</p><p>KSR ARCADE SYSTEM</p><p>HIGH-DEFINITION ARCADE RENDERING</p><p>LOW-LATENCY MESH INPUT</p><p>21 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }
@@ -546,7 +549,10 @@ $('#panel-content').addEventListener('click', event => {
     storage.remove('pocketFighter:wins');
     storage.remove('streetHoops:highScore');
     storage.remove('streetHoops:wins');
+    storage.remove('streetHoops:bestStreak');
     storage.remove('pocketBowling:bestScore');
+    storage.remove('neonCycle:highScore');
+    storage.remove('neonCycle:wins');
     event.target.textContent = 'CLEARED';
   }
 });
@@ -565,16 +571,18 @@ window.addEventListener('beforeunload', () => {
 
 setMuted(muted);
 updateCartridgePage();
-setTimeout(() => tone(260, 0.035, 'square'), 1320);
-setTimeout(() => tone(390, 0.035, 'square'), 1660);
-setTimeout(() => tone(520, 0.045, 'triangle'), 2000);
+setTimeout(() => tone(230, 0.035, 'square'), 1820);
+setTimeout(() => tone(330, 0.035, 'square'), 2220);
+setTimeout(() => tone(460, 0.04, 'triangle'), 2620);
+setTimeout(() => tone(620, 0.055, 'triangle'), 3020);
+setTimeout(() => tone(780, 0.07, 'sawtooth'), 3650);
 setTimeout(() => {
   if (currentScreen === 'boot') show('home');
-  tone(660, 0.09);
-  setTimeout(() => tone(990, 0.12, 'triangle'), 95);
+  tone(720, 0.1);
+  setTimeout(() => tone(1080, 0.14, 'triangle'), 100);
   if (sync.enabled) {
     $('#live-status').hidden = false;
     updateLiveBadge({ connected: false, label: 'CONNECT' });
     sync.connect();
   }
-}, 3300);
+}, 5250);

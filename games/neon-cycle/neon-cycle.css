@@ -1,0 +1,149 @@
+.cycle-game {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #03070b;
+  color: #fff;
+}
+
+.cycle-game canvas {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
+  image-rendering: auto;
+}
+
+.cycle-hud {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  left: 40px;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  color: #e8f8ff;
+  font-size: 6.5px;
+  letter-spacing: .2px;
+  text-shadow: 0 1px 3px #000, 0 0 6px #000;
+}
+
+.cycle-hud b { color: #76eaff; }
+
+.cycle-boost {
+  position: absolute;
+  right: 8px;
+  bottom: 7px;
+  z-index: 4;
+  width: 72px;
+  height: 7px;
+  border: 1px solid #7c98a8;
+  background: #030609d9;
+}
+
+.cycle-boost i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #00d9ff, #f4f8ff 55%, #ff45d0);
+  box-shadow: 0 0 8px #00d9ff88;
+}
+
+.cycle-boost span {
+  position: absolute;
+  top: -7px;
+  right: 0;
+  color: #c4d4dc;
+  font-size: 4px;
+}
+
+.cycle-message {
+  position: absolute;
+  top: 29px;
+  left: 92px;
+  z-index: 5;
+  width: 136px;
+  color: #fff;
+  text-align: center;
+  font-size: 7px;
+  letter-spacing: .7px;
+  text-shadow: 0 0 8px #00d9ff, 0 2px 3px #000;
+}
+
+.cycle-overlay {
+  position: absolute;
+  inset: 42px 38px 29px;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #5ce8ff;
+  border-radius: 5px;
+  background:
+    linear-gradient(120deg, #00d9ff0d, transparent 35%, #ff45d00d),
+    linear-gradient(145deg, #030609f5, #111c25f4);
+  box-shadow: 0 0 20px #00d9ff22, inset 0 0 20px #ff45d00a, 0 12px 30px #000d;
+  text-align: center;
+}
+
+.cycle-overlay[hidden],
+.cycle-pause[hidden] { display: none; }
+
+.cycle-overlay strong {
+  color: #b9f4ff;
+  font-size: 19px;
+  letter-spacing: 2px;
+  text-shadow: -1px 0 #00d9ff, 1px 0 #ff45d0, 0 0 13px #00d9ff55;
+}
+
+.cycle-overlay small {
+  color: #dce7ec;
+  font-size: 7px;
+  line-height: 1.55;
+}
+
+.cycle-overlay em {
+  color: #91a9b5;
+  font-size: 5.4px;
+  font-style: normal;
+}
+
+.cycle-overlay button {
+  padding: 8px 14px;
+  border: 1px solid #fff;
+  background: linear-gradient(90deg, #c9f6ff, #fff, #ffd2f3);
+  color: #04070a;
+  box-shadow: 0 3px 0 #4d6d7c, 0 0 12px #00d9ff55;
+  font-size: 8px;
+  font-weight: bold;
+}
+
+.cycle-exit {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  z-index: 9;
+  width: 27px;
+  height: 23px;
+  border: 1px solid #58798a;
+  background: #03070be8;
+  color: #fff;
+}
+
+.cycle-pause {
+  position: absolute;
+  top: 96px;
+  left: 89px;
+  z-index: 8;
+  width: 142px;
+  padding: 15px;
+  border: 1px solid #75eaff;
+  background: #03070bf2;
+  color: #fff;
+  box-shadow: 0 0 18px #00d9ff33;
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+}

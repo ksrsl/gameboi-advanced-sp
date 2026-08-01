@@ -339,48 +339,107 @@ body,
 /* KSR Arcade System 3.0 */
 
 #boot {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   background:
-    linear-gradient(115deg, transparent 0 43%, #ffffff0a 44% 45%, transparent 46%),
-    repeating-linear-gradient(0deg, #0000 0 3px, #ffffff08 4px, #0000 5px),
+    radial-gradient(circle at 18% 26%, #00d9ff30, transparent 30%),
+    radial-gradient(circle at 82% 32%, #ff3dc82c, transparent 32%),
+    radial-gradient(circle at 52% 78%, #ffbd2d22, transparent 34%),
     #020304;
 }
 
+#boot::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  background: conic-gradient(from 30deg, transparent, #00d9ff1c, transparent 28%, #ff39c51b, transparent 58%, #ffbd2d17, transparent 82%);
+  animation: arcadeAurora 6s linear infinite;
+}
+
+#boot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, #ffffff08 4px, transparent 5px);
+}
+
+#boot > :not(.boot-grid):not(.boot-sparks) { position: relative; z-index: 3; }
+
+.boot-grid {
+  position: absolute;
+  right: -18%;
+  bottom: -22px;
+  left: -18%;
+  z-index: 1;
+  height: 106px;
+  opacity: .58;
+  background:
+    repeating-linear-gradient(90deg, #00d9ff00 0 17px, #00d9ff60 18px, #00d9ff00 19px 35px),
+    repeating-linear-gradient(0deg, #ff3dc800 0 12px, #ff3dc85a 13px, #ff3dc800 14px 26px);
+  transform: perspective(100px) rotateX(58deg);
+  transform-origin: center bottom;
+  animation: arcadeGrid 1.25s linear infinite;
+}
+
+.boot-sparks { position: absolute; inset: 0; z-index: 2; }
+.boot-sparks i {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 7px 2px #00d9ffaa;
+  animation: arcadeSpark 1.8s ease-in-out infinite alternate;
+}
+.boot-sparks i:nth-child(1) { top: 19%; left: 12%; animation-delay: .2s; }
+.boot-sparks i:nth-child(2) { top: 31%; right: 13%; background: #ff76dc; box-shadow: 0 0 7px 2px #ff3dc8aa; animation-delay: .7s; }
+.boot-sparks i:nth-child(3) { top: 58%; left: 8%; background: #ffdc76; box-shadow: 0 0 7px 2px #ffbd2daa; animation-delay: 1.1s; }
+.boot-sparks i:nth-child(4) { top: 68%; right: 9%; animation-delay: 1.5s; }
+.boot-sparks i:nth-child(5) { top: 10%; left: 68%; background: #ff76dc; box-shadow: 0 0 7px 2px #ff3dc8aa; animation-delay: .45s; }
+.boot-sparks i:nth-child(6) { top: 44%; left: 19%; background: #ffdc76; box-shadow: 0 0 7px 2px #ffbd2daa; animation-delay: 1.25s; }
+
 .boot-kicker {
-  margin-bottom: 8px;
-  color: #8f989f;
+  margin-bottom: 6px;
+  color: #b8f3ff;
   font-size: 5px;
   letter-spacing: 2px;
   opacity: 0;
-  animation: arcadeBootLine .35s .2s steps(4) forwards;
+  text-shadow: 0 0 8px #00d9ff;
+  animation: arcadeBootLine .45s .28s steps(5) forwards;
 }
 
 .boot-logo {
   position: relative;
-  font-size: 43px;
+  color: #fff;
+  font-size: 40px;
   line-height: .9;
   letter-spacing: 10px;
-  text-shadow: 2px 0 #66717a, -2px 0 #ffffff30, 0 0 18px #ffffff3d;
-  animation: arcadeBootLogo .85s .45s cubic-bezier(.18,.82,.22,1) both;
+  text-shadow: -2px 0 #00d9ff, 2px 0 #ff3dc8, 0 0 22px #ffffff80;
+  animation: arcadeBootLogo 1.05s .58s cubic-bezier(.18,.82,.22,1) both, arcadeLogoPulse 1.6s 1.65s ease-in-out infinite alternate;
 }
 
 .boot-model {
-  margin-top: 9px;
+  margin-top: 7px;
+  color: #ffe8a8;
   font-size: 7px;
   letter-spacing: 3px;
-  animation: arcadeBootLine .4s 1.05s steps(5) both;
+  text-shadow: 0 0 9px #ffbd2d99;
+  animation: arcadeBootLine .45s 1.35s steps(5) both;
 }
 
 .boot-checks {
   width: 158px;
-  min-height: 31px;
-  margin-top: 11px;
+  min-height: 38px;
+  margin-top: 8px;
   display: grid;
-  gap: 2px;
-  color: #aeb6bb;
+  gap: 1px;
+  color: #b7c1c8;
   font-size: 5px;
   line-height: 1.25;
   text-align: left;
@@ -388,32 +447,46 @@ body,
 }
 
 .boot-checks span { opacity: 0; }
-.boot-checks span:nth-child(1) { animation: arcadeCheck .16s 1.32s steps(2) forwards; }
-.boot-checks span:nth-child(2) { animation: arcadeCheck .16s 1.66s steps(2) forwards; }
-.boot-checks span:nth-child(3) { animation: arcadeCheck .16s 2s steps(2) forwards; }
+.boot-checks b { color: #75efff; font-weight: bold; text-shadow: 0 0 6px #00d9ff; }
+.boot-checks span:nth-child(1) { animation: arcadeCheck .18s 1.82s steps(2) forwards; }
+.boot-checks span:nth-child(2) { animation: arcadeCheck .18s 2.22s steps(2) forwards; }
+.boot-checks span:nth-child(3) { animation: arcadeCheck .18s 2.62s steps(2) forwards; }
+.boot-checks span:nth-child(4) { animation: arcadeCheck .18s 3.02s steps(2) forwards; }
 
 .boot-bar {
   width: 158px;
-  height: 4px;
-  margin-top: 7px;
-  border: 1px solid #707980;
+  height: 5px;
+  margin-top: 5px;
+  border: 1px solid #76838c;
   background: #0a0c0e;
+  box-shadow: 0 0 8px #00d9ff25;
 }
 
 .boot-bar i {
-  background: linear-gradient(90deg, #5e6971, #e8f8ff 72%, #fff);
-  box-shadow: 0 0 10px #b9eaff99;
-  animation: arcadeLoad 1.55s 1.15s cubic-bezier(.32,.02,.18,1) forwards;
+  background: linear-gradient(90deg, #00d9ff, #f5f7ff 46%, #ff3dc8 72%, #ffbd2d);
+  box-shadow: 0 0 12px #00d9ff99, 0 0 16px #ff3dc866;
+  animation: arcadeLoad 2.45s 1.55s cubic-bezier(.32,.02,.18,1) forwards;
+}
+
+.boot-marquee {
+  min-height: 7px;
+  margin-top: 5px;
+  color: #ff8de2;
+  font-size: 5px;
+  letter-spacing: 1.5px;
+  opacity: 0;
+  text-shadow: 0 0 7px #ff3dc8;
+  animation: arcadeMarquee .55s 3.62s steps(6) forwards;
 }
 
 .boot-ready {
   min-height: 8px;
-  margin-top: 7px;
+  margin-top: 4px;
   color: #eaf8ff;
   font-size: 6px;
   letter-spacing: 2px;
   opacity: 0;
-  animation: arcadeReady .52s 2.68s steps(5) forwards;
+  animation: arcadeReady .78s 4.22s steps(7) forwards;
 }
 
 @keyframes arcadeBootLogo {
@@ -424,9 +497,14 @@ body,
   100% { opacity: 1; transform: none; filter: none; }
 }
 
+@keyframes arcadeAurora { to { transform: rotate(360deg); } }
+@keyframes arcadeGrid { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 0 26px; } }
+@keyframes arcadeSpark { from { opacity: .2; transform: scale(.6); } to { opacity: 1; transform: scale(1.5); } }
+@keyframes arcadeLogoPulse { from { filter: brightness(1); } to { filter: brightness(1.28); } }
 @keyframes arcadeBootLine { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 @keyframes arcadeCheck { from { opacity: 0; } to { opacity: 1; } }
 @keyframes arcadeLoad { 0% { width: 0; } 20% { width: 14%; } 48% { width: 42%; } 70% { width: 73%; } 100% { width: 100%; } }
+@keyframes arcadeMarquee { 0% { opacity: 0; transform: scaleX(.65); } 55% { opacity: 1; transform: scaleX(1.08); } 100% { opacity: 1; transform: none; } }
 @keyframes arcadeReady { 0%,35% { opacity: 0; } 36%,70% { opacity: 1; } 71%,82% { opacity: .25; } 83%,100% { opacity: 1; text-shadow: 0 0 8px #b9eaff; } }
 
 .menu-screen header {
@@ -501,6 +579,7 @@ body,
 #game-host[data-cartridge="pocket-fighter"] { --arcade-accent: #b8dfff; }
 #game-host[data-cartridge="street-hoops"] { --arcade-accent: #ffe0a8; }
 #game-host[data-cartridge="pocket-bowling"] { --arcade-accent: #c5eeff; }
+#game-host[data-cartridge="neon-cycle"] { --arcade-accent: #72eaff; }
 
 #game-host > div {
   contain: layout paint;

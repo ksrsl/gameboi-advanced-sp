@@ -1,8 +1,8 @@
 # KSR Gameboi SP
 
-A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes twenty cartridges:
+A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes twenty-one cartridges:
 
-Created by KSR.
+Created by Corp.
 
 - **Snake Byte** - polished classic snake action
 - **Block Drop** - an original falling-block puzzle
@@ -22,14 +22,15 @@ Created by KSR.
 - **Pixel Quest** - a three-world platform adventure with coins, enemies, checkpoints, and a final citadel boss
 - **Battle Tanks** - a cover-based tank arena with ricochets, mines, waves, and aggressive flanking CPU tanks
 - **Pocket Fighter** - a best-of-three fighting game against a CPU that blocks, counters, and controls distance
-- **Street Hoops** - a timed basketball shootout with power, aim, dunks, blocks, and a competitive CPU scorer
+- **Street Hoops** - a solo one-minute shooting challenge with timing, streak bonuses, money balls, and saved records
 - **Pocket Bowling** - a ten-frame bowling match with aim, power, hook, regulation bonuses, and a pro CPU opponent
+- **Neon Cycle** - a large scrolling light-grid battle against seven pathfinding CPU riders
 
 This release is GitHub-only and requires no backend.
 
-Version 3.0 is the KSR Arcade System upgrade. It adds a longer black-and-white arcade boot sequence, a readable two-page cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty games share the new presentation and low-latency input layer. Road Rush now draws its lane and shoulder markings in the same curved perspective as the road, eliminating the broken-looking vertical stripes. CPU opponents still use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
+The current KSR Arcade System adds a longer, vibrant arcade boot sequence, a readable paged cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty-one games share the presentation and low-latency input layer. Road Rush draws its lane and shoulder markings in the same curved perspective as the road, eliminating broken-looking vertical stripes. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
 
-The mesh controller is version 1.8.0. Its persistent long-poll bridge now hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback.
+The mesh controller is version 1.9.0. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Camera-focus and magnifier behavior have been removed.
 
 ## Public addresses
 
@@ -67,21 +68,14 @@ The interface has a logical **320 x 240** game layout and stretches edge-to-edge
 
 1. Place `second-life/GameBoi Mesh Controller.lsl` in the **root/body prim (link 1)**, not inside the screen child prim.
 2. The current test display uses **face 2**. Change `SCREEN_FACE` at the top only if the final mesh uses another face.
-3. Add **one** camera script: use `second-life/GameBoi Sit Camera Focus.lsl` for reliable standard Second Life operation, or the requested standing attempt in `second-life/GameBoi Direct Camera Focus.lsl`.
-4. For a one-prim test, no prim naming is required. With the recommended sit script, right-click it and choose **Enter Game View**.
-5. For true one-left-click focus, link a spare child prim over the screen and enter its link number in `FOCUS_CATCHER_LINK_NUMBER`. The camera script automatically sizes, aligns, and hides it on face 2.
-6. For a linked final console, name the display prim `SCREEN` and the button prims `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`. An optional visible camera button can be named `CAMERA`.
-7. Reset the scripts.
+3. For a linked console, name the display prim `SCREEN` and the button prims `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`.
+4. Reset the controller.
 
-After reset, owner chat should report `KSR Gameboi SP FAST buttons ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses and releases are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart. Replace older copies of the controller with `GameBoi Mesh Controller.lsl` v1.8.0 so the web page receives the fastest bridge behavior and the v3.0 cache refresh.
+After reset, owner chat should report `KSR Gameboi SP FAST buttons ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses and releases are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart. Replace older copies of the controller with the newest `GameBoi Mesh Controller.lsl` so the web page receives the fastest bridge behavior and current cache refresh.
 
 If owner chat reports that the fast-button bridge was denied, the controller falls back to the older URL method. That fallback is suitable for menu testing but is too delayed for action games. Resetting the script usually requests a fresh bridge URL.
 
-Second Life does not deliver LSL touch events from a Shared Media face, so the invisible `FOCUS` child prim is required for true one-left-click behavior. With the default mesh-button setup, clicking that invisible screen catcher again exits Game View. If direct web-page clicks are required, disable `CATCHER_STAYS_FOR_EXIT` and use **Stand** or the optional `CAMERA` mesh button to exit.
-
-Detailed link/face discovery, camera adjustment, debug, and fallback instructions are in `second-life/CAMERA_SETUP.md`.
-
-For a standard box, face 2 points along local +X and works with the included camera setting. If a custom screen mesh faces the opposite direction, change `SCREEN_FRONT_LOCAL` in the camera script from `<1.0, 0.0, 0.0>` to `<-1.0, 0.0, 0.0>`.
+Camera focus and magnifier scripts are intentionally not included. Delete any older `GameBoi Direct Camera Focus` or `GameBoi Sit Camera Focus` script from the object's contents. The mesh-button controller handles only Media on a Prim and game input.
 
 GitHub Pages does not mirror one resident's active media browser to another resident's viewer. Live shared game state will require the synchronization service when that feature is resumed.
 
@@ -261,14 +255,13 @@ Matches are best of three. The pro CPU manages distance, blocks predictable atta
 
 ### Street Hoops
 
-- Left/Right: move on the court
-- Up/Down: adjust shot aim
-- A once: start the power meter; A again: release the shot
-- B near the hoop: dunk
+- Left/Right: change shooting spot
+- A: release a shot using the moving power meter
+- B: move to the next shooting spot
 - Start: pause
-- Touch/click the court: move and charge or release a shot
+- Touch/click the court: choose the closest shooting spot and shoot
 
-Outscore the CPU in 45 seconds. The defender tracks the player, contests shots, and maintains scoring pressure. High score and tournament wins are saved.
+Score as many points as possible in 60 seconds. Far spots award three points, every fifth attempt is a money ball, and every third consecutive make earns a streak bonus. High score is saved.
 
 ### Pocket Bowling
 
@@ -281,9 +274,18 @@ Outscore the CPU in 45 seconds. The defender tracks the player, contests shots, 
 
 Bowl a full ten-frame match with strikes, spares, and tenth-frame bonus rolls against a high-scoring CPU. Personal best is saved.
 
+### Neon Cycle
+
+- D-pad: turn the cycle
+- A: activate a six-step light boost when the boost meter has at least 25%
+- Start: pause
+- Touch/click around the player: turn toward that side of the screen
+
+Survive a 1500 x 1000 scrolling light grid against seven CPU riders. Every cycle leaves a permanent collision trail. CPU riders scan ahead, avoid traps, pursue the player, and compete with each other. Clear the grid to advance into faster rounds. High score and grid wins are saved.
+
 ## Multiplayer direction
 
-The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared positions, inputs, scores, and join/leave events. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Street Hoops, and Pocket Bowling are designed so online modes can be added later. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
+The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared positions, inputs, scores, and join/leave events. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Neon Cycle are designed so online modes can be added later. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
 
 Select returns to the console from every cartridge.
 
