@@ -24,7 +24,7 @@ Created by Corp.
 - **Pocket Fighter** - a best-of-three fighting game against a CPU that blocks, counters, and controls distance
 - **Street Hoops** - a solo one-minute shooting challenge with timing, streak bonuses, money balls, and saved records
 - **Pocket Bowling** - a ten-frame bowling match with aim, power, hook, regulation bonuses, and a pro CPU opponent
-- **Neon Cycle** - a large scrolling light-grid battle against seven pathfinding CPU riders
+- **Tron Cycle** - a large scrolling light-grid battle against seven pathfinding CPU riders
 
 This release is GitHub-only and requires no backend.
 
@@ -256,12 +256,12 @@ Matches are best of three. The pro CPU manages distance, blocks predictable atta
 ### Street Hoops
 
 - Left/Right: change shooting spot
-- A: release a shot using the moving power meter
+- A: fire the next ball when the one-way release meter reaches the gold zone
 - B: move to the next shooting spot
 - Start: pause
 - Touch/click the court: choose the closest shooting spot and shoot
 
-Score as many points as possible in 60 seconds. Far spots award three points, every fifth attempt is a money ball, and every third consecutive make earns a streak bonus. High score is saved.
+Score as many points as possible in 60 seconds. A fresh ball reloads almost immediately and multiple shots can remain in flight, so there is no wait for the previous ball to land. The release meter fills once per ball instead of bouncing continuously. Gold-zone releases, far spots, every fifth money ball, and streaks award bonus points. The court record is saved.
 
 ### Pocket Bowling
 
@@ -274,7 +274,7 @@ Score as many points as possible in 60 seconds. Far spots award three points, ev
 
 Bowl a full ten-frame match with strikes, spares, and tenth-frame bonus rolls against a high-scoring CPU. Personal best is saved.
 
-### Neon Cycle
+### Tron Cycle
 
 - D-pad: turn the cycle
 - A: activate a six-step light boost when the boost meter has at least 25%
@@ -285,7 +285,7 @@ Survive a 1500 x 1000 scrolling light grid against seven CPU riders. Every cycle
 
 ## Multiplayer direction
 
-The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared positions, inputs, scores, and join/leave events. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Neon Cycle are designed so online modes can be added later. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
+The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared positions, inputs, scores, and join/leave events. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Tron Cycle are designed so online modes can be added later. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
 
 Select returns to the console from every cartridge.
 

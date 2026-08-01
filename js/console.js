@@ -21,9 +21,9 @@ import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=3.0.0';
 import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=3.0.0';
 import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=3.0.0';
 import pocketFighterCartridge from '../games/pocket-fighter/pocket-fighter.js?v=3.0.0';
-import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=3.1.1';
+import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=3.3.0';
 import pocketBowlingCartridge from '../games/pocket-bowling/pocket-bowling.js?v=3.0.0';
-import neonCycleCartridge from '../games/neon-cycle/neon-cycle.js?v=3.1.3';
+import neonCycleCartridge from '../games/neon-cycle/neon-cycle.js?v=3.3.0';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -384,7 +384,7 @@ function action(name) {
         <div><span>POCKET FIGHTER</span><b>${String(storage.get('pocketFighter:wins', 0)).padStart(3, '0')} WINS</b></div>
         <div><span>STREET HOOPS</span><b>${String(storage.get('streetHoops:highScore', 0)).padStart(3, '0')}</b></div>
         <div><span>POCKET BOWLING</span><b>${String(storage.get('pocketBowling:bestScore', 0)).padStart(3, '0')}</b></div>
-        <div><span>NEON CYCLE</span><b>${String(storage.get('neonCycle:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>TRON CYCLE</span><b>${String(storage.get('neonCycle:highScore', 0)).padStart(6, '0')}</b></div>
       </div>
     `);
   }

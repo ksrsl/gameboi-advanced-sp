@@ -17,7 +17,7 @@ const keyFor = (x, y) => `${x},${y}`;
 
 export default {
   id: 'neon-cycle',
-  title: 'Neon Cycle',
+  title: 'Tron Cycle',
   version: '1.0.0',
   create() {
     let root;
@@ -51,7 +51,7 @@ export default {
 
     const markup = () => `
       <div class="cycle-game">
-        <canvas width="640" height="480" aria-label="Neon Cycle large light grid"></canvas>
+        <canvas width="640" height="480" aria-label="Tron Cycle large light grid"></canvas>
         <div class="cycle-hud">
           <span>ROUND <b id="cycle-round">01</b></span>
           <span>ALIVE <b id="cycle-alive">08</b></span>
@@ -61,7 +61,7 @@ export default {
         <div class="cycle-boost"><i id="cycle-boost"></i><span>BOOST</span></div>
         <div class="cycle-message" id="cycle-message"></div>
         <div class="cycle-overlay" id="cycle-overlay">
-          <strong>NEON CYCLE</strong>
+          <strong>TRON CYCLE</strong>
           <small>1500 x 1000 LIGHT GRID<br>YOU VS SEVEN CPU RIDERS</small>
           <button data-cycle="start">ENTER THE GRID</button>
           <em>D-PAD TURN - A BOOST - START PAUSE</em>
@@ -166,7 +166,7 @@ export default {
     function renderUi() {
       root.querySelector('#cycle-pause').hidden = state !== 'pause';
       if (state === 'title') {
-        showOverlay('NEON CYCLE', `1500 x 1000 LIGHT GRID<br>8 RIDERS - RECORD ${String(high).padStart(6, '0')}`, 'ENTER THE GRID');
+        showOverlay('TRON CYCLE', `1500 x 1000 LIGHT GRID<br>8 RIDERS - RECORD ${String(high).padStart(6, '0')}`, 'ENTER THE GRID');
       } else if (state === 'over') {
         showOverlay('CYCLE ERASED', `SCORE ${String(score).padStart(6, '0')}<br>${riders.filter(rider => rider.alive && rider.cpu).length} RIVALS SURVIVED`, 'REBUILD CYCLE');
       } else if (state === 'win') {
