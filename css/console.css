@@ -17,7 +17,7 @@ body {
   overflow: hidden;
   background: #10151b;
   color: #fff;
-  font-family: "Courier New", monospace;
+  font-family: "Cascadia Mono", "Lucida Console", "Courier New", monospace;
   user-select: none;
   touch-action: none;
 }
@@ -164,20 +164,22 @@ button {
   left: 0;
   width: 320px;
   padding: 4px 12px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2px;
 }
 
 .cartridge-screen .pixel-menu button {
   position: relative;
   min-width: 0;
-  height: 18px;
-  padding-right: 5px;
+  height: 26px;
+  padding-right: 7px;
   padding-left: 21px;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
 }
+
+.cartridge-screen .pixel-menu button[hidden] { display: none !important; }
 
 .cartridge-screen .pixel-menu button.selected::before {
   position: absolute;
@@ -190,13 +192,25 @@ button {
 .cartridge-screen .pixel-menu button b {
   min-width: 0;
   overflow: hidden;
-  font-size: 7px;
+  font-size: 8px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cartridge-screen .pixel-menu button small {
-  display: none;
+  display: block;
+  padding-left: 3px;
+  overflow: hidden;
+  font-size: 4.5px;
+  opacity: .66;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#cartridge-page {
+  min-width: 46px;
+  text-align: center;
+  letter-spacing: .5px;
 }
 
 .menu-screen footer {
@@ -254,20 +268,20 @@ button {
 
 .score-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 3px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
 }
 
 .score-list div {
   min-width: 0;
-  min-height: 18px;
+  min-height: 15px;
   padding: 2px 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border: 1px solid #819071;
   background: #b7c7a0;
-  font-size: 5.5px;
+  font-size: 6px;
 }
 
 .score-list span {

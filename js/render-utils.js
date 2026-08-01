@@ -9,6 +9,8 @@ export function createGameContext(canvas, logicalWidth, logicalHeight) {
   canvas.height = Math.round(logicalHeight * scale);
   canvas.style.width = `${logicalWidth}px`;
   canvas.style.height = `${logicalHeight}px`;
+  canvas.style.contain = 'strict';
+  canvas.style.backfaceVisibility = 'hidden';
 
   const context = canvas.getContext('2d', {
     alpha: false,
@@ -24,9 +26,10 @@ export function createGameContext(canvas, logicalWidth, logicalHeight) {
 }
 
 export function smoothToward(current, target, responsiveness, deltaTime) {
-  return current + (target - current) * (1 - Math.exp(-responsiveness * deltaTime));
+  const blend = 1 - Math.exp(-Math.max(0, responsiveness) * Math.max(0, deltaTime));
+  return current + (target - current) * blend;
 }
 
-export function safeDelta(time, previousTime, maximum = 0.025) {
+export function safeDelta(time, previousTime, maximum = 1 / 30) {
   return Math.min(maximum, Math.max(0, (time - previousTime) / 1000 || 0));
 }

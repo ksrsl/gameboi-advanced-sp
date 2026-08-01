@@ -181,7 +181,7 @@ body,
 
 #game-host canvas {
   image-rendering: auto !important;
-  filter: contrast(1.035) saturate(.88);
+  filter: contrast(1.055) saturate(1.06);
   transform: translateZ(0);
 }
 
@@ -334,4 +334,281 @@ body,
   background: #070809f4;
   color: #fff;
   box-shadow: 0 10px 26px #000b;
+}
+
+/* KSR Arcade System 3.0 */
+
+#boot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(115deg, transparent 0 43%, #ffffff0a 44% 45%, transparent 46%),
+    repeating-linear-gradient(0deg, #0000 0 3px, #ffffff08 4px, #0000 5px),
+    #020304;
+}
+
+.boot-kicker {
+  margin-bottom: 8px;
+  color: #8f989f;
+  font-size: 5px;
+  letter-spacing: 2px;
+  opacity: 0;
+  animation: arcadeBootLine .35s .2s steps(4) forwards;
+}
+
+.boot-logo {
+  position: relative;
+  font-size: 43px;
+  line-height: .9;
+  letter-spacing: 10px;
+  text-shadow: 2px 0 #66717a, -2px 0 #ffffff30, 0 0 18px #ffffff3d;
+  animation: arcadeBootLogo .85s .45s cubic-bezier(.18,.82,.22,1) both;
+}
+
+.boot-model {
+  margin-top: 9px;
+  font-size: 7px;
+  letter-spacing: 3px;
+  animation: arcadeBootLine .4s 1.05s steps(5) both;
+}
+
+.boot-checks {
+  width: 158px;
+  min-height: 31px;
+  margin-top: 11px;
+  display: grid;
+  gap: 2px;
+  color: #aeb6bb;
+  font-size: 5px;
+  line-height: 1.25;
+  text-align: left;
+  letter-spacing: .8px;
+}
+
+.boot-checks span { opacity: 0; }
+.boot-checks span:nth-child(1) { animation: arcadeCheck .16s 1.32s steps(2) forwards; }
+.boot-checks span:nth-child(2) { animation: arcadeCheck .16s 1.66s steps(2) forwards; }
+.boot-checks span:nth-child(3) { animation: arcadeCheck .16s 2s steps(2) forwards; }
+
+.boot-bar {
+  width: 158px;
+  height: 4px;
+  margin-top: 7px;
+  border: 1px solid #707980;
+  background: #0a0c0e;
+}
+
+.boot-bar i {
+  background: linear-gradient(90deg, #5e6971, #e8f8ff 72%, #fff);
+  box-shadow: 0 0 10px #b9eaff99;
+  animation: arcadeLoad 1.55s 1.15s cubic-bezier(.32,.02,.18,1) forwards;
+}
+
+.boot-ready {
+  min-height: 8px;
+  margin-top: 7px;
+  color: #eaf8ff;
+  font-size: 6px;
+  letter-spacing: 2px;
+  opacity: 0;
+  animation: arcadeReady .52s 2.68s steps(5) forwards;
+}
+
+@keyframes arcadeBootLogo {
+  0% { opacity: 0; transform: scale(1.35, .2); filter: brightness(4) blur(3px); }
+  38% { opacity: 1; transform: scale(.96, 1.05); filter: brightness(1.8) blur(0); }
+  58% { transform: translateX(-2px); }
+  68% { transform: translateX(2px); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes arcadeBootLine { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@keyframes arcadeCheck { from { opacity: 0; } to { opacity: 1; } }
+@keyframes arcadeLoad { 0% { width: 0; } 20% { width: 14%; } 48% { width: 42%; } 70% { width: 73%; } 100% { width: 100%; } }
+@keyframes arcadeReady { 0%,35% { opacity: 0; } 36%,70% { opacity: 1; } 71%,82% { opacity: .25; } 83%,100% { opacity: 1; text-shadow: 0 0 8px #b9eaff; } }
+
+.menu-screen header {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 3px 12px #0003;
+}
+
+.menu-screen header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -45%;
+  width: 32%;
+  background: linear-gradient(90deg, transparent, #ffffff16, transparent);
+  transform: skewX(-20deg);
+  animation: arcadeHeaderSweep 5.5s 1.8s ease-in-out infinite;
+}
+
+@keyframes arcadeHeaderSweep { 0%,72% { left: -45%; } 92%,100% { left: 125%; } }
+
+.cartridge-screen .pixel-menu button {
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #ffffff80, #dce0e380);
+  box-shadow: inset 0 0 0 1px #ffffff52;
+  transition: transform .1s ease, background .1s ease, box-shadow .1s ease;
+}
+
+.cartridge-screen .pixel-menu button.selected,
+.cartridge-screen .pixel-menu button:hover {
+  border-color: #616b73;
+  background: linear-gradient(100deg, #020304, #252c31);
+  box-shadow: inset 2px 0 #dff6ff, 0 3px 8px #0004;
+  transform: translateX(1px);
+}
+
+.cartridge-screen .pixel-menu button.selected small { color: #b9eaff; opacity: 1; }
+
+#cartridge-page {
+  padding: 2px 5px;
+  border: 1px solid #9ca3a9;
+  border-radius: 2px;
+  background: #f9f9f8b8;
+  color: #22272b;
+}
+
+#game-host {
+  --arcade-accent: #b9eaff;
+  contain: strict;
+  isolation: isolate;
+}
+
+#game-host[data-cartridge="snake"] { --arcade-accent: #a8efff; }
+#game-host[data-cartridge="block-drop"] { --arcade-accent: #d4c2ff; }
+#game-host[data-cartridge="brick-blaster"] { --arcade-accent: #ffd7a1; }
+#game-host[data-cartridge="astro-defender"] { --arcade-accent: #8edfff; }
+#game-host[data-cartridge="pet-byte"] { --arcade-accent: #f0ccff; }
+#game-host[data-cartridge="byte-flyer"] { --arcade-accent: #a8ddff; }
+#game-host[data-cartridge="road-rush"] { --arcade-accent: #c5e8ff; }
+#game-host[data-cartridge="dungeon-byte"] { --arcade-accent: #ccbaff; }
+#game-host[data-cartridge="fishing-byte"] { --arcade-accent: #9fefff; }
+#game-host[data-cartridge="maze-muncher"] { --arcade-accent: #8ce7ff; }
+#game-host[data-cartridge="mini-golf"] { --arcade-accent: #b8f4e8; }
+#game-host[data-cartridge="pocket-tennis"] { --arcade-accent: #d6f5ff; }
+#game-host[data-cartridge="pixel-kart"] { --arcade-accent: #9edfff; }
+#game-host[data-cartridge="survivor-byte"] { --arcade-accent: #b6ebff; }
+#game-host[data-cartridge="bomb-grid"] { --arcade-accent: #e0c3ff; }
+#game-host[data-cartridge="pixel-quest"] { --arcade-accent: #b9e4ff; }
+#game-host[data-cartridge="battle-tanks"] { --arcade-accent: #c6d6df; }
+#game-host[data-cartridge="pocket-fighter"] { --arcade-accent: #b8dfff; }
+#game-host[data-cartridge="street-hoops"] { --arcade-accent: #ffe0a8; }
+#game-host[data-cartridge="pocket-bowling"] { --arcade-accent: #c5eeff; }
+
+#game-host > div {
+  contain: layout paint;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+#game-host canvas {
+  will-change: contents;
+  backface-visibility: hidden;
+}
+
+#game-host [class$="-overlay"] {
+  border: 1px solid #bdc7cd;
+  border-radius: 5px;
+  background:
+    linear-gradient(120deg, #ffffff08, transparent 32%),
+    linear-gradient(145deg, #050709f7, #1a2228f4);
+  box-shadow: 0 14px 32px #000c, inset 0 0 0 1px #ffffff0d, 0 0 18px #9edfff18;
+  backdrop-filter: blur(3px);
+  animation: arcadeOverlayIn .2s cubic-bezier(.2,.8,.2,1) both;
+}
+
+#game-host [class$="-overlay"] strong {
+  color: var(--arcade-accent);
+  letter-spacing: 1.2px;
+  text-shadow: 0 0 12px #c8edff38, 0 2px 3px #000;
+}
+
+#game-host [class$="-overlay"] small { color: #d5dde2; }
+#game-host [class$="-overlay"] em { color: #93a4ae; }
+
+#game-host [class$="-overlay"] button {
+  border: 1px solid #fff;
+  border-radius: 2px;
+  background: linear-gradient(#fff, #dfe5e8);
+  color: #07090a;
+  box-shadow: 0 3px 0 #6f7b82, 0 5px 11px #0007;
+  transition: transform .08s ease, box-shadow .08s ease, filter .08s ease;
+}
+
+#game-host [class$="-overlay"] button:hover { filter: brightness(1.08); }
+#game-host [class$="-overlay"] button:active { transform: translateY(2px); box-shadow: 0 1px 0 #6f7b82; }
+
+#game-host [class$="-hud"] {
+  color: #fff;
+  letter-spacing: .2px;
+  text-shadow: 0 1px 3px #000, 0 0 6px #000;
+}
+
+#game-host [class$="-hud"] b { color: var(--arcade-accent); }
+
+#game-host [class$="-exit"] {
+  border: 1px solid #69757d;
+  border-radius: 2px;
+  background: linear-gradient(145deg, #050607e8, #22292ee8);
+  color: #fff;
+  box-shadow: 0 2px 7px #0009;
+}
+
+#game-host [class$="-pause"] {
+  border: 1px solid #fff;
+  border-radius: 4px;
+  background: #050709f3;
+  color: #fff;
+  box-shadow: 0 12px 28px #000c, 0 0 16px #a8e4ff1a;
+  letter-spacing: 1px;
+}
+
+#game-host [class$="-meter"] {
+  border-color: #d9e0e4;
+  box-shadow: 0 2px 7px #0009, 0 0 7px #9edfff20;
+}
+
+@keyframes arcadeOverlayIn {
+  from { opacity: 0; transform: translateY(6px) scale(.975); filter: brightness(1.6); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+#arcade-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 24;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#arcade-fx i { position: absolute; inset: 0; pointer-events: none; }
+
+.arcade-scanlines {
+  opacity: .17;
+  background: repeating-linear-gradient(0deg, transparent 0 2px, #00000020 3px, #ffffff08 4px);
+  mix-blend-mode: multiply;
+}
+
+.arcade-glass {
+  background:
+    linear-gradient(120deg, #ffffff09, transparent 25% 78%, #b9eaff05),
+    radial-gradient(ellipse at center, transparent 67%, #00000024 100%);
+}
+
+.arcade-flash { opacity: 0; }
+.arcade-fx-disabled #arcade-fx { display: none; }
+.arcade-lite .arcade-scanlines { display: none; }
+.arcade-lite #game-host [class$="-overlay"] { backdrop-filter: none; }
+
+.arcade-key-a .arcade-glass,
+.arcade-key-b .arcade-glass,
+.arcade-key-start .arcade-glass {
+  box-shadow: inset 0 0 18px #b9eaff12;
 }

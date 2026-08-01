@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=2.1.0';
+import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=3.0.0';
 
 const WIDTH = 320;
 const HEIGHT = 240;
@@ -167,13 +167,14 @@ export default {
     function updateRivals(dt) {
       rivals.forEach((rival, index) => {
         const gap = rival.total - total;
-        const rubberBand = clamp((total - rival.total) * .012, -3.5, 7.5);
+        const rubberBand = clamp((total - rival.total) * .014, -3.1, 9.5);
         const pulsePenalty = pulseTimer > 0 && rival.total > total && rival.total - total < 240 ? 14 : 0;
         rival.boostTimer = Math.max(0, rival.boostTimer - dt);
         if (gap < -28 && Math.random() < dt * .18) rival.boostTimer = 1 + Math.random() * .65;
-        const lapPressure = (lastLap - 1) * 1.15;
+        const lapPressure = (lastLap - 1) * 1.4 + clamp(total / FINISH_DISTANCE, 0, 1) * 2.2;
+        const podiumPressure = position <= 2 ? 2.4 : 0;
         const aiBoost = rival.boostTimer > 0 ? 15 : 0;
-        rival.total += Math.max(52, rival.speed + rubberBand + lapPressure + aiBoost - pulsePenalty) * dt;
+        rival.total += Math.max(52, rival.speed + rubberBand + lapPressure + podiumPressure + aiBoost - pulsePenalty) * dt;
         rival.wobble += dt * (.7 + index * .06);
         if (gap > 5 && gap < 78 && Math.abs(rival.offset - playerOffset) < .5) rival.targetOffset = clamp(playerOffset + Math.sin(rival.wobble) * .08, -.78, .78);
         else if (Math.sin(rival.wobble) > .96) rival.targetOffset = clamp((Math.random() - .5) * 1.45, -.78, .78);
@@ -277,6 +278,26 @@ export default {
         const a = project(finishGap + 8), b = project(finishGap); const cells = 10;
         for (let i = 0; i < cells; i += 1) { const xa = a.center - a.half + a.half * 2 * i / cells; const xb = b.center - b.half + b.half * 2 * i / cells; const xa2 = a.center - a.half + a.half * 2 * (i + 1) / cells; const xb2 = b.center - b.half + b.half * 2 * (i + 1) / cells; ctx.fillStyle = i % 2 ? '#080a0c' : '#f4f6f7'; ctx.beginPath(); ctx.moveTo(xa, a.y); ctx.lineTo(xa2, a.y); ctx.lineTo(xb2, b.y); ctx.lineTo(xb, b.y); ctx.fill(); }
       }
+
+      const speedRush = clamp((Math.abs(speed) - 58) / 55, 0, 1);
+      if (state === 'play' && countdown <= 0 && speedRush > 0) {
+        ctx.strokeStyle = track.lightA;
+        ctx.lineWidth = .65;
+        ctx.globalAlpha = .08 + speedRush * .18;
+        for (let index = 0; index < 12; index += 1) {
+          const lane = ((index * 37) % 100) / 100 * 1.8 - .9;
+          const phase = (total * 2.8 + index * 31) % 165;
+          const far = 175 - phase;
+          if (far < 10) continue;
+          const a = project(far + 18, lane);
+          const b = project(far, lane);
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      }
     }
 
     function drawPickup(pickup) {
@@ -312,9 +333,12 @@ export default {
       ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(scale, scale);
       ctx.fillStyle = '#04050688'; ctx.beginPath(); ctx.ellipse(0, 5, 17, 5, 0, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#080a0c'; ctx.fillRect(-17, -1, 6, 10); ctx.fillRect(11, -1, 6, 10);
-      ctx.fillStyle = body; ctx.beginPath(); ctx.roundRect(-14, -10, 28, 17, 5); ctx.fill();
+      ctx.fillStyle = trim; ctx.fillRect(-16, -8, 32, 3); ctx.fillRect(-13, -11, 3, 5); ctx.fillRect(10, -11, 3, 5);
+      ctx.fillStyle = body; ctx.beginPath(); ctx.moveTo(-13, -10); ctx.lineTo(13, -10); ctx.lineTo(16, 4); ctx.quadraticCurveTo(0, 10, -16, 4); ctx.closePath(); ctx.fill();
       ctx.fillStyle = trim; ctx.fillRect(-10, -2, 20, 5); ctx.fillRect(-7, -13, 14, 7);
+      ctx.fillStyle = '#f5fbff'; ctx.globalAlpha = .75; ctx.fillRect(-11, 4, 4, 2); ctx.fillRect(7, 4, 4, 2); ctx.globalAlpha = 1;
       ctx.fillStyle = player ? '#f8fafb' : '#cbd3d8'; ctx.beginPath(); ctx.arc(0, -15, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#26323a'; ctx.fillRect(-4, -17, 8, 3);
       ctx.fillStyle = '#cfd7dc'; ctx.fillRect(-13, 7, 8, 2); ctx.fillRect(5, 7, 8, 2); ctx.restore();
     }
 

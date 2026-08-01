@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=2.0.3';
+import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=3.0.0';
 
 const WIDTH = 320;
 const HEIGHT = 240;
@@ -397,11 +397,36 @@ export default {
         const y = HORIZON + perspectiveDepth * (HEIGHT - HORIZON);
         const markerHeight = 2 + perspectiveDepth * 17;
         const markerWidth = 0.8 + perspectiveDepth * 2.5;
+        const y2 = Math.min(HEIGHT, y + markerHeight);
         ctx.fillStyle = '#f2f3f4';
         [0.5, 1.5].forEach(boundary => {
-          const x = laneX(boundary, y);
-          ctx.fillRect(x - markerWidth * 0.5, y, markerWidth, markerHeight);
+          const x1 = laneX(boundary, y);
+          const x2 = laneX(boundary, y2);
+          const nextWidth = markerWidth * (1 + perspectiveDepth * 0.18);
+          ctx.beginPath();
+          ctx.moveTo(x1 - markerWidth * 0.5, y);
+          ctx.lineTo(x1 + markerWidth * 0.5, y);
+          ctx.lineTo(x2 + nextWidth * 0.5, y2);
+          ctx.lineTo(x2 - nextWidth * 0.5, y2);
+          ctx.closePath();
+          ctx.fill();
         });
+
+        if (step % 2 === 0) {
+          ctx.fillStyle = '#91b8cb';
+          [-1, 1].forEach(side => {
+            const edge1 = roadCenter(y) + roadHalfWidth(y) * side;
+            const edge2 = roadCenter(y2) + roadHalfWidth(y2) * side;
+            const stripWidth = 1 + perspectiveDepth * 3;
+            ctx.beginPath();
+            ctx.moveTo(edge1 - stripWidth * 0.5, y);
+            ctx.lineTo(edge1 + stripWidth * 0.5, y);
+            ctx.lineTo(edge2 + stripWidth * 0.6, y2);
+            ctx.lineTo(edge2 - stripWidth * 0.6, y2);
+            ctx.closePath();
+            ctx.fill();
+          });
+        }
       }
 
       const boosting = (boostHeld || performance.now() < tapBoostUntil) && boost > 0 && state === 'play';

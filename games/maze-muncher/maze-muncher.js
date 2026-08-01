@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta } from '../../js/render-utils.js?v=2.1.0';
+import { createGameContext, safeDelta } from '../../js/render-utils.js?v=3.0.0';
 
 const TILE = 11;
 const BOARD_X = 44.5;

@@ -2,6 +2,8 @@
 
 A screen-only retro handheld console for Second Life Media on a Prim. The web console is a static HTML, CSS, and vanilla JavaScript site hosted by GitHub Pages. It includes twenty cartridges:
 
+Created by KSR.
+
 - **Snake Byte** - polished classic snake action
 - **Block Drop** - an original falling-block puzzle
 - **Brick Blaster** - multi-level brick breaking with collectible power cores
@@ -25,7 +27,9 @@ A screen-only retro handheld console for Second Life Media on a Prim. The web co
 
 This release is GitHub-only and requires no backend.
 
-Version 2.3 expands the black, white, charcoal, silver, and cool-blue KSR interface to twenty cartridges. The seven newest games use 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement. Version 2.3 also replaces per-press media navigation with a persistent low-latency Second Life button bridge.
+Version 3.0 is the KSR Arcade System upgrade. It adds a longer black-and-white arcade boot sequence, a readable two-page cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty games share the new presentation and low-latency input layer. Road Rush now draws its lane and shoulder markings in the same curved perspective as the road, eliminating the broken-looking vertical stripes. CPU opponents still use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
+
+The mesh controller is version 1.8.0. Its persistent long-poll bridge now hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback.
 
 ## Public addresses
 
@@ -69,7 +73,7 @@ The interface has a logical **320 x 240** game layout and stretches edge-to-edge
 6. For a linked final console, name the display prim `SCREEN` and the button prims `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`. An optional visible camera button can be named `CAMERA`.
 7. Reset the scripts.
 
-After reset, owner chat should report `KSR Gameboi SP FAST buttons ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses and releases are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart.
+After reset, owner chat should report `KSR Gameboi SP FAST buttons ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses and releases are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart. Replace older copies of the controller with `GameBoi Mesh Controller.lsl` v1.8.0 so the web page receives the fastest bridge behavior and the v3.0 cache refresh.
 
 If owner chat reports that the fast-button bridge was denied, the controller falls back to the older URL method. That fallback is suitable for menu testing but is too delayed for action games. Resetting the script usually requests a fresh bridge URL.
 
@@ -290,4 +294,4 @@ Select returns to the console from every cartridge.
 3. Implement `mount(host, services)`, `input(key, pressed)`, and `unmount()`.
 4. Import the manifest in `js/console.js`, register it, and add its button to the cartridge screen.
 
-The service object gives cartridges storage, sound, exit, and input routing without coupling a game to the console shell.
+The service object gives cartridges storage, sound, visual effects, exit, and input routing without coupling a game to the console shell.

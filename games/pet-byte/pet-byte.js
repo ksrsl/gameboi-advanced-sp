@@ -1,4 +1,4 @@
-import { createGameContext } from '../../js/render-utils.js?v=2.0.3';
+import { createGameContext } from '../../js/render-utils.js?v=3.0.0';
 
 const SAVE_KEY = 'petByte:save';
 const ACTIONS = [

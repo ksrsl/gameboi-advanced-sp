@@ -28,6 +28,7 @@ export function setupLslBridge({ onInput, onStatus = () => {} } = {}) {
   const frame = document.createElement('iframe');
   frame.hidden = true;
   frame.tabIndex = -1;
+  frame.loading = 'eager';
   frame.title = 'KSR mesh-button input bridge';
   frame.setAttribute('aria-hidden', 'true');
   document.body.append(frame);
@@ -38,21 +39,23 @@ export function setupLslBridge({ onInput, onStatus = () => {} } = {}) {
   let pollTimer = 0;
   let watchdogTimer = 0;
 
+  function openPoll() {
+    if (closed) return;
+    const target = new URL(bridgeUrl);
+    target.searchParams.set('client', clientId);
+    target.searchParams.set('after', String(lastSequence));
+    target.searchParams.set('token', token);
+    target.searchParams.set('_', String(Date.now()));
+    frame.src = target.toString();
+    watchdogTimer = window.setTimeout(() => poll(120), 24000);
+  }
+
   function poll(delay = 0) {
     clearTimeout(pollTimer);
     clearTimeout(watchdogTimer);
     if (closed) return;
-
-    pollTimer = window.setTimeout(() => {
-      if (closed) return;
-      const target = new URL(bridgeUrl);
-      target.searchParams.set('client', clientId);
-      target.searchParams.set('after', String(lastSequence));
-      target.searchParams.set('token', token);
-      target.searchParams.set('_', String(Date.now()));
-      frame.src = target.toString();
-      watchdogTimer = window.setTimeout(() => poll(250), 24000);
-    }, delay);
+    if (delay > 0) pollTimer = window.setTimeout(openPoll, delay);
+    else openPoll();
   }
 
   function receive(event) {

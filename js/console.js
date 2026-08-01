@@ -1,27 +1,28 @@
 import { storage } from './storage.js';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
 import { GameSync, syncConfigFromLocation } from './sync.js';
-import { setupLslBridge } from './lsl-bridge.js?v=2.3.0';
-import snakeCartridge from '../games/snake/snake.js?v=2.0.3';
-import blockDropCartridge from '../games/block-drop/block-drop.js?v=2.0.3';
-import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=2.0.3';
-import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=2.0.3';
-import petByteCartridge from '../games/pet-byte/pet-byte.js?v=2.0.3';
-import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=2.0.3';
-import roadRushCartridge from '../games/road-rush/road-rush.js?v=2.0.3';
-import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=2.0.3';
-import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=2.0.3';
-import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=2.1.2';
-import miniGolfCartridge from '../games/mini-golf/mini-golf.js?v=2.1.0';
-import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=2.1.2';
-import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=2.1.2';
-import survivorByteCartridge from '../games/survivor-byte/survivor-byte.js?v=2.2.0';
-import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=2.2.0';
-import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=2.2.0';
-import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=2.2.0';
-import pocketFighterCartridge from '../games/pocket-fighter/pocket-fighter.js?v=2.2.0';
-import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=2.2.0';
-import pocketBowlingCartridge from '../games/pocket-bowling/pocket-bowling.js?v=2.2.0';
+import { setupLslBridge } from './lsl-bridge.js?v=3.0.0';
+import { createArcadeFX } from './arcade-fx.js?v=3.0.0';
+import snakeCartridge from '../games/snake/snake.js?v=3.0.0';
+import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.0';
+import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.0';
+import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=3.0.0';
+import petByteCartridge from '../games/pet-byte/pet-byte.js?v=3.0.0';
+import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=3.0.0';
+import roadRushCartridge from '../games/road-rush/road-rush.js?v=3.0.0';
+import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=3.0.0';
+import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=3.0.0';
+import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=3.0.0';
+import miniGolfCartridge from '../games/mini-golf/mini-golf.js?v=3.0.0';
+import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=3.0.0';
+import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=3.0.0';
+import survivorByteCartridge from '../games/survivor-byte/survivor-byte.js?v=3.0.0';
+import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=3.0.0';
+import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=3.0.0';
+import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=3.0.0';
+import pocketFighterCartridge from '../games/pocket-fighter/pocket-fighter.js?v=3.0.0';
+import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=3.0.0';
+import pocketBowlingCartridge from '../games/pocket-bowling/pocket-bowling.js?v=3.0.0';
 
 registerCartridge(snakeCartridge);
 registerCartridge(blockDropCartridge);
@@ -50,9 +51,13 @@ const home = $('#home');
 const host = $('#game-host');
 const menuButtons = [...document.querySelectorAll('#main-menu button')];
 const cartridgeButtons = [...document.querySelectorAll('#cartridge-menu button')];
+const cartridgePage = $('#cartridge-page');
 const cartridgeInfo = new Map(listCartridges().map(item => [item.id, item]));
 const validInputs = new Set(['up', 'down', 'left', 'right', 'a', 'b', 'start', 'select']);
 const sync = new GameSync(syncConfigFromLocation());
+const arcadeFx = createArcadeFX({ display: $('#display'), host, storage });
+const CARTRIDGE_PAGE_SIZE = 10;
+const CARTRIDGE_COLUMNS = 2;
 
 let menuIndex = 0;
 let cartridgeIndex = 0;
@@ -63,6 +68,8 @@ let currentScreen = 'boot';
 let currentPanel = '';
 let muted = storage.get('muted', false);
 let audio;
+let audioBus;
+let audioInput;
 let powerTimer = null;
 let viewerCount = 1;
 
@@ -78,9 +85,27 @@ function show(id) {
 }
 
 function tone(frequency = 440, duration = 0.06, type = 'square') {
+  arcadeFx.tone(frequency, duration);
   if (muted) return;
   try {
-    audio ??= new AudioContext();
+    if (!audio) {
+      const AudioEngine = window.AudioContext || window.webkitAudioContext;
+      try {
+        audio = new AudioEngine({ latencyHint: 'interactive' });
+      } catch {
+        audio = new AudioEngine();
+      }
+      const compressor = audio.createDynamicsCompressor();
+      compressor.threshold.value = -18;
+      compressor.knee.value = 12;
+      compressor.ratio.value = 4;
+      compressor.attack.value = 0.003;
+      compressor.release.value = 0.12;
+      audioBus = audio.createGain();
+      audioBus.gain.value = 0.82;
+      compressor.connect(audioBus).connect(audio.destination);
+      audioInput = compressor;
+    }
     if (audio.state === 'suspended') audio.resume();
     const oscillator = audio.createOscillator();
     const gain = audio.createGain();
@@ -89,9 +114,22 @@ function tone(frequency = 440, duration = 0.06, type = 'square') {
     gain.gain.setValueAtTime(0.0001, audio.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.04, audio.currentTime + Math.min(0.008, duration * 0.2));
     gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + duration);
-    oscillator.connect(gain).connect(audio.destination);
+    oscillator.connect(gain).connect(audioInput);
     oscillator.start();
     oscillator.stop(audio.currentTime + duration);
+
+    if (duration >= 0.045) {
+      const harmonic = audio.createOscillator();
+      const harmonicGain = audio.createGain();
+      harmonic.type = type === 'square' ? 'triangle' : 'sine';
+      harmonic.frequency.value = frequency * 2.005;
+      harmonicGain.gain.setValueAtTime(0.0001, audio.currentTime);
+      harmonicGain.gain.exponentialRampToValueAtTime(0.007, audio.currentTime + 0.006);
+      harmonicGain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + duration * 0.82);
+      harmonic.connect(harmonicGain).connect(audioInput);
+      harmonic.start();
+      harmonic.stop(audio.currentTime + duration);
+    }
   } catch {}
 }
 
@@ -111,6 +149,7 @@ function selectMenu(delta) {
 
 function selectCartridge(delta) {
   cartridgeIndex = (cartridgeIndex + delta + cartridgeButtons.length) % cartridgeButtons.length;
+  updateCartridgePage();
   cartridgeButtons.forEach((button, index) => button.classList.toggle('selected', index === cartridgeIndex));
   tone(235, 0.025);
   publishConsole('cartridges', { cartridgeIndex });
@@ -118,25 +157,44 @@ function selectCartridge(delta) {
 
 function moveCartridge(key) {
   const count = cartridgeButtons.length;
-  const columns = 3;
-  const column = cartridgeIndex % columns;
+  const page = Math.floor(cartridgeIndex / CARTRIDGE_PAGE_SIZE);
+  const pageCount = Math.ceil(count / CARTRIDGE_PAGE_SIZE);
+  const pageStart = page * CARTRIDGE_PAGE_SIZE;
+  const pageEnd = Math.min(count, pageStart + CARTRIDGE_PAGE_SIZE);
+  const localIndex = cartridgeIndex - pageStart;
+  const column = localIndex % CARTRIDGE_COLUMNS;
+  const row = Math.floor(localIndex / CARTRIDGE_COLUMNS);
+  const rows = Math.ceil((pageEnd - pageStart) / CARTRIDGE_COLUMNS);
   let next = cartridgeIndex;
-  if (key === 'left' && column > 0) next -= 1;
-  if (key === 'right' && column < columns - 1 && next + 1 < count) next += 1;
+  if (key === 'left') {
+    if (column > 0) next -= 1;
+    else if (page > 0) next = Math.max(0, cartridgeIndex - CARTRIDGE_PAGE_SIZE);
+  }
+  if (key === 'right') {
+    if (column < CARTRIDGE_COLUMNS - 1 && next + 1 < pageEnd) next += 1;
+    else if (page < pageCount - 1) next = Math.min(count - 1, cartridgeIndex + CARTRIDGE_PAGE_SIZE);
+  }
   if (key === 'up') {
-    next -= columns;
-    if (next < 0) {
-      next = count - 1;
-      while (next >= 0 && next % columns !== column) next -= 1;
-      if (next < 0) next = count - 1;
-    }
+    const targetRow = (row + rows - 1) % rows;
+    next = pageStart + targetRow * CARTRIDGE_COLUMNS + column;
+    if (next >= pageEnd) next -= CARTRIDGE_COLUMNS;
   }
   if (key === 'down') {
-    next += columns;
-    if (next >= count) next = column < count ? column : 0;
+    const targetRow = (row + 1) % rows;
+    next = pageStart + targetRow * CARTRIDGE_COLUMNS + column;
+    if (next >= pageEnd) next = pageStart + column;
   }
   if (next === cartridgeIndex) return;
   selectCartridge(next - cartridgeIndex);
+}
+
+function updateCartridgePage() {
+  const page = Math.floor(cartridgeIndex / CARTRIDGE_PAGE_SIZE);
+  const pageCount = Math.ceil(cartridgeButtons.length / CARTRIDGE_PAGE_SIZE);
+  cartridgeButtons.forEach((button, index) => {
+    button.hidden = Math.floor(index / CARTRIDGE_PAGE_SIZE) !== page;
+  });
+  cartridgePage.textContent = `PAGE ${page + 1}/${pageCount}`;
 }
 
 function publishConsole(screen, extra = {}) {
@@ -147,6 +205,7 @@ function gameServices(gameId) {
   return {
     storage,
     tone,
+    fx: arcadeFx,
     exit: () => exitGame(),
     requestInput,
     isAuthority: () => !sync.enabled || sync.isHost,
@@ -168,13 +227,14 @@ async function startGame(gameId, snapshot = null) {
   $('#loading-name').textContent = manifest?.title?.toUpperCase() || 'UNKNOWN CARTRIDGE';
 
   gameLoadPromise = (async () => {
-    await new Promise(resolve => setTimeout(resolve, 220));
+    await new Promise(resolve => setTimeout(resolve, 70));
     try {
       const game = await loadCartridge(gameId, host, gameServices(gameId));
       currentGame = game;
       currentGame.setAuthority?.(!sync.enabled || sync.isHost);
       if (snapshot) currentGame.hydrate?.(snapshot);
       show('game-host');
+      arcadeFx.gameStart(gameId);
       if (!snapshot) publishConsole('game', { gameId });
       return game;
     } catch (error) {
@@ -194,11 +254,13 @@ function exitGame({ publish = true } = {}) {
   currentGameId = '';
   gameLoadPromise = null;
   host.replaceChildren();
+  arcadeFx.gameEnd();
   show('home');
   if (publish) publishConsole('home');
 }
 
 function showCartridges() {
+  updateCartridgePage();
   show('cartridges');
   publishConsole('cartridges');
 }
@@ -276,17 +338,19 @@ function action(name) {
   if (name === 'settings') {
     panel('SETTINGS', `
       <div class="setting-row"><span>SOUND</span><button class="toggle" id="sound-setting">${muted ? 'OFF' : 'ON'}</button></div>
+      <div class="setting-row"><span>ARCADE FX</span><button class="toggle" id="fx-setting">${arcadeFx.enabled ? 'ON' : 'OFF'}</button></div>
       <div class="setting-row"><span>SAVE DATA</span><button class="toggle" id="clear-save">CLEAR</button></div>
-      <p>A TOGGLE SOUND • B BACK</p>
+      <p>SMOOTH MOTION MODE KEEPS GAMEPLAY RESPONSIVE</p>
     `);
   }
   if (name === 'about') {
-    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>KSR SYSTEM SOFTWARE v2.2</p><p>HIGH-DEFINITION RENDERING</p><p>20 CARTRIDGES INSTALLED</p>');
+    panel('ABOUT', '<h2>KSR GAMEBOI SP</h2><p>CREATED BY KSR</p><p>KSR ARCADE SYSTEM v3.0</p><p>HIGH-DEFINITION ARCADE RENDERING</p><p>LOW-LATENCY MESH INPUT</p><p>20 CARTRIDGES INSTALLED</p>');
   }
   if (name === 'power') powerOff();
 }
 
 function applyInput(key, pressed = true) {
+  arcadeFx.input(key, pressed);
   if (!pressed) {
     currentGame?.input?.(key, false);
     return;
@@ -338,6 +402,7 @@ async function applyRemoteState(state) {
     }
     if (Number.isInteger(state.snapshot?.cartridgeIndex)) {
       cartridgeIndex = Math.max(0, Math.min(cartridgeButtons.length - 1, state.snapshot.cartridgeIndex));
+      updateCartridgePage();
       cartridgeButtons.forEach((button, index) => button.classList.toggle('selected', index === cartridgeIndex));
     }
     if (target === 'power-off') powerOff({ publish: false });
@@ -371,6 +436,14 @@ const keyMap = {
 
 window.addEventListener('resize', fitConsole);
 fitConsole();
+
+host.addEventListener('pointerdown', event => {
+  if (event.target instanceof HTMLCanvasElement && event.target.setPointerCapture) {
+    try { event.target.setPointerCapture(event.pointerId); } catch {}
+  }
+}, true);
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('dragstart', event => event.preventDefault());
 
 document.addEventListener('keydown', event => {
   const key = keyMap[event.key];
@@ -417,6 +490,7 @@ menuButtons.forEach((button, index) => button.addEventListener('click', () => {
 
 cartridgeButtons.forEach((button, index) => button.addEventListener('click', () => {
   cartridgeIndex = index;
+  updateCartridgePage();
   cartridgeButtons.forEach((item, itemIndex) => item.classList.toggle('selected', itemIndex === index));
   requestCommand('launchGame', { gameId: button.dataset.game }, () => startGame(button.dataset.game));
 }));
@@ -431,6 +505,10 @@ $('#panel-content').addEventListener('click', event => {
   if (event.target.id === 'sound-setting') {
     setMuted(!muted);
     event.target.textContent = muted ? 'OFF' : 'ON';
+  }
+  if (event.target.id === 'fx-setting') {
+    arcadeFx.setEnabled(!arcadeFx.enabled);
+    event.target.textContent = arcadeFx.enabled ? 'ON' : 'OFF';
   }
   if (event.target.id === 'clear-save' && confirm('Clear all KSR Gameboi save data?')) {
     storage.remove('snake:highScore');
@@ -480,18 +558,23 @@ sync.on('role', ({ host: authority }) => currentGame?.setAuthority?.(authority))
 sync.on('viewers', count => { viewerCount = count; updateLiveBadge({ connected: sync.connected, label: 'LIVE' }); });
 sync.on('status', updateLiveBadge);
 window.addEventListener('beforeunload', () => {
+  arcadeFx.close();
   lslBridge.close();
   sync.close();
 });
 
 setMuted(muted);
+updateCartridgePage();
+setTimeout(() => tone(260, 0.035, 'square'), 1320);
+setTimeout(() => tone(390, 0.035, 'square'), 1660);
+setTimeout(() => tone(520, 0.045, 'triangle'), 2000);
 setTimeout(() => {
   if (currentScreen === 'boot') show('home');
-  tone(660, 0.08);
-  setTimeout(() => tone(880, 0.1), 90);
+  tone(660, 0.09);
+  setTimeout(() => tone(990, 0.12, 'triangle'), 95);
   if (sync.enabled) {
     $('#live-status').hidden = false;
     updateLiveBadge({ connected: false, label: 'CONNECT' });
     sync.connect();
   }
-}, 1900);
+}, 3300);
