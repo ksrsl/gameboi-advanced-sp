@@ -25,7 +25,7 @@ A screen-only retro handheld console for Second Life Media on a Prim. The web co
 
 This release is GitHub-only and requires no backend.
 
-Version 2.2 expands the black, white, charcoal, silver, and cool-blue KSR interface to twenty cartridges. The seven new games use 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
+Version 2.3 expands the black, white, charcoal, silver, and cool-blue KSR interface to twenty cartridges. The seven newest games use 2x supersampled canvas rendering, frame-rate-independent animation, touch controls, sound, pause support, and local save data. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement. Version 2.3 also replaces per-press media navigation with a persistent low-latency Second Life button bridge.
 
 ## Public addresses
 
@@ -61,13 +61,17 @@ All website paths are relative, so the console works from a GitHub Pages project
 
 The interface has a logical **320 x 240** game layout and stretches edge-to-edge to fill the configured prim face. The controller requests a high-quality **1024 x 1024** Media on a Prim texture so it matches the existing Second Life face mapping.
 
-1. Place `second-life/GameBoi Mesh Controller.lsl` into the object.
+1. Place `second-life/GameBoi Mesh Controller.lsl` in the **root/body prim (link 1)**, not inside the screen child prim.
 2. The current test display uses **face 2**. Change `SCREEN_FACE` at the top only if the final mesh uses another face.
 3. Add **one** camera script: use `second-life/GameBoi Sit Camera Focus.lsl` for reliable standard Second Life operation, or the requested standing attempt in `second-life/GameBoi Direct Camera Focus.lsl`.
 4. For a one-prim test, no prim naming is required. With the recommended sit script, right-click it and choose **Enter Game View**.
 5. For true one-left-click focus, link a spare child prim over the screen and enter its link number in `FOCUS_CATCHER_LINK_NUMBER`. The camera script automatically sizes, aligns, and hides it on face 2.
 6. For a linked final console, name the display prim `SCREEN` and the button prims `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`. An optional visible camera button can be named `CAMERA`.
 7. Reset the scripts.
+
+After reset, owner chat should report `KSR Gameboi SP FAST buttons ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses and releases are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart.
+
+If owner chat reports that the fast-button bridge was denied, the controller falls back to the older URL method. That fallback is suitable for menu testing but is too delayed for action games. Resetting the script usually requests a fresh bridge URL.
 
 Second Life does not deliver LSL touch events from a Shared Media face, so the invisible `FOCUS` child prim is required for true one-left-click behavior. With the default mesh-button setup, clicking that invisible screen catcher again exits Game View. If direct web-page clicks are required, disable `CATCHER_STAYS_FOR_EXIT` and use **Stand** or the optional `CAMERA` mesh button to exit.
 

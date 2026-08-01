@@ -1,6 +1,7 @@
 import { storage } from './storage.js';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
 import { GameSync, syncConfigFromLocation } from './sync.js';
+import { setupLslBridge } from './lsl-bridge.js?v=2.3.0';
 import snakeCartridge from '../games/snake/snake.js?v=2.0.3';
 import blockDropCartridge from '../games/block-drop/block-drop.js?v=2.0.3';
 import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=2.0.3';
@@ -393,7 +394,17 @@ function readHashInput() {
   else requestInput(key.toLowerCase());
 }
 
-window.GameBoiSP = Object.freeze({ press: requestInput });
+const lslBridge = setupLslBridge({
+  onInput(key, pressed, sequence) {
+    if (sync.enabled) {
+      if (pressed) sync.sendInput(key, `lsl-bridge-${sequence}`);
+      return;
+    }
+    applyInput(key, pressed);
+  }
+});
+
+window.GameBoiSP = Object.freeze({ press: requestInput, bridge: lslBridge.enabled });
 window.addEventListener('hashchange', readHashInput);
 if (location.hash) queueMicrotask(readHashInput);
 document.addEventListener('gameboi-input', event => requestInput(String(event.detail?.key || '').toLowerCase()));
@@ -468,7 +479,10 @@ sync.on('state', applyRemoteState);
 sync.on('role', ({ host: authority }) => currentGame?.setAuthority?.(authority));
 sync.on('viewers', count => { viewerCount = count; updateLiveBadge({ connected: sync.connected, label: 'LIVE' }); });
 sync.on('status', updateLiveBadge);
-window.addEventListener('beforeunload', () => sync.close());
+window.addEventListener('beforeunload', () => {
+  lslBridge.close();
+  sync.close();
+});
 
 setMuted(muted);
 setTimeout(() => {
