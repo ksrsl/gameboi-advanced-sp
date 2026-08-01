@@ -5,7 +5,7 @@ function makeClientId() {
   return randomId.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 48);
 }
 
-export function setupLslBridge({ onInput, onStatus = () => {} } = {}) {
+export function setupLslBridge({ onInput, onIdentity = () => {}, onStatus = () => {} } = {}) {
   const params = new URLSearchParams(location.search);
   const endpoint = params.get('bridge') || '';
   const token = params.get('bridgeToken') || '';
@@ -70,7 +70,13 @@ export function setupLslBridge({ onInput, onStatus = () => {} } = {}) {
       const sequence = Number(input?.seq) || 0;
       if (sequence <= lastSequence || !VALID_INPUTS.has(key)) return;
       lastSequence = sequence;
-      onInput(key, Boolean(input.down), sequence);
+      const player = {
+        residentId: String(input?.residentId || ''),
+        residentName: String(input?.residentName || ''),
+        displayName: String(input?.displayName || '')
+      };
+      onIdentity(player);
+      onInput(key, Boolean(input.down), sequence, player);
     });
 
     if (Number(message.seq) > lastSequence) lastSequence = Number(message.seq);

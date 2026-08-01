@@ -1,4 +1,4 @@
-// KSR Gameboi SP - Low-Latency Mesh Controller v1.9.0
+// KSR Gameboi SP - Low-Latency Mesh Controller v2.0.0
 // Put this script in the ROOT/BODY prim of the linked console.
 // Name the display child prim SCREEN. The current display uses face 2.
 // Name the controls UP, DOWN, LEFT, RIGHT, A, B, START, SELECT.
@@ -8,7 +8,8 @@
 // This controller contains no camera focus, zoom, or magnifier behavior.
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
-string WEB_VERSION = "3.4.0";
+string SYNC_URL = "https://ksr-gameboi-relay.felix-bruno-c.workers.dev";
+string WEB_VERSION = "4.0.0";
 integer SCREEN_FACE = 2;
 integer DEBUG_MODE = FALSE;
 
@@ -19,8 +20,9 @@ key gUrlRequest;
 string gBridgeURL;
 string gBridgeToken;
 string gMediaURL;
+string gSyncToken;
 
-// Event history uses strides of: sequence, button name, pressed.
+// Event history uses strides of: sequence, complete JSON event.
 list gHistory;
 integer MAX_HISTORY_EVENTS = 48;
 
@@ -64,6 +66,29 @@ integer isButtonName(string buttonName)
         [buttonName]) != -1;
 }
 
+string residentUsername(key residentId)
+{
+    string username = llToLower(llGetUsername(residentId));
+    if (username != "")
+    {
+        return username;
+    }
+
+    list legacyParts = llParseString2List(
+        llToLower(llKey2Name(residentId)), [" "], []);
+    integer count = llGetListLength(legacyParts);
+    if (count >= 2 && llList2String(legacyParts, count - 1) != "resident")
+    {
+        return llList2String(legacyParts, 0) + "."
+            + llList2String(legacyParts, count - 1);
+    }
+    if (count > 0)
+    {
+        return llList2String(legacyParts, 0);
+    }
+    return "unknown";
+}
+
 string queryValue(string query, string wantedName)
 {
     list fields = llParseStringKeepNulls(query, ["&"], []);
@@ -97,6 +122,12 @@ configureScreen()
     }
 
     gMediaURL = SITE_URL + "?v=" + WEB_VERSION;
+    if (SYNC_URL != "" && gSyncToken != "")
+    {
+        gMediaURL += "&sync=" + llEscapeURL(SYNC_URL)
+            + "&room=" + llEscapeURL((string)llGetKey())
+            + "&token=" + llEscapeURL(gSyncToken);
+    }
     if (gBridgeURL != "" && gBridgeToken != "")
     {
         gMediaURL += "&bridge=" + llEscapeURL(gBridgeURL)
@@ -122,7 +153,7 @@ configureScreen()
         if (gBridgeURL != "")
         {
             gBridgeReady = TRUE;
-            llOwnerSay("KSR Gameboi SP FAST buttons ready on SCREEN face "
+            llOwnerSay("KSR Gameboi SP FAST buttons and LIVE relay ready on SCREEN face "
                 + (string)SCREEN_FACE + ".");
         }
         else
@@ -152,24 +183,14 @@ string bridgePage(integer afterSequence)
         integer sequence = llList2Integer(gHistory, index);
         if (sequence > afterSequence)
         {
-            string buttonName = llList2String(gHistory, index + 1);
-            integer pressed = llList2Integer(gHistory, index + 2);
-            string booleanText = "false";
-            if (pressed)
-            {
-                booleanText = "true";
-            }
-
             if (added)
             {
                 html += ",";
             }
-            html += "{seq:" + (string)sequence
-                + ",key:'" + buttonName
-                + "',down:" + booleanText + "}";
+            html += llList2String(gHistory, index + 1);
             ++added;
         }
-        index += 3;
+        index += 2;
     }
 
     html += "]},'*');</script>";
@@ -198,12 +219,22 @@ deliverPending()
     }
 }
 
-rememberInput(string buttonName, integer pressed)
+rememberInput(string buttonName, integer pressed, key residentId,
+    string username, string displayName)
 {
     ++gSequence;
-    gHistory += [gSequence, llToLower(buttonName), pressed];
+    string eventJson = llList2Json(JSON_OBJECT,
+    [
+        "seq", gSequence,
+        "key", llToLower(buttonName),
+        "down", pressed,
+        "residentId", (string)residentId,
+        "residentName", username,
+        "displayName", displayName
+    ]);
+    gHistory += [gSequence, eventJson];
 
-    integer extra = llGetListLength(gHistory) - (MAX_HISTORY_EVENTS * 3);
+    integer extra = llGetListLength(gHistory) - (MAX_HISTORY_EVENTS * 2);
     if (extra > 0)
     {
         gHistory = llDeleteSubList(gHistory, 0, extra - 1);
@@ -213,11 +244,15 @@ rememberInput(string buttonName, integer pressed)
     deliverPending();
 }
 
-sendLegacyButton(string buttonName)
+sendLegacyButton(string buttonName, key residentId,
+    string username, string displayName)
 {
     string commandURL = gMediaURL
         + "#input=" + llToLower(buttonName)
-        + "&seq=" + (string)gSequence;
+        + "&seq=" + (string)gSequence
+        + "&residentId=" + llEscapeURL((string)residentId)
+        + "&residentName=" + llEscapeURL(username)
+        + "&displayName=" + llEscapeURL(displayName);
 
     llSetLinkMedia(gScreenLink, SCREEN_FACE,
     [
@@ -225,13 +260,20 @@ sendLegacyButton(string buttonName)
     ]);
 }
 
-sendButton(string buttonName, integer pressed)
+sendButton(string buttonName, integer pressed, key residentId)
 {
-    rememberInput(buttonName, pressed);
+    string username = residentUsername(residentId);
+    string displayName = llGetDisplayName(residentId);
+    if (displayName == "")
+    {
+        displayName = llKey2Name(residentId);
+    }
+
+    rememberInput(buttonName, pressed, residentId, username, displayName);
 
     if (!gBridgeReady && pressed)
     {
-        sendLegacyButton(buttonName);
+        sendLegacyButton(buttonName, residentId, username, displayName);
     }
 }
 
@@ -249,8 +291,15 @@ requestBridgeURL()
         gBridgeURL = "";
     }
 
-    gBridgeToken = llGetSubString(
-        llSHA1String((string)llGetKey() + (string)llGetUnixTime()), 0, 19);
+    if (gSyncToken == "")
+    {
+        gSyncToken = llGetSubString(llSHA1String(
+            (string)llGetKey() + (string)llGetUnixTime()
+            + (string)llGenerateKey()), 0, 31);
+    }
+    gBridgeToken = llGetSubString(llSHA1String(
+        (string)llGetKey() + (string)llGetUnixTime()
+        + (string)llGenerateKey()), 0, 19);
     gUrlRequest = llRequestSecureURL();
     llOwnerSay("Preparing low-latency Gameboi buttons...");
 }
@@ -266,7 +315,7 @@ handleTouches(integer detected, integer pressed)
 
         if (isButtonName(buttonName))
         {
-            sendButton(buttonName, pressed);
+            sendButton(buttonName, pressed, llDetectedKey(index));
         }
         ++index;
     }

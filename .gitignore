@@ -1,2 +1,5 @@
 work/
-sync-worker/
+sync-worker/node_modules/
+sync-worker/.wrangler/
+leaderboard-worker/node_modules/
+leaderboard-worker/.wrangler/

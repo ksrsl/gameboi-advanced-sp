@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ksr-gameboi-leaderboard",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-01",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ksr-gameboi-leaderboard-db",
+      "database_id": "7c216c26-43e1-428f-9716-fd1d8f173053",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

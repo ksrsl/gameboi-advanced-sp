@@ -1,8 +1,10 @@
-import { storage } from './storage.js';
+import { storage } from './storage.js?v=4.0.0';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
-import { GameSync, syncConfigFromLocation } from './sync.js';
-import { setupLslBridge } from './lsl-bridge.js?v=3.0.0';
+import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.0';
+import { setupLslBridge } from './lsl-bridge.js?v=4.0.0';
 import { createArcadeFX } from './arcade-fx.js?v=3.4.0';
+import { LeaderboardClient } from './leaderboard.js?v=4.0.0';
+import { createLeaderboardUI } from './leaderboard-ui.js?v=4.0.0';
 import snakeCartridge from '../games/snake/snake.js?v=3.4.0';
 import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.0';
 import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.0';
@@ -21,7 +23,7 @@ import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=3.0.0';
 import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=3.0.0';
 import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=3.0.0';
 import pocketFighterCartridge from '../games/pocket-fighter/pocket-fighter.js?v=3.0.0';
-import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=3.3.0';
+import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=4.0.0';
 import pocketBowlingCartridge from '../games/pocket-bowling/pocket-bowling.js?v=3.0.0';
 import neonCycleCartridge from '../games/neon-cycle/neon-cycle.js?v=3.3.0';
 
@@ -58,6 +60,8 @@ const cartridgeInfo = new Map(listCartridges().map(item => [item.id, item]));
 const validInputs = new Set(['up', 'down', 'left', 'right', 'a', 'b', 'start', 'select']);
 const sync = new GameSync(syncConfigFromLocation());
 const arcadeFx = createArcadeFX({ display: $('#display'), host, storage });
+const leaderboard = new LeaderboardClient({ storage });
+leaderboard.setAuthority(!sync.enabled || sync.isHost);
 const CARTRIDGE_PAGE_SIZE = 7;
 const CARTRIDGE_COLUMNS = 2;
 const BOOT_DURATION_MS = 6500;
@@ -76,6 +80,16 @@ let audioInput;
 let powerTimer = null;
 let bootTimers = [];
 let viewerCount = 1;
+
+const leaderboardUI = createLeaderboardUI({
+  client: leaderboard,
+  root: $('#panel-content'),
+  tone,
+  onExit: () => {
+    show('home');
+    publishConsole('home');
+  }
+});
 
 function fitConsole() {
   const scaleX = window.innerWidth / 320;
@@ -282,6 +296,7 @@ async function startGame(gameId, snapshot = null) {
   currentGame?.unmount?.();
   currentGame = null;
   currentGameId = gameId;
+  leaderboard.beginGame(gameId);
   const manifest = cartridgeInfo.get(gameId);
   show('loading');
   $('#loading-name').textContent = manifest?.title?.toUpperCase() || 'UNKNOWN CARTRIDGE';
@@ -299,6 +314,7 @@ async function startGame(gameId, snapshot = null) {
       return game;
     } catch (error) {
       currentGameId = '';
+      leaderboard.endGame();
       $('#error-message').textContent = error.message;
       show('error');
       return null;
@@ -313,6 +329,7 @@ function exitGame({ publish = true } = {}) {
   currentGame = null;
   currentGameId = '';
   gameLoadPromise = null;
+  leaderboard.endGame();
   host.replaceChildren();
   arcadeFx.gameEnd();
   show('home');
@@ -352,6 +369,7 @@ function powerOn({ publish = true } = {}) {
 
 function panel(title, html) {
   currentPanel = title;
+  $('#panel').classList.toggle('leaderboard-panel', title === 'LEADERBOARD');
   $('#panel-title').textContent = title;
   $('#panel-content').innerHTML = html;
   show('panel');
@@ -361,32 +379,9 @@ function panel(title, html) {
 function action(name) {
   tone(540, 0.04);
   if (name === 'play') showCartridges();
-  if (name === 'scores') {
-    panel('HIGH SCORES', `
-      <div class="score-list">
-        <div><span>NEON SERPENT</span><b>${String(storage.get('snake:highScore', 0)).padStart(6, '0')}</b></div>
-        <div><span>BLOCK DROP</span><b>${String(storage.get('blockDrop:highScore', 0)).padStart(6, '0')}</b></div>
-        <div><span>BRICK BLASTER</span><b>${String(storage.get('brickBlaster:highScore', 0)).padStart(6, '0')} / L${String(storage.get('brickBlaster:bestLevel', 1)).padStart(2, '0')}</b></div>
-        <div><span>ASTRO DEFENDER</span><b>${String(storage.get('astroDefender:highScore', 0)).padStart(6, '0')} / W${String(storage.get('astroDefender:bestWave', 1)).padStart(2, '0')}</b></div>
-        <div><span>KSR COMPANION</span><b>LEVEL ${String(storage.get('petByte:bestLevel', 1)).padStart(2, '0')}</b></div>
-        <div><span>SKY PULSE</span><b>${String(storage.get('byteFlyer:highScore', 0)).padStart(3, '0')}</b></div>
-        <div><span>ROAD RUSH</span><b>${String(storage.get('roadRush:highScore', 0)).padStart(5, '0')}</b></div>
-        <div><span>SHADOW CIRCUIT</span><b>F${String(storage.get('dungeonByte:bestFloor', 1)).padStart(2, '0')}</b></div>
-        <div><span>NEON ANGLER</span><b>${String(storage.get('fishingByte:species', 0))}/8 • ${String(Math.floor(storage.get('fishingByte:bestSize', 0))).padStart(3, '0')}CM</b></div>
-        <div><span>MAZE MUNCHER</span><b>${String(storage.get('mazeMuncher:highScore', 0)).padStart(6, '0')}</b></div>
-        <div><span>MINI GOLF</span><b>${storage.get('miniGolf:bestScore', 0) || '--'} STROKES</b></div>
-        <div><span>POCKET TENNIS</span><b>${String(storage.get('pocketTennis:wins', 0)).padStart(3, '0')} WINS</b></div>
-        <div><span>PIXEL KART</span><b>${storage.get('pixelKart:bestTime', 0) ? (storage.get('pixelKart:bestTime', 0) / 1000).toFixed(1) + 'S' : '--'}</b></div>
-        <div><span>NEON ONSLAUGHT</span><b>${String(storage.get('survivorByte:highScore', 0)).padStart(6, '0')}</b></div>
-        <div><span>BOMB GRID</span><b>${String(storage.get('bombGrid:wins', 0)).padStart(3, '0')} WINS</b></div>
-        <div><span>PIXEL QUEST</span><b>${String(storage.get('pixelQuest:highScore', 0)).padStart(6, '0')}</b></div>
-        <div><span>BATTLE TANKS</span><b>${String(storage.get('battleTanks:highScore', 0)).padStart(6, '0')}</b></div>
-        <div><span>POCKET FIGHTER</span><b>${String(storage.get('pocketFighter:wins', 0)).padStart(3, '0')} WINS</b></div>
-        <div><span>STREET HOOPS</span><b>${String(storage.get('streetHoops:highScore', 0)).padStart(3, '0')}</b></div>
-        <div><span>POCKET BOWLING</span><b>${String(storage.get('pocketBowling:bestScore', 0)).padStart(3, '0')}</b></div>
-        <div><span>TRON CYCLE</span><b>${String(storage.get('neonCycle:highScore', 0)).padStart(6, '0')}</b></div>
-      </div>
-    `);
+  if (name === 'leaderboard') {
+    panel('LEADERBOARD', '');
+    leaderboardUI.open();
   }
   if (name === 'settings') {
     panel('SETTINGS', `
@@ -423,7 +418,8 @@ function applyInput(key, pressed = true) {
     else if (key === 'a' || key === 'start') startGame(cartridgeButtons[cartridgeIndex].dataset.game);
     else if (key === 'b' || key === 'select') { show('home'); publishConsole('home'); }
   } else if (currentScreen === 'panel') {
-    if (key === 'b' || key === 'select') { show('home'); publishConsole('home'); }
+    if (currentPanel === 'LEADERBOARD') leaderboardUI.input(key, true);
+    else if (key === 'b' || key === 'select') { show('home'); publishConsole('home'); }
     else if (key === 'a' && currentPanel === 'SETTINGS') {
       setMuted(!muted);
       const soundButton = $('#sound-setting');
@@ -434,10 +430,10 @@ function applyInput(key, pressed = true) {
   }
 }
 
-function requestInput(key) {
+function requestInput(key, pressed = true, eventId) {
   if (!validInputs.has(key)) return;
-  if (sync.enabled) sync.sendInput(key);
-  else applyInput(key, true);
+  if (sync.enabled) sync.sendInput(key, pressed, eventId);
+  else applyInput(key, pressed);
 }
 
 function requestCommand(name, data, localAction) {
@@ -509,21 +505,31 @@ document.addEventListener('keyup', event => {
   const key = keyMap[event.key];
   if (!key) return;
   event.preventDefault();
-  if (!sync.enabled) applyInput(key, false);
+  requestInput(key, false);
 });
 
 function readHashInput() {
   const params = new URLSearchParams(location.hash.slice(1));
   const key = params.get('input');
   if (!key) return;
-  if (sync.enabled) sync.sendInput(key.toLowerCase(), `lsl-${params.get('seq') || location.hash}`);
+  leaderboard.identify({
+    residentId: params.get('residentId'),
+    residentName: params.get('residentName'),
+    displayName: params.get('displayName')
+  });
+  leaderboardUI.refreshIdentity();
+  if (sync.enabled) sync.sendInput(key.toLowerCase(), true, `lsl-${params.get('seq') || location.hash}`);
   else requestInput(key.toLowerCase());
 }
 
 const lslBridge = setupLslBridge({
+  onIdentity(player) {
+    leaderboard.identify(player);
+    leaderboardUI.refreshIdentity();
+  },
   onInput(key, pressed, sequence) {
     if (sync.enabled) {
-      if (pressed) sync.sendInput(key, `lsl-bridge-${sequence}`);
+      sync.sendInput(key, pressed, `lsl-bridge-${sequence}`);
       return;
     }
     applyInput(key, pressed);
@@ -533,7 +539,7 @@ const lslBridge = setupLslBridge({
 window.GameBoiSP = Object.freeze({ press: requestInput, bridge: lslBridge.enabled });
 window.addEventListener('hashchange', readHashInput);
 if (location.hash) queueMicrotask(readHashInput);
-document.addEventListener('gameboi-input', event => requestInput(String(event.detail?.key || '').toLowerCase()));
+document.addEventListener('gameboi-input', event => requestInput(String(event.detail?.key || '').toLowerCase(), event.detail?.pressed !== false));
 
 menuButtons.forEach((button, index) => button.addEventListener('click', () => {
   menuIndex = index;
@@ -548,13 +554,17 @@ cartridgeButtons.forEach((button, index) => button.addEventListener('click', () 
   requestCommand('launchGame', { gameId: button.dataset.game }, () => startGame(button.dataset.game));
 }));
 
-$('#panel-back').addEventListener('click', () => requestCommand('back', {}, () => { show('home'); publishConsole('home'); }));
+$('#panel-back').addEventListener('click', () => {
+  if (currentPanel === 'LEADERBOARD') leaderboardUI.input('b', true);
+  else requestCommand('back', {}, () => { show('home'); publishConsole('home'); });
+});
 $('#cartridge-back').addEventListener('click', () => requestCommand('back', {}, () => { show('home'); publishConsole('home'); }));
 $('#error-back').addEventListener('click', () => requestCommand('back', {}, () => exitGame()));
 $('#power-on').addEventListener('click', () => requestCommand('powerOn', {}, () => powerOn()));
 $('#mute').addEventListener('click', () => setMuted(!muted));
 
 $('#panel-content').addEventListener('click', event => {
+  if (currentPanel === 'LEADERBOARD' && leaderboardUI.click(event)) return;
   if (event.target.id === 'sound-setting') {
     setMuted(!muted);
     event.target.textContent = muted ? 'OFF' : 'ON';
@@ -607,15 +617,19 @@ $('#panel-content').addEventListener('click', event => {
   }
 });
 
-sync.on('input', key => applyInput(key, true));
+sync.on('input', ({ key, pressed }) => applyInput(key, pressed));
 sync.on('command', applyCommand);
 sync.on('state', applyRemoteState);
-sync.on('role', ({ host: authority }) => currentGame?.setAuthority?.(authority));
+sync.on('role', ({ host: authority }) => {
+  currentGame?.setAuthority?.(authority);
+  leaderboard.setAuthority(authority);
+});
 sync.on('viewers', count => { viewerCount = count; updateLiveBadge({ connected: sync.connected, label: 'LIVE' }); });
 sync.on('status', updateLiveBadge);
 window.addEventListener('beforeunload', () => {
   arcadeFx.close();
   lslBridge.close();
+  leaderboard.close();
   sync.close();
 });
 

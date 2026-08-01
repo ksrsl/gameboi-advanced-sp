@@ -26,16 +26,18 @@ Created by Corp.
 - **Pocket Bowling** - a ten-frame bowling match with aim, power, hook, regulation bonuses, and a pro CPU opponent
 - **Tron Cycle** - a large scrolling light-grid battle against seven pathfinding CPU riders
 
-This release is GitHub-only and requires no backend.
+The console and every cartridge remain static GitHub Pages files. A small isolated Cloudflare Worker and D1 database provide the shared leaderboard.
 
 The current KSR Arcade System adds a longer, vibrant arcade boot sequence, animated neon arcade menus, a readable paged cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty-one games share the presentation and low-latency input layer. Road Rush draws its lane and shoulder markings in the same curved perspective as the road, eliminating broken-looking vertical stripes. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
 
-The mesh controller is version 1.9.0. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Camera-focus and magnifier behavior have been removed.
+The mesh controller is version 2.0.0. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Each mesh event also carries the touching avatar's Resident UUID, Resident username, and display name so the correct player owns the run. Camera-focus and magnifier behavior have been removed.
 
 ## Public addresses
 
 - Console: `https://ksrsl.github.io/gameboi-advanced-sp/`
 - Second Life Media URL: `https://ksrsl.github.io/gameboi-advanced-sp/`
+- Leaderboard API: `https://ksr-gameboi-leaderboard.felix-bruno-c.workers.dev/`
+- Live relay: `https://ksr-gameboi-relay.felix-bruno-c.workers.dev/`
 
 Install the included controller and let it configure the media face.
 
@@ -48,6 +50,10 @@ python -m http.server 8000
 ```
 
 Open `http://localhost:8000/`. A local server is required because the console uses JavaScript modules.
+
+The hosted leaderboard is used automatically. To test against a local Worker, run the service from `leaderboard-worker` with Node.js 22 or newer, then open:
+
+`http://localhost:8000/?leaderboard=http://127.0.0.1:8789`
 
 ## Enable GitHub Pages
 
@@ -71,13 +77,13 @@ The interface has a logical **320 x 240** game layout and stretches edge-to-edge
 3. For a linked console, name the display prim `SCREEN` and the button prims `UP`, `DOWN`, `LEFT`, `RIGHT`, `A`, `B`, `START`, and `SELECT`.
 4. Reset the controller.
 
-After reset, owner chat should report `KSR Gameboi SP FAST buttons ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses and releases are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart. Replace older copies of the controller with the newest `GameBoi Mesh Controller.lsl` so the web page receives the fastest bridge behavior and current cache refresh.
+After reset, owner chat should report `KSR Gameboi SP FAST buttons and LIVE relay ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses, releases, and the touching Resident's identity are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart. Replace older copies of the controller with the newest `GameBoi Mesh Controller.lsl` so the web page receives the leaderboard identity bridge, live room configuration, fastest input behavior, and current cache refresh.
 
 If owner chat reports that the fast-button bridge was denied, the controller falls back to the older URL method. That fallback is suitable for menu testing but is too delayed for action games. Resetting the script usually requests a fresh bridge URL.
 
 Camera focus and magnifier scripts are intentionally not included. Delete any older `GameBoi Direct Camera Focus` or `GameBoi Sit Camera Focus` script from the object's contents. The mesh-button controller handles only Media on a Prim and game input.
 
-GitHub Pages does not mirror one resident's active media browser to another resident's viewer. Live shared game state will require the synchronization service when that feature is resumed.
+The controller automatically gives each physical Gameboi its own live room using the object's UUID plus a private token. Every viewer of that object receives the same menu commands and deduplicated button events. The first connected viewer provides authoritative cartridge snapshots; if that viewer leaves, the oldest remaining viewer takes over automatically. No room or token setup is required by the customer.
 
 ## Controls
 
@@ -91,7 +97,17 @@ GitHub Pages does not mirror one resident's active media browser to another resi
 
 Choose **Turn Off** for a CRT-style shutdown animation. Click the dark screen to wake it again; Start or A also wakes it once mesh buttons are installed. Every power-on replays the complete arcade boot sequence before returning to the home screen.
 
-The music-note button mutes the retro sound effects. Mute state, progress, collections, and high scores are stored locally in the viewer's media browser.
+The music-note button mutes the retro sound effects. Mute state, progress, collections, and personal high scores are stored locally in the viewer's media browser.
+
+## Global leaderboard
+
+Choose **Leaderboard**, pick a game, then view its **Highest Scores** list. Each game keeps one best result per Second Life Resident. A better result replaces that Resident's previous result; Mini Golf and Pixel Kart treat a lower result as better.
+
+The board shows the unique Resident username, not the changeable display name. For example, display name `Osama Wixx` with Resident username `corp` appears as `CORP`. Press a physical mesh button before starting a cartridge so the run is tied to the correct Resident. Direct browser or screen-only controls still work, but cannot identify a Second Life Resident and therefore do not submit a global score.
+
+The player who starts a cartridge run remains assigned to that run, so another Resident touching a button later cannot take ownership of its score. Resident UUIDs are retained only as internal database identifiers and are never returned by the public score-list API. This first leaderboard release validates identities, score types, and game-specific score limits, but it is not a fully server-authoritative anti-cheat system.
+
+The leaderboard service source, D1 migration, deployment configuration, and service documentation are in `leaderboard-worker/`.
 
 ### Neon Serpent
 
@@ -261,7 +277,7 @@ Matches are best of three. The pro CPU manages distance, blocks predictable atta
 - Start: pause
 - Touch/click the court: choose the closest shooting spot and shoot
 
-Score as many points as possible in 60 seconds. A fresh ball reloads almost immediately and multiple shots can remain in flight, so there is no wait for the previous ball to land. The release meter fills once per ball instead of bouncing continuously. Gold-zone releases, far spots, every fifth money ball, and streaks award bonus points. The court record is saved.
+Score as many points as possible in 60 seconds. Street Hoops now uses a fast one-ball rack: only one shot can be in flight, and the next ball unlocks immediately after the previous shot resolves. Repeated A presses cannot spam overlapping balls. The release meter resets for each new ball instead of continuing while the previous ball is flying. Gold-zone releases, far spots, every fifth money ball, and streaks award bonus points. The court record is saved.
 
 ### Pocket Bowling
 
@@ -285,7 +301,9 @@ Survive a 1500 x 1000 scrolling light grid against seven CPU riders. Every cycle
 
 ## Multiplayer direction
 
-The cartridges remain static GitHub Pages files. True play between residents is possible by adding a small WebSocket room service for shared positions, inputs, scores, and join/leave events. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Tron Cycle are designed so online modes can be added later. Media on a Prim sessions do not share state by themselves, so GitHub Pages alone cannot provide cross-viewer multiplayer.
+The real-time relay now provides shared viewing and shared controls for one physical console: menus, inputs, viewer count, host authority, and supported cartridge snapshots travel through a hibernating Cloudflare room. Neon Serpent and Block Drop already publish authoritative snapshots; every cartridge receives the same deduplicated inputs.
+
+This is shared-console synchronization, not yet a competitive online mode where each Resident owns a separate racer or fighter. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Tron Cycle remain designed for those later multi-player modes. The relay source and deployment configuration are in `sync-worker/`.
 
 Select returns to the console from every cartridge.
 

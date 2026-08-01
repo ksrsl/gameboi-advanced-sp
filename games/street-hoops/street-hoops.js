@@ -10,13 +10,13 @@ const PERFECT_END = .84;
 const GOOD_START = .25;
 const GOOD_END = .98;
 const METER_FILL_SECONDS = .62;
-const SHOT_RELOAD_SECONDS = .16;
+const SHOT_RELOAD_SECONDS = .05;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 export default {
   id: 'street-hoops',
   title: 'Street Hoops',
-  version: '3.0.0',
+  version: '4.0.0',
   create() {
     let root;
     let canvas;
@@ -67,7 +67,7 @@ export default {
         </div>
         <div class="hoops-overlay" id="hoops-overlay">
           <strong>STREET HOOPS</strong>
-          <small>60 SECOND RECORD RUN<br>RAPID FIRE - NO WAITING FOR THE BALL</small>
+          <small>60 SECOND RECORD RUN<br>FAST ONE-BALL RACK</small>
           <button data-hoops="start">START CHALLENGE</button>
           <em>LEFT / RIGHT SPOT - A SHOOT - B NEXT SPOT</em>
         </div>
@@ -116,6 +116,8 @@ export default {
 
     function updateHud() {
       if (!root) return;
+      root.dataset.shots = String(shots);
+      root.dataset.balls = String(balls.length);
       root.querySelector('#hoops-score').textContent = String(score).padStart(3, '0');
       root.querySelector('#hoops-high').textContent = String(high).padStart(3, '0');
       root.querySelector('#hoops-clock').textContent = formatClock();
@@ -141,7 +143,7 @@ export default {
       root.querySelector('#hoops-pause').hidden = state !== 'pause';
       if (state === 'title') {
         const recordCopy = high > 0 ? `COURT RECORD ${String(high).padStart(3, '0')}` : 'NO RECORD YET';
-        showOverlay('STREET HOOPS', `60 SECOND RAPID-FIRE CHALLENGE<br>${recordCopy}`, 'START CHALLENGE');
+        showOverlay('STREET HOOPS', `60 SECOND ONE-BALL CHALLENGE<br>${recordCopy}`, 'START CHALLENGE');
       } else if (state === 'over') {
         const accuracy = shots ? Math.round(makes / shots * 100) : 0;
         let result = `RECORD ${String(high).padStart(3, '0')}`;
@@ -197,7 +199,7 @@ export default {
     }
 
     function shoot() {
-      if (state !== 'play' || shotCooldown > 0 || balls.length >= 4) return;
+      if (state !== 'play' || shotCooldown > 0 || balls.length > 0) return;
       const grade = timingGrade();
       const startX = playerX + 7;
       const startY = 181;
@@ -320,7 +322,13 @@ export default {
           else missedShot(ball);
         }
       });
-      balls = balls.filter(ball => ball.age < ball.travelTime + .13);
+      const hadBall = balls.length > 0;
+      balls = balls.filter(ball => ball.age < ball.travelTime + .1);
+      if (hadBall && balls.length === 0 && state === 'play') {
+        rhythm = 0;
+        shotCooldown = SHOT_RELOAD_SECONDS;
+        meterGrade = 'LOAD';
+      }
     }
 
     function update(dt) {
@@ -363,8 +371,9 @@ export default {
       if (state !== 'play' && state !== 'buzzer') return;
 
       if (state === 'play') {
-        rhythm = Math.min(1, rhythm + dt / METER_FILL_SECONDS);
-        if (shotCooldown <= 0) meterGrade = timingGrade();
+        if (balls.length === 0) rhythm = Math.min(1, rhythm + dt / METER_FILL_SECONDS);
+        if (balls.length > 0) meterGrade = 'FLIGHT';
+        else if (shotCooldown <= 0) meterGrade = timingGrade();
         else meterGrade = 'LOAD';
       }
       playerX = smoothToward(playerX, targetX, 18, dt);
@@ -496,7 +505,7 @@ export default {
         ctx.stroke();
       });
 
-      if (state === 'play' && shotCooldown <= 0) {
+      if (state === 'play' && shotCooldown <= 0 && balls.length === 0) {
         ctx.fillStyle = (shots + 1) % 5 === 0 ? '#fff2a6' : '#ffb23f';
         ctx.beginPath();
         ctx.arc(playerX + 8, 181, 5, 0, Math.PI * 2);

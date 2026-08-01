@@ -1,0 +1,16 @@
+{
+  "name": "ksr-gameboi-leaderboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check src/index.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 migrations apply ksr-gameboi-leaderboard-db --local",
+    "db:remote": "wrangler d1 migrations apply ksr-gameboi-leaderboard-db --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.118.0"
+  }
+}

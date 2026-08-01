@@ -58,7 +58,7 @@ export class GameSync {
         this.emit('role', { host: this.isHost });
         if (message.state) this.emit('state', message.state);
       } else if (message.type === 'input') {
-        this.emit('input', message.key);
+        this.emit('input', { key: message.key, pressed: message.pressed !== false });
       } else if (message.type === 'command') {
         this.emit('command', { name: message.name, data: message.data || {} });
       } else if (message.type === 'state') {
@@ -95,9 +95,9 @@ export class GameSync {
     return true;
   }
 
-  sendInput(key, eventId = makeEventId()) {
+  sendInput(key, pressed = true, eventId = makeEventId()) {
     if (!VALID_INPUTS.has(key)) return;
-    this.send({ type: 'input', key, eventId });
+    this.send({ type: 'input', key, pressed: pressed !== false, eventId });
   }
 
   sendCommand(name, data = {}) {

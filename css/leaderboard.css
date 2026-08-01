@@ -1,0 +1,244 @@
+.leaderboard-panel {
+  background: #03060a;
+  color: #effaff;
+}
+
+.leaderboard-panel header {
+  height: 40px;
+  border-bottom: 1px solid #59e8ff88;
+  background: linear-gradient(90deg, #020508, #111421 55%, #120713);
+  box-shadow: 0 3px 12px #000a, inset 0 -1px #ff3dc84d;
+}
+
+.leaderboard-panel header button {
+  width: 40px;
+  color: #8ceeff;
+  text-shadow: 0 0 8px #00d9ff;
+}
+
+.leaderboard-panel h1 {
+  font-size: 15px;
+  letter-spacing: 2px;
+  text-shadow: -1px 0 #00d9ff, 1px 0 #ff3dc8;
+}
+
+.leaderboard-panel #panel-content {
+  height: 200px;
+  padding: 0;
+}
+
+.leaderboard-screen {
+  position: relative;
+  width: 320px;
+  height: 200px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 25%, #00d9ff1f, transparent 33%),
+    radial-gradient(circle at 87% 70%, #ff3dc81c, transparent 34%),
+    linear-gradient(145deg, #02060a, #081018 56%, #07050c);
+  color: #eaf8ff;
+}
+
+.leaderboard-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .24;
+  background-image:
+    linear-gradient(#00d9ff26 1px, transparent 1px),
+    linear-gradient(90deg, #ff3dc81d 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: leaderboardGrid 6s linear infinite;
+  pointer-events: none;
+}
+
+.leaderboard-subtitle {
+  position: relative;
+  z-index: 2;
+  height: 30px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #5ce8ff45;
+  background: #03070bbd;
+}
+
+.leaderboard-subtitle b {
+  color: #fff4c5;
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  text-shadow: 0 0 8px #ffbd2d99;
+}
+
+.leaderboard-subtitle span {
+  max-width: 190px;
+  overflow: hidden;
+  color: #88eaff;
+  font-size: 5px;
+  letter-spacing: .5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-games {
+  position: relative;
+  z-index: 2;
+  padding: 8px 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.leaderboard-games button {
+  height: 39px;
+  min-width: 0;
+  padding: 0 7px;
+  display: grid;
+  grid-template-columns: 19px 1fr;
+  align-items: center;
+  border: 1px solid #50636e;
+  background: linear-gradient(100deg, #0b151ddb, #090e15dc 68%, #170e18d8);
+  color: #d7e5eb;
+  text-align: left;
+  box-shadow: inset 0 1px #ffffff0d, 0 3px 7px #0007;
+}
+
+.leaderboard-games button i {
+  color: #6d8d9c;
+  font-size: 6px;
+  font-style: normal;
+}
+
+.leaderboard-games button span {
+  overflow: hidden;
+  font-size: 7px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-games button.selected,
+.leaderboard-games button:hover {
+  border-color: #83eeff;
+  background: linear-gradient(90deg, #00d9ff2c, #0c1119 54%, #ff3dc825);
+  color: #fff;
+  box-shadow: inset 3px 0 #75efff, inset -1px 0 #ff64d4, 0 0 11px #00d9ff34;
+}
+
+.leaderboard-games button.selected i { color: #ffe083; }
+
+.leaderboard-screen footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  height: 25px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #5ce8ff5c;
+  background: #03070bea;
+  color: #91aab5;
+  font-size: 5px;
+  letter-spacing: .5px;
+}
+
+.leaderboard-screen footer b {
+  color: #dffaff;
+  font-size: 6px;
+}
+
+.leaderboard-screen footer button {
+  padding: 3px 6px;
+  border: 1px solid #62ddec;
+  background: #071018;
+  color: #dffaff;
+  font-size: 5px;
+}
+
+.leaderboard-scores {
+  position: relative;
+  z-index: 2;
+  margin: 7px 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leaderboard-scores li {
+  height: 25px;
+  padding: 0 8px;
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr) auto;
+  align-items: center;
+  border-bottom: 1px solid #6fe9ff29;
+  background: linear-gradient(90deg, #0a141cc7, #0b0e15a8 70%, #150d18ad);
+  font-size: 7px;
+}
+
+.leaderboard-scores li:nth-child(1) {
+  border-left: 2px solid #ffe06f;
+  box-shadow: inset 12px 0 18px #ffbd2d0b;
+}
+
+.leaderboard-scores li > b { color: #ffe178; }
+
+.leaderboard-scores li span {
+  overflow: hidden;
+  color: #e9f7fc;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-scores li strong {
+  padding-left: 5px;
+  color: #80efff;
+  text-shadow: 0 0 7px #00d9ff66;
+}
+
+.leaderboard-state {
+  position: relative;
+  z-index: 2;
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #d9ebf0;
+  text-align: center;
+}
+
+.leaderboard-state i {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #52717d;
+  border-top-color: #74efff;
+  border-radius: 50%;
+  box-shadow: 0 0 9px #00d9ff55;
+  animation: leaderboardSpin .75s linear infinite;
+}
+
+.leaderboard-state b {
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+
+.leaderboard-state span {
+  color: #87a6b3;
+  font-size: 5px;
+}
+
+.leaderboard-state.error b {
+  color: #ff7fa1;
+  text-shadow: 0 0 8px #ff3dc855;
+}
+
+@keyframes leaderboardSpin { to { transform: rotate(360deg); } }
+@keyframes leaderboardGrid { to { background-position: 0 20px, 20px 0; } }
+
+.arcade-lite .leaderboard-screen::before { animation: none; }
+.arcade-lite .leaderboard-state i { box-shadow: none; }
