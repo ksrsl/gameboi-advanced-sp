@@ -28,7 +28,7 @@ Created by Corp.
 
 This release is GitHub-only and requires no backend.
 
-The current KSR Arcade System adds a longer, vibrant arcade boot sequence, a readable paged cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty-one games share the presentation and low-latency input layer. Road Rush draws its lane and shoulder markings in the same curved perspective as the road, eliminating broken-looking vertical stripes. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
+The current KSR Arcade System adds a longer, vibrant arcade boot sequence, animated neon arcade menus, a readable paged cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty-one games share the presentation and low-latency input layer. Road Rush draws its lane and shoulder markings in the same curved perspective as the road, eliminating broken-looking vertical stripes. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
 
 The mesh controller is version 1.9.0. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Camera-focus and magnifier behavior have been removed.
 
