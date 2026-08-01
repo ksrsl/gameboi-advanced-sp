@@ -339,7 +339,10 @@ body,
 /* KSR Arcade System 3.0 */
 
 #boot {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 240px;
   display: flex;
   flex-direction: column;
   align-items: center;
