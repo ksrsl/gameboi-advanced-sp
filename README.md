@@ -89,7 +89,7 @@ GitHub Pages does not mirror one resident's active media browser to another resi
 | Start | Enter | Start / pause |
 | Select | Shift | Exit game / back |
 
-Choose **Turn Off** for a CRT-style shutdown animation. Click the dark screen to wake it again; Start or A also wakes it once mesh buttons are installed.
+Choose **Turn Off** for a CRT-style shutdown animation. Click the dark screen to wake it again; Start or A also wakes it once mesh buttons are installed. Every power-on replays the complete arcade boot sequence before returning to the home screen.
 
 The music-note button mutes the retro sound effects. Mute state, progress, collections, and high scores are stored locally in the viewer's media browser.
 

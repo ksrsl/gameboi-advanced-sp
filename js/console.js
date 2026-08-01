@@ -60,6 +60,7 @@ const sync = new GameSync(syncConfigFromLocation());
 const arcadeFx = createArcadeFX({ display: $('#display'), host, storage });
 const CARTRIDGE_PAGE_SIZE = 7;
 const CARTRIDGE_COLUMNS = 2;
+const BOOT_DURATION_MS = 6500;
 
 let menuIndex = 0;
 let cartridgeIndex = 0;
@@ -73,6 +74,7 @@ let audio;
 let audioBus;
 let audioInput;
 let powerTimer = null;
+let bootTimers = [];
 let viewerCount = 1;
 
 function fitConsole() {
@@ -84,6 +86,62 @@ function fitConsole() {
 function show(id) {
   screens.forEach(screen => { screen.hidden = screen.id !== id; });
   currentScreen = id;
+}
+
+function clearBootSequence() {
+  bootTimers.forEach(clearTimeout);
+  bootTimers = [];
+}
+
+function scheduleBoot(callback, delay) {
+  const timer = setTimeout(callback, delay);
+  bootTimers.push(timer);
+}
+
+function restartBootAnimations() {
+  const boot = $('#boot');
+  const animatedElements = [...boot.querySelectorAll('*')];
+  animatedElements.forEach(element => { element.style.animation = 'none'; });
+  void boot.offsetWidth;
+  animatedElements.forEach(element => { element.style.removeProperty('animation'); });
+}
+
+function runBootSequence({ publish = false, connectAfter = false, tvAnimation = false } = {}) {
+  clearBootSequence();
+  const boot = $('#boot');
+  menuIndex = 0;
+  menuButtons.forEach((button, index) => button.classList.toggle('selected', index === 0));
+  $('#mute').hidden = false;
+  $('#live-status').hidden = true;
+  boot.classList.remove('tv-on');
+  show('boot');
+  restartBootAnimations();
+
+  if (tvAnimation) {
+    void boot.offsetWidth;
+    boot.classList.add('tv-on');
+    scheduleBoot(() => boot.classList.remove('tv-on'), 500);
+  }
+
+  scheduleBoot(() => tone(230, 0.035, 'square'), 1820);
+  scheduleBoot(() => tone(330, 0.035, 'square'), 2220);
+  scheduleBoot(() => tone(460, 0.04, 'triangle'), 2620);
+  scheduleBoot(() => tone(620, 0.055, 'triangle'), 3020);
+  scheduleBoot(() => tone(780, 0.07, 'sawtooth'), 3650);
+  scheduleBoot(() => tone(900, 0.075, 'triangle'), 4850);
+  scheduleBoot(() => {
+    if (currentScreen !== 'boot') return;
+    boot.classList.remove('tv-on');
+    show('home');
+    tone(720, 0.1);
+    setTimeout(() => tone(1080, 0.14, 'triangle'), 100);
+    if (sync.enabled) {
+      $('#live-status').hidden = false;
+      updateLiveBadge({ connected: sync.connected, label: sync.connected ? 'LIVE' : 'CONNECT' });
+      if (connectAfter && !sync.connected) sync.connect();
+    }
+    if (publish) publishConsole('home');
+  }, BOOT_DURATION_MS);
 }
 
 function tone(frequency = 440, duration = 0.06, type = 'square') {
@@ -271,6 +329,7 @@ function powerOff({ publish = true } = {}) {
   if (currentScreen === 'power-off' || currentScreen === 'powering-off') return;
   const visible = screens.find(screen => !screen.hidden);
   if (!visible) return;
+  clearBootSequence();
   currentScreen = 'powering-off';
   $('#mute').hidden = true;
   $('#live-status').hidden = true;
@@ -288,16 +347,7 @@ function powerOff({ publish = true } = {}) {
 
 function powerOn({ publish = true } = {}) {
   clearTimeout(powerTimer);
-  $('#mute').hidden = false;
-  $('#live-status').hidden = !sync.enabled;
-  home.classList.remove('tv-on');
-  void home.offsetWidth;
-  home.classList.add('tv-on');
-  show('home');
-  tone(420, 0.06);
-  setTimeout(() => tone(720, 0.08), 80);
-  setTimeout(() => home.classList.remove('tv-on'), 500);
-  if (publish) publishConsole('home');
+  runBootSequence({ publish, tvAnimation: true });
 }
 
 function panel(title, html) {
@@ -571,18 +621,4 @@ window.addEventListener('beforeunload', () => {
 
 setMuted(muted);
 updateCartridgePage();
-setTimeout(() => tone(230, 0.035, 'square'), 1820);
-setTimeout(() => tone(330, 0.035, 'square'), 2220);
-setTimeout(() => tone(460, 0.04, 'triangle'), 2620);
-setTimeout(() => tone(620, 0.055, 'triangle'), 3020);
-setTimeout(() => tone(780, 0.07, 'sawtooth'), 3650);
-setTimeout(() => {
-  if (currentScreen === 'boot') show('home');
-  tone(720, 0.1);
-  setTimeout(() => tone(1080, 0.14, 'triangle'), 100);
-  if (sync.enabled) {
-    $('#live-status').hidden = false;
-    updateLiveBadge({ connected: false, label: 'CONNECT' });
-    sync.connect();
-  }
-}, 5250);
+runBootSequence({ connectAfter: true });
