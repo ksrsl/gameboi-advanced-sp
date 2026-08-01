@@ -11,7 +11,7 @@ The Second Life controller automatically uses the object UUID as the room name a
 
 Current production endpoint:
 
-`https://ksr-gameboi-relay.felix-bruno-c.workers.dev/`
+`https://gameboi-ksr.pages.dev/relay/`
 
 ## Behavior
 

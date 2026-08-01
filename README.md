@@ -36,8 +36,8 @@ The mesh controller is version 2.0.0. Its persistent long-poll bridge hands a co
 
 - Console: `https://ksrsl.github.io/gameboi-advanced-sp/`
 - Second Life Media URL: `https://ksrsl.github.io/gameboi-advanced-sp/`
-- Leaderboard API: `https://ksr-gameboi-leaderboard.felix-bruno-c.workers.dev/`
-- Live relay: `https://ksr-gameboi-relay.felix-bruno-c.workers.dev/`
+- Leaderboard API: `https://gameboi-ksr.pages.dev/leaderboard/`
+- Live relay: `https://gameboi-ksr.pages.dev/relay/`
 
 Install the included controller and let it configure the media face.
 

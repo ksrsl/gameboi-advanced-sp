@@ -1,10 +1,10 @@
-import { storage } from './storage.js?v=4.0.0';
+import { storage } from './storage.js?v=4.0.1';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
-import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.0';
-import { setupLslBridge } from './lsl-bridge.js?v=4.0.0';
+import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.1';
+import { setupLslBridge } from './lsl-bridge.js?v=4.0.1';
 import { createArcadeFX } from './arcade-fx.js?v=3.4.0';
-import { LeaderboardClient } from './leaderboard.js?v=4.0.0';
-import { createLeaderboardUI } from './leaderboard-ui.js?v=4.0.0';
+import { LeaderboardClient } from './leaderboard.js?v=4.0.1';
+import { createLeaderboardUI } from './leaderboard-ui.js?v=4.0.1';
 import snakeCartridge from '../games/snake/snake.js?v=3.4.0';
 import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.0';
 import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.0';
@@ -23,7 +23,7 @@ import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=3.0.0';
 import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=3.0.0';
 import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=3.0.0';
 import pocketFighterCartridge from '../games/pocket-fighter/pocket-fighter.js?v=3.0.0';
-import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=4.0.0';
+import streetHoopsCartridge from '../games/street-hoops/street-hoops.js?v=4.0.1';
 import pocketBowlingCartridge from '../games/pocket-bowling/pocket-bowling.js?v=3.0.0';
 import neonCycleCartridge from '../games/neon-cycle/neon-cycle.js?v=3.3.0';
 

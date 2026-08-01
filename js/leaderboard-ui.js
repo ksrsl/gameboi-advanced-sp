@@ -1,4 +1,4 @@
-import { LEADERBOARD_GAMES, formatLeaderboardScore } from './leaderboard.js?v=4.0.0';
+import { LEADERBOARD_GAMES, formatLeaderboardScore } from './leaderboard.js?v=4.0.1';
 
 const PICKER_PAGE_SIZE = 6;
 const SCORE_PAGE_SIZE = 5;

@@ -8,8 +8,8 @@
 // This controller contains no camera focus, zoom, or magnifier behavior.
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
-string SYNC_URL = "https://ksr-gameboi-relay.felix-bruno-c.workers.dev";
-string WEB_VERSION = "4.0.0";
+string SYNC_URL = "https://gameboi-ksr.pages.dev/relay";
+string WEB_VERSION = "4.0.1";
 integer SCREEN_FACE = 2;
 integer DEBUG_MODE = FALSE;
 

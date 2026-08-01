@@ -1,4 +1,4 @@
-const DEFAULT_ENDPOINT = 'https://ksr-gameboi-leaderboard.felix-bruno-c.workers.dev';
+const DEFAULT_ENDPOINT = 'https://gameboi-ksr.pages.dev/leaderboard';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const LEADERBOARD_GAMES = Object.freeze([

@@ -21,6 +21,6 @@ The public GitHub Pages site remains separate. Only leaderboard records are hand
 
 Current production endpoint:
 
-`https://ksr-gameboi-leaderboard.felix-bruno-c.workers.dev/`
+`https://gameboi-ksr.pages.dev/leaderboard/`
 
 The D1 database ID in `wrangler.jsonc` is a public resource identifier, not a password or API credential. Authentication remains in Wrangler's user-level OAuth storage and is never committed to this repository.
