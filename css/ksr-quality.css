@@ -738,7 +738,7 @@ body,
   z-index: 2;
 }
 
-.menu-screen .pixel-menu { position: relative; }
+#home .pixel-menu { position: relative; }
 
 .menu-screen header {
   height: 57px;
@@ -758,7 +758,7 @@ body,
   font-size: 4.5px;
   letter-spacing: 1.1px;
   text-shadow: 0 0 7px #00d9ff;
-  animation: menuStatusBlink 1.8s steps(2) infinite;
+  animation: menuStatusBlink 1.8s ease-in-out infinite alternate;
 }
 
 #home header::before { content: "● ARCADE ONLINE"; }
@@ -791,7 +791,7 @@ body,
   font-size: 6px;
   letter-spacing: 1.4px;
   text-shadow: 0 0 7px #00d9ff66;
-  animation: menuCopyPulse 2s steps(2) infinite;
+  animation: menuCopyPulse 2.2s ease-in-out infinite alternate;
 }
 
 #home .pixel-menu {
@@ -820,9 +820,7 @@ body,
 #home .pixel-menu button:nth-child(5) { animation-delay: .24s; }
 
 .pixel-menu button.selected,
-.pixel-menu button:hover,
-.cartridge-screen .pixel-menu button.selected,
-.cartridge-screen .pixel-menu button:hover {
+.cartridge-screen .pixel-menu button.selected {
   border-color: #91efff;
   background:
     linear-gradient(90deg, #00d9ff2e, #101722 34%, #15121d 70%, #ff3dc82c),
@@ -837,12 +835,20 @@ body,
   animation: menuSelectedPulse 1.25s ease-in-out infinite alternate;
 }
 
+.pixel-menu button:hover:not(.selected),
+.cartridge-screen .pixel-menu button:hover:not(.selected) {
+  border-color: #718994;
+  background: linear-gradient(90deg, #15232bdb, #0d131bd6 68%, #1c121dd0);
+  color: #f0fbff;
+  box-shadow: inset 1px 0 #5ce8ff80, 0 2px 7px #0007;
+}
+
 .pixel-menu button.selected::before,
 .cartridge-screen .pixel-menu button.selected::before {
   content: "▶";
   color: #ffe08a;
   text-shadow: 0 0 7px #ffbd2d;
-  animation: menuArrowBounce .65s steps(2) infinite;
+  animation: menuArrowBounce .9s ease-in-out infinite alternate;
 }
 
 .pixel-menu button.selected::after,
@@ -859,6 +865,10 @@ body,
 }
 
 .cartridge-screen .pixel-menu {
+  position: absolute;
+  top: 59px;
+  left: 0;
+  width: 320px;
   z-index: 3;
 }
 
@@ -907,12 +917,15 @@ body,
   to { transform: translate3d(8px, 4px, 0) scale(1.04); opacity: .85; }
 }
 
-@keyframes menuStatusBlink { 0%, 68% { opacity: 1; } 69%, 100% { opacity: .45; } }
+@keyframes menuStatusBlink {
+  from { opacity: .42; filter: brightness(.82); }
+  to { opacity: 1; filter: brightness(1.2); }
+}
 @keyframes menuTitleGlow { from { filter: drop-shadow(-1px 0 #00d9ff68) drop-shadow(1px 0 #ff3dc852); } to { filter: drop-shadow(-1px 0 #00d9ffcc) drop-shadow(1px 0 #ff3dc8b0) brightness(1.12); } }
-@keyframes menuCopyPulse { 0%, 72% { opacity: .72; } 73%, 100% { opacity: 1; } }
+@keyframes menuCopyPulse { from { opacity: .48; } to { opacity: 1; } }
 @keyframes menuItemIn { from { opacity: 0; transform: translateX(-10px); filter: brightness(1.8); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes menuSelectedPulse { from { filter: brightness(.96); } to { filter: brightness(1.14); } }
-@keyframes menuArrowBounce { from { transform: translateX(0); } to { transform: translateX(2px); } }
+@keyframes menuArrowBounce { from { opacity: .55; transform: translateX(0); } to { opacity: 1; transform: translateX(1px); } }
 @keyframes menuEnergyLine { 0%, 100% { opacity: .35; transform: scaleX(.45); transform-origin: right; } 50% { opacity: 1; transform: scaleX(1); transform-origin: right; } }
 
 .arcade-lite .menu-screen::before,

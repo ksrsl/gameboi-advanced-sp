@@ -10,7 +10,7 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const RACERS = [
   { name: 'NOVA', color: '#f3f5f6', trim: '#15191d', speed: 86.2 },
   { name: 'VEX', color: '#506f86', trim: '#e7edf0', speed: 84.4 },
-  { name: 'BYTE', color: '#b6bec5', trim: '#252b31', speed: 83.2 },
+  { name: 'AXIS', color: '#b6bec5', trim: '#252b31', speed: 83.2 },
   { name: 'LUX', color: '#252b31', trim: '#e9edf0', speed: 87.1 },
   { name: 'JET', color: '#748693', trim: '#111519', speed: 82.6 }
 ];

@@ -13,7 +13,7 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 export default {
   id: 'byte-flyer',
-  title: 'Byte Flyer',
+  title: 'Sky Pulse',
   version: '1.0.0',
   create() {
     let root;
@@ -35,14 +35,14 @@ export default {
 
     const markup = () => `
       <div class="flyer-game">
-        <canvas width="320" height="240" aria-label="Byte Flyer game field"></canvas>
+        <canvas width="320" height="240" aria-label="Sky Pulse game field"></canvas>
         <div class="flyer-hud">
           <span>SCORE <b id="flyer-score">000</b></span>
           <span>COINS <b id="flyer-coins">000</b></span>
           <span>HI <b id="flyer-hi">000</b></span>
         </div>
         <div class="flyer-overlay" id="flyer-overlay">
-          <strong>BYTE FLYER</strong>
+          <strong>SKY PULSE</strong>
           <small>FLAP THROUGH THE DATA GATES<br>COLLECT MEMORY COINS</small>
           <button data-flyer="start">START FLIGHT</button>
           <em>A / TAP FLAP • B SKIN</em>
@@ -76,7 +76,7 @@ export default {
       if (state === 'title') {
         const nextUnlock = UNLOCKS.find(value => value > totalCoins);
         const unlockText = nextUnlock ? `NEXT SKIN AT ${nextUnlock} COINS` : 'ALL SKINS UNLOCKED';
-        showOverlay('BYTE FLYER', `${SKINS[skinIndex].name} FLYER • ${unlockText}`, 'START FLIGHT', 'A / TAP FLAP • B SKIN');
+        showOverlay('SKY PULSE', `${SKINS[skinIndex].name} GLIDER • ${unlockText}`, 'START FLIGHT', 'A / TAP FLAP • B SKIN');
       } else if (state === 'over') {
         const medal = score >= 25 ? 'PLATINUM' : score >= 15 ? 'GOLD' : score >= 7 ? 'SILVER' : 'BRONZE';
         showOverlay('SIGNAL LOST', `SCORE ${score} • ${medal}<br>COINS FOUND ${runCoins}`, 'FLY AGAIN', 'A / START');

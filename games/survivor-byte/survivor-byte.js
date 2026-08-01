@@ -12,7 +12,7 @@ const UPGRADES = [
 ];
 
 export default {
-  id: 'survivor-byte', title: 'Survivor Byte', version: '1.0.0',
+  id: 'survivor-byte', title: 'Neon Onslaught', version: '1.0.0',
   create() {
     let root, canvas, ctx, services, frame = 0, previousTime = 0;
     let state = 'title', player, enemies = [], shots = [], orbs = [], particles = [];
@@ -21,11 +21,11 @@ export default {
     let held = { left:false, right:false, up:false, down:false }, touchVector = null;
 
     const markup = () => `<div class="survivor-game">
-      <canvas width="640" height="480" aria-label="Survivor Byte arena"></canvas>
+      <canvas width="640" height="480" aria-label="Neon Onslaught arena"></canvas>
       <div class="survivor-hud"><span>LV <b id="survivor-level">01</b></span><span>KO <b id="survivor-score">000000</b></span><span>TIME <b id="survivor-time">00:00</b></span><span>HI <b id="survivor-hi">000000</b></span></div>
       <div class="survivor-bars"><i id="survivor-health"></i><i id="survivor-xp"></i></div>
       <div class="survivor-charge">PULSE <b id="survivor-charge">000</b></div>
-      <div class="survivor-overlay" id="survivor-overlay"><strong>SURVIVOR BYTE</strong><small>OUTLAST THE SWARM<br>WEAPONS FIRE AUTOMATICALLY</small><button data-survivor="start">DEPLOY</button><em>D-PAD MOVE - A DASH - B PULSE</em></div>
+      <div class="survivor-overlay" id="survivor-overlay"><strong>NEON ONSLAUGHT</strong><small>OUTLAST THE SWARM<br>WEAPONS FIRE AUTOMATICALLY</small><button data-survivor="start">DEPLOY</button><em>D-PAD MOVE - A DASH - B PULSE</em></div>
       <div class="survivor-pause" id="survivor-pause" hidden>PAUSED</div>
       <button class="survivor-exit" data-survivor="exit" aria-label="Exit game">X</button>
     </div>`;
@@ -55,7 +55,7 @@ export default {
     }
     function renderUi() {
       root.querySelector('#survivor-pause').hidden=state!=='pause';
-      if(state==='title') showOverlay('SURVIVOR BYTE',`BEST ${timeText(bestTime)}<br>WEAPONS FIRE AUTOMATICALLY`,'DEPLOY');
+      if(state==='title') showOverlay('NEON ONSLAUGHT',`BEST ${timeText(bestTime)}<br>WEAPONS FIRE AUTOMATICALLY`,'DEPLOY');
       else if(state==='over') showOverlay('SIGNAL LOST',`${timeText(elapsed)} SURVIVED<br>${score} KNOCKOUT POINTS`,'REDEPLOY');
       else if(state==='level') renderUpgrade();
       else root.querySelector('#survivor-overlay').hidden=true;

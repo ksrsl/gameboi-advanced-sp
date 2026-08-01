@@ -5,7 +5,7 @@ const HEIGHT = 240;
 const FISH = [
   { id: 'perch', name: 'PIXEL PERCH', rarity: 1, weight: 34, min: 8, max: 22, color: '#ffd66b' },
   { id: 'koi', name: 'NEON KOI', rarity: 1, weight: 25, min: 12, max: 29, color: '#ff8b68' },
-  { id: 'bass', name: 'BYTE BASS', rarity: 2, weight: 17, min: 18, max: 42, color: '#77e3aa' },
+  { id: 'bass', name: 'NEON BASS', rarity: 2, weight: 17, min: 18, max: 42, color: '#77e3aa' },
   { id: 'carp', name: 'CIRCUIT CARP', rarity: 2, weight: 11, min: 22, max: 49, color: '#6fc9ff' },
   { id: 'eel', name: 'MOON EEL', rarity: 3, weight: 7, min: 30, max: 61, color: '#b79aff' },
   { id: 'ray', name: 'GLITCH RAY', rarity: 4, weight: 3.5, min: 40, max: 78, color: '#ff82bd' },
@@ -20,7 +20,7 @@ function freshSave() {
 
 export default {
   id: 'fishing-byte',
-  title: 'Fishing Byte',
+  title: 'Neon Angler',
   version: '1.0.0',
   create() {
     let root;
@@ -53,7 +53,7 @@ export default {
 
     const markup = () => `
       <div class="fish-game">
-        <canvas width="320" height="240" aria-label="Fishing Byte lake"></canvas>
+        <canvas width="320" height="240" aria-label="Neon Angler lake"></canvas>
         <div class="fish-hud">
           <span>CAUGHT <b id="fish-total">000</b></span>
           <span>COINS <b id="fish-coins">000</b></span>
@@ -62,7 +62,7 @@ export default {
         <div class="fish-message" id="fish-message">THE LAKE IS CALM.</div>
         <button class="fish-action" id="fish-action" data-fish="action">A CAST</button>
         <div class="fish-overlay" id="fish-overlay">
-          <strong>FISHING BYTE</strong>
+          <strong>NEON ANGLER</strong>
           <small>CAST • HOOK • REEL<br>COLLECT ALL 8 SPECIES</small>
           <button data-fish="start">VISIT THE LAKE</button>
           <em>A ACTION • B ALBUM</em>
@@ -103,7 +103,7 @@ export default {
     function renderUi() {
       updateHud();
       root.querySelector('#fish-pause').hidden = state !== 'pause';
-      if (state === 'intro') showOverlay('FISHING BYTE', `${Object.keys(saveData.album).length}/8 SPECIES FOUND<br>THE LAKE REMEMBERS YOU`, 'VISIT THE LAKE', 'A ACTION • B ALBUM');
+      if (state === 'intro') showOverlay('NEON ANGLER', `${Object.keys(saveData.album).length}/8 SPECIES FOUND<br>THE LAKE REMEMBERS YOU`, 'VISIT THE LAKE', 'A ACTION • B ALBUM');
       else if (state === 'album') showOverlay('FISH ALBUM', albumCopy(), 'BACK TO LAKE', 'A / B / START');
       else if (state === 'result') {
         const stars = '★'.repeat(hookedFish.rarity) + '☆'.repeat(5 - hookedFish.rarity);

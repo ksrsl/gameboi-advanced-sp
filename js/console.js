@@ -3,20 +3,20 @@ import { registerCartridge, loadCartridge, listCartridges } from './game-loader.
 import { GameSync, syncConfigFromLocation } from './sync.js';
 import { setupLslBridge } from './lsl-bridge.js?v=3.0.0';
 import { createArcadeFX } from './arcade-fx.js?v=3.0.0';
-import snakeCartridge from '../games/snake/snake.js?v=3.1.1';
+import snakeCartridge from '../games/snake/snake.js?v=3.2.3';
 import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.0';
 import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.0';
 import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=3.0.0';
-import petByteCartridge from '../games/pet-byte/pet-byte.js?v=3.0.0';
-import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=3.0.0';
+import petByteCartridge from '../games/pet-byte/pet-byte.js?v=3.2.3';
+import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=3.2.3';
 import roadRushCartridge from '../games/road-rush/road-rush.js?v=3.0.0';
-import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=3.0.0';
-import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=3.0.0';
+import dungeonByteCartridge from '../games/dungeon-byte/dungeon-byte.js?v=3.2.3';
+import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=3.2.3';
 import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=3.0.0';
 import miniGolfCartridge from '../games/mini-golf/mini-golf.js?v=3.0.0';
 import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=3.0.0';
-import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=3.0.0';
-import survivorByteCartridge from '../games/survivor-byte/survivor-byte.js?v=3.0.0';
+import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=3.2.3';
+import survivorByteCartridge from '../games/survivor-byte/survivor-byte.js?v=3.2.3';
 import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=3.0.0';
 import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=3.0.0';
 import battleTanksCartridge from '../games/battle-tanks/battle-tanks.js?v=3.0.0';
@@ -364,20 +364,20 @@ function action(name) {
   if (name === 'scores') {
     panel('HIGH SCORES', `
       <div class="score-list">
-        <div><span>SNAKE BYTE</span><b>${String(storage.get('snake:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>NEON SERPENT</span><b>${String(storage.get('snake:highScore', 0)).padStart(6, '0')}</b></div>
         <div><span>BLOCK DROP</span><b>${String(storage.get('blockDrop:highScore', 0)).padStart(6, '0')}</b></div>
         <div><span>BRICK BLASTER</span><b>${String(storage.get('brickBlaster:highScore', 0)).padStart(6, '0')} / L${String(storage.get('brickBlaster:bestLevel', 1)).padStart(2, '0')}</b></div>
         <div><span>ASTRO DEFENDER</span><b>${String(storage.get('astroDefender:highScore', 0)).padStart(6, '0')} / W${String(storage.get('astroDefender:bestWave', 1)).padStart(2, '0')}</b></div>
-        <div><span>PET BYTE</span><b>LEVEL ${String(storage.get('petByte:bestLevel', 1)).padStart(2, '0')}</b></div>
-        <div><span>BYTE FLYER</span><b>${String(storage.get('byteFlyer:highScore', 0)).padStart(3, '0')}</b></div>
+        <div><span>KSR COMPANION</span><b>LEVEL ${String(storage.get('petByte:bestLevel', 1)).padStart(2, '0')}</b></div>
+        <div><span>SKY PULSE</span><b>${String(storage.get('byteFlyer:highScore', 0)).padStart(3, '0')}</b></div>
         <div><span>ROAD RUSH</span><b>${String(storage.get('roadRush:highScore', 0)).padStart(5, '0')}</b></div>
-        <div><span>DUNGEON BYTE</span><b>F${String(storage.get('dungeonByte:bestFloor', 1)).padStart(2, '0')}</b></div>
-        <div><span>FISHING BYTE</span><b>${String(storage.get('fishingByte:species', 0))}/8 • ${String(Math.floor(storage.get('fishingByte:bestSize', 0))).padStart(3, '0')}CM</b></div>
+        <div><span>SHADOW CIRCUIT</span><b>F${String(storage.get('dungeonByte:bestFloor', 1)).padStart(2, '0')}</b></div>
+        <div><span>NEON ANGLER</span><b>${String(storage.get('fishingByte:species', 0))}/8 • ${String(Math.floor(storage.get('fishingByte:bestSize', 0))).padStart(3, '0')}CM</b></div>
         <div><span>MAZE MUNCHER</span><b>${String(storage.get('mazeMuncher:highScore', 0)).padStart(6, '0')}</b></div>
         <div><span>MINI GOLF</span><b>${storage.get('miniGolf:bestScore', 0) || '--'} STROKES</b></div>
         <div><span>POCKET TENNIS</span><b>${String(storage.get('pocketTennis:wins', 0)).padStart(3, '0')} WINS</b></div>
         <div><span>PIXEL KART</span><b>${storage.get('pixelKart:bestTime', 0) ? (storage.get('pixelKart:bestTime', 0) / 1000).toFixed(1) + 'S' : '--'}</b></div>
-        <div><span>SURVIVOR BYTE</span><b>${String(storage.get('survivorByte:highScore', 0)).padStart(6, '0')}</b></div>
+        <div><span>NEON ONSLAUGHT</span><b>${String(storage.get('survivorByte:highScore', 0)).padStart(6, '0')}</b></div>
         <div><span>BOMB GRID</span><b>${String(storage.get('bombGrid:wins', 0)).padStart(3, '0')} WINS</b></div>
         <div><span>PIXEL QUEST</span><b>${String(storage.get('pixelQuest:highScore', 0)).padStart(6, '0')}</b></div>
         <div><span>BATTLE TANKS</span><b>${String(storage.get('battleTanks:highScore', 0)).padStart(6, '0')}</b></div>

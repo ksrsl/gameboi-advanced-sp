@@ -4,20 +4,20 @@ A screen-only retro handheld console for Second Life Media on a Prim. The web co
 
 Created by Corp.
 
-- **Snake Byte** - polished classic snake action
+- **Neon Serpent** - polished classic snake action
 - **Block Drop** - an original falling-block puzzle
 - **Brick Blaster** - multi-level brick breaking with collectible power cores
 - **Astro Defender** - a wave-based space shooter with bombs and upgrades
-- **Pet Byte** - a persistent virtual pet with care, coins, and levels
-- **Byte Flyer** - one-button flying with gates, coins, skins, and day/night stages
+- **KSR Companion** - a persistent virtual pet named Nova with care, coins, and levels
+- **Sky Pulse** - one-button flying with gates, coins, skins, and day/night stages
 - **Road Rush** - a three-lane endless racer with boost, shields, and unlockable cars
-- **Dungeon Byte** - a turn-based dungeon adventure with persistent runs
-- **Fishing Byte** - timing-based fishing with rarity, records, and a saved collection
+- **Shadow Circuit** - a turn-based dungeon adventure with persistent runs
+- **Neon Angler** - timing-based fishing with rarity, records, and a saved collection
 - **Maze Muncher** - an original maze chase with power cores, four drone behaviors, and escalating levels
 - **Mini Golf** - five compact courses with sand, water, par, and a saved best round
 - **Pocket Tennis** - a smooth first-to-five tennis match with standard shots and lobs
 - **Pixel Kart** - an original six-racer kart circuit with drifting, boosts, item boxes, and three laps
-- **Survivor Byte** - an auto-fire arena roguelite with upgrades, dash, pulse attack, bosses, and escalating swarms
+- **Neon Onslaught** - an auto-fire arena roguelite with upgrades, dash, pulse attack, bosses, and escalating swarms
 - **Bomb Grid** - a tactical maze battle against three CPU hunters with bombs, breakable crates, and powerups
 - **Pixel Quest** - a three-world platform adventure with coins, enemies, checkpoints, and a final citadel boss
 - **Battle Tanks** - a cover-based tank arena with ricochets, mines, waves, and aggressive flanking CPU tanks
@@ -93,7 +93,7 @@ Choose **Turn Off** for a CRT-style shutdown animation. Click the dark screen to
 
 The music-note button mutes the retro sound effects. Mute state, progress, collections, and high scores are stored locally in the viewer's media browser.
 
-### Snake Byte
+### Neon Serpent
 
 - D-pad: steer
 - Start: pause
@@ -122,14 +122,14 @@ The music-note button mutes the retro sound effects. Mute state, progress, colle
 - Start: pause
 - Touch/drag the field: move and fire
 
-### Pet Byte
+### KSR Companion
 
 - D-pad: choose an activity
 - A: perform the selected activity
 - Start: view status
 - Touch/click an activity or pet directly
 
-### Byte Flyer
+### Sky Pulse
 
 - A, Up, or a screen click: flap
 - Start: pause
@@ -143,7 +143,7 @@ The music-note button mutes the retro sound effects. Mute state, progress, colle
 - Start: pause
 - B on the title screen: choose an unlocked car
 
-### Dungeon Byte
+### Shadow Circuit
 
 - D-pad: move or attack an adjacent enemy
 - A: confirm or inspect status
@@ -152,7 +152,7 @@ The music-note button mutes the retro sound effects. Mute state, progress, colle
 
 The current run is saved after every turn and can be continued after reopening the cartridge.
 
-### Fishing Byte
+### Neon Angler
 
 - A or screen press: cast, hook, and reel
 - Up/Down while reeling: follow the fish
@@ -202,7 +202,7 @@ Matches are first to five points. The CPU anticipates the ball, covers the open 
 
 Race three laps against five named original KSR rivals. Turbo, shield, and pulse items appear in boxes. The upgraded racer includes three selectable circuits, rival collisions, lap announcements, reverse, boost pads, roadside lighting, and a separate winning best time for every track.
 
-### Survivor Byte
+### Neon Onslaught
 
 - D-pad: move in any direction
 - A: dash through danger

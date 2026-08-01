@@ -9,7 +9,7 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 export default {
   id: 'dungeon-byte',
-  title: 'Dungeon Byte',
+  title: 'Shadow Circuit',
   version: '1.0.0',
   create() {
     let root;
@@ -36,7 +36,7 @@ export default {
 
     const markup = () => `
       <div class="dungeon-game">
-        <canvas width="320" height="240" aria-label="Dungeon Byte map"></canvas>
+        <canvas width="320" height="240" aria-label="Shadow Circuit map"></canvas>
         <div class="dungeon-hud">
           <span>FLOOR <b id="dungeon-floor">01</b></span>
           <span>HP <b id="dungeon-hp">10/10</b></span>
@@ -51,7 +51,7 @@ export default {
         <div class="dungeon-log" id="dungeon-log">THE TORCHES FLICKER...</div>
         <button class="dungeon-potion" data-dungeon="potion">B USE POTION</button>
         <div class="dungeon-overlay" id="dungeon-overlay">
-          <strong>DUNGEON BYTE</strong>
+          <strong>SHADOW CIRCUIT</strong>
           <small>EXPLORE • BATTLE • LOOT<br>YOUR RUN SAVES EVERY TURN</small>
           <button data-dungeon="start">BEGIN RUN</button>
           <em>D-PAD MOVE • B POTION</em>
@@ -165,7 +165,7 @@ export default {
     function renderUi() {
       updateUi();
       if (state === 'intro') {
-        showOverlay('DUNGEON BYTE', returning ? `SAVED RUN • FLOOR ${floor}<br>HERO LEVEL ${level}` : 'EXPLORE • BATTLE • LOOT<br>YOUR RUN SAVES EVERY TURN', returning ? 'CONTINUE RUN' : 'BEGIN RUN', returning ? 'A CONTINUE • B NEW RUN' : 'A / START');
+        showOverlay('SHADOW CIRCUIT', returning ? `SAVED RUN • FLOOR ${floor}<br>HERO LEVEL ${level}` : 'EXPLORE • BATTLE • LOOT<br>YOUR RUN SAVES EVERY TURN', returning ? 'CONTINUE RUN' : 'BEGIN RUN', returning ? 'A CONTINUE • B NEW RUN' : 'A / START');
       } else if (state === 'status') {
         showOverlay('HERO STATUS', `LEVEL ${level} • BLADE +${weapon}<br>HP ${hero.hp}/${maxHp()} • ${gold} GOLD<br>BEST FLOOR ${bestFloor}`, 'BACK TO DUNGEON', 'START / A / B');
       } else if (state === 'over') {

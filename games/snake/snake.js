@@ -7,7 +7,7 @@ const TURN_RESPONSE_MS = 32;
 
 export default {
   id: 'snake',
-  title: 'Snake Byte',
+  title: 'Neon Serpent',
   version: '2.0.0',
   create() {
     let root;
@@ -33,7 +33,7 @@ export default {
       <div class="snake-game">
         <div class="snake-hud"><span>SCORE <b id="snake-score">0000</b></span><span>HI <b id="snake-hi">0000</b></span></div>
         <canvas width="300" height="200" aria-label="Snake game board"></canvas>
-        <div class="snake-overlay" id="snake-overlay"><strong>SNAKE BYTE</strong><small>KSR DATA GRID</small><button data-snake="start">START GAME</button><em>START / A</em></div>
+        <div class="snake-overlay" id="snake-overlay"><strong>NEON SERPENT</strong><small>KSR DATA GRID</small><button data-snake="start">START GAME</button><em>START / A</em></div>
         <button class="snake-exit" data-snake="exit" aria-label="Exit game">×</button>
         <div class="snake-pause" id="snake-pause" hidden>PAUSED</div>
       </div>`;
@@ -119,7 +119,7 @@ export default {
       paused.hidden = state !== 'pause';
       if (state === 'title') {
         overlay.hidden = false;
-        overlay.innerHTML = '<strong>SNAKE BYTE</strong><small>KSR DATA GRID</small><button data-snake="start">START GAME</button><em>START / A</em>';
+        overlay.innerHTML = '<strong>NEON SERPENT</strong><small>KSR DATA GRID</small><button data-snake="start">START GAME</button><em>START / A</em>';
       } else if (state === 'over') {
         overlay.hidden = false;
         overlay.innerHTML = `<strong>GAME OVER</strong><small>SCORE ${String(score).padStart(4, '0')}</small><button data-snake="start">RESTART</button><em>A / START</em>`;

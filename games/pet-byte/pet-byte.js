@@ -12,7 +12,7 @@ const clamp = value => Math.max(0, Math.min(100, value));
 
 function freshPet() {
   return {
-    name: 'BYTE',
+    name: 'NOVA',
     level: 1,
     xp: 0,
     coins: 20,
@@ -27,7 +27,7 @@ function freshPet() {
 
 export default {
   id: 'pet-byte',
-  title: 'Pet Byte',
+  title: 'KSR Companion',
   version: '1.0.0',
   create() {
     let root;
@@ -42,16 +42,16 @@ export default {
     let selected = 0;
     let pet;
     let returning = false;
-    let message = 'BYTE IS WAITING FOR YOU!';
+    let message = 'NOVA IS WAITING FOR YOU!';
     let animation = 'idle';
     let animationUntil = 0;
     let lastPat = 0;
 
     const markup = () => `
       <div class="pet-game">
-        <canvas width="320" height="240" aria-label="Pet Byte room"></canvas>
+        <canvas width="320" height="240" aria-label="KSR Companion room"></canvas>
         <div class="pet-hud">
-          <span>BYTE LV <b id="pet-level">01</b></span>
+          <span>NOVA LV <b id="pet-level">01</b></span>
           <span>XP <b id="pet-xp">00/30</b></span>
           <span>COINS <b id="pet-coins">020</b></span>
         </div>
@@ -61,14 +61,14 @@ export default {
           <div class="pet-stat"><span>CLEAN</span><i id="pet-clean"></i></div>
           <div class="pet-stat"><span>ENERGY</span><i id="pet-energy"></i></div>
         </div>
-        <div class="pet-message" id="pet-message">BYTE IS WAITING FOR YOU!</div>
+        <div class="pet-message" id="pet-message">NOVA IS WAITING FOR YOU!</div>
         <div class="pet-actions" id="pet-actions">
           ${ACTIONS.map((action, index) => `<button data-pet-action="${action.id}" class="${index === 0 ? 'selected' : ''}"><span>${action.icon}</span>${action.label}</button>`).join('')}
         </div>
         <div class="pet-overlay" id="pet-overlay">
-          <strong>PET BYTE</strong>
+          <strong>KSR COMPANION</strong>
           <small>A TINY DIGITAL FRIEND<br>WHO REMEMBERS YOU</small>
-          <button data-pet="start">ADOPT BYTE</button>
+          <button data-pet="start">MEET NOVA</button>
           <em>A / START</em>
         </div>
         <button class="pet-exit" data-pet="exit" aria-label="Exit game">×</button>
@@ -109,14 +109,14 @@ export default {
     function moodText() {
       const lowest = Math.min(pet.hunger, pet.happiness, pet.clean, pet.energy);
       if (lowest < 18) {
-        if (pet.hunger === lowest) return 'BYTE IS VERY HUNGRY.';
-        if (pet.happiness === lowest) return 'BYTE NEEDS SOME PLAYTIME.';
-        if (pet.clean === lowest) return 'BYTE NEEDS A BATH.';
-        return 'BYTE NEEDS TO REST.';
+        if (pet.hunger === lowest) return 'NOVA IS VERY HUNGRY.';
+        if (pet.happiness === lowest) return 'NOVA NEEDS SOME PLAYTIME.';
+        if (pet.clean === lowest) return 'NOVA NEEDS A BATH.';
+        return 'NOVA NEEDS TO REST.';
       }
-      if (averageMood() > 84) return 'BYTE FEELS AMAZING!';
-      if (averageMood() > 60) return 'BYTE IS HAPPY TO SEE YOU!';
-      return 'BYTE COULD USE SOME CARE.';
+      if (averageMood() > 84) return 'NOVA FEELS AMAZING!';
+      if (averageMood() > 60) return 'NOVA IS HAPPY TO SEE YOU!';
+      return 'NOVA COULD USE SOME CARE.';
     }
 
     function bar(id, value, color) {
@@ -141,14 +141,14 @@ export default {
       const overlay = root.querySelector('#pet-overlay');
       overlay.hidden = false;
       overlay.innerHTML = returning
-        ? '<strong>WELCOME BACK!</strong><small>BYTE MISSED YOU<br>YOUR PROGRESS WAS SAVED</small><button data-pet="start">VISIT BYTE</button><em>A / START</em>'
-        : '<strong>PET BYTE</strong><small>A TINY DIGITAL FRIEND<br>WHO REMEMBERS YOU</small><button data-pet="start">ADOPT BYTE</button><em>A / START</em>';
+        ? '<strong>WELCOME BACK!</strong><small>NOVA MISSED YOU<br>YOUR PROGRESS WAS SAVED</small><button data-pet="start">VISIT NOVA</button><em>A / START</em>'
+        : '<strong>KSR COMPANION</strong><small>A TINY DIGITAL FRIEND<br>WHO REMEMBERS YOU</small><button data-pet="start">MEET NOVA</button><em>A / START</em>';
     }
 
     function showStatus() {
       const overlay = root.querySelector('#pet-overlay');
       overlay.hidden = false;
-      overlay.innerHTML = `<strong>BYTE STATUS</strong><small>MOOD ${Math.round(averageMood())}%<br>LEVEL ${pet.level} • ${Math.floor(pet.coins)} COINS<br>SELECT AN ACTIVITY TO CARE</small><button data-pet="start">BACK TO ROOM</button><em>START / A / B</em>`;
+      overlay.innerHTML = `<strong>NOVA STATUS</strong><small>MOOD ${Math.round(averageMood())}%<br>LEVEL ${pet.level} • ${Math.floor(pet.coins)} COINS<br>SELECT AN ACTIVITY TO CARE</small><button data-pet="start">BACK TO ROOM</button><em>START / A / B</em>`;
     }
 
     function renderState() {
@@ -175,7 +175,7 @@ export default {
         leveled = true;
       }
       if (leveled) {
-        setMessage(`LEVEL UP! BYTE IS NOW LEVEL ${pet.level}!`, 3200);
+        setMessage(`LEVEL UP! NOVA IS NOW LEVEL ${pet.level}!`, 3200);
         services.tone(880, 0.14);
         setTimeout(() => services.tone(1100, 0.12), 130);
       }
@@ -184,25 +184,25 @@ export default {
     function perform(action) {
       if (state !== 'room') return;
       if (action === 'feed') {
-        if (pet.coins < 2) { setMessage('BYTE NEEDS 2 COINS FOR A SNACK.'); services.tone(120, 0.08); return; }
-        if (pet.hunger > 94) { setMessage('BYTE IS ALREADY FULL!'); return; }
+        if (pet.coins < 2) { setMessage('NOVA NEEDS 2 COINS FOR A SNACK.'); services.tone(120, 0.08); return; }
+        if (pet.hunger > 94) { setMessage('NOVA IS ALREADY FULL!'); return; }
         pet.coins -= 2;
         pet.hunger = clamp(pet.hunger + 29);
         pet.happiness = clamp(pet.happiness + 3);
         gainXp(3);
         animate('feed');
-        setMessage('CRUNCH! BYTE LOVED THAT SNACK.');
+        setMessage('CRUNCH! NOVA LOVED THAT SNACK.');
         services.tone(520, 0.06);
       }
       if (action === 'play') {
-        if (pet.energy < 10) { setMessage('BYTE IS TOO TIRED TO PLAY.'); services.tone(120, 0.08); return; }
+        if (pet.energy < 10) { setMessage('NOVA IS TOO TIRED TO PLAY.'); services.tone(120, 0.08); return; }
         pet.energy = clamp(pet.energy - 10);
         pet.hunger = clamp(pet.hunger - 4);
         pet.happiness = clamp(pet.happiness + 26);
         pet.coins += 1;
         gainXp(5);
         animate('play');
-        setMessage('BOUNCE! BYTE FOUND A COIN.');
+        setMessage('BOUNCE! NOVA FOUND A COIN.');
         services.tone(700, 0.06);
       }
       if (action === 'clean') {
@@ -218,11 +218,11 @@ export default {
         pet.hunger = clamp(pet.hunger - 6);
         gainXp(2);
         animate('sleep', 1500);
-        setMessage('BYTE TOOK A POWER NAP.');
+        setMessage('NOVA TOOK A POWER NAP.');
         services.tone(310, 0.11, 'sine');
       }
       if (action === 'train') {
-        if (pet.energy < 15 || pet.hunger < 12) { setMessage('BYTE NEEDS FOOD AND ENERGY FIRST.'); services.tone(120, 0.08); return; }
+        if (pet.energy < 15 || pet.hunger < 12) { setMessage('NOVA NEEDS FOOD AND ENERGY FIRST.'); services.tone(120, 0.08); return; }
         pet.energy = clamp(pet.energy - 15);
         pet.hunger = clamp(pet.hunger - 7);
         pet.happiness = clamp(pet.happiness + 7);
@@ -426,7 +426,7 @@ export default {
             lastPat = Date.now();
             pet.happiness = clamp(pet.happiness + 1);
             animate('play', 500);
-            setMessage('BYTE LOVES HEAD PATS!', 1200);
+            setMessage('NOVA LOVES HEAD PATS!', 1200);
             services.tone(760, 0.04);
             savePet();
             updateUi();
