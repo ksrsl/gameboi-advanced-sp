@@ -248,7 +248,6 @@ export default {
     }
 
     function start() {
-      if (!authority) return;
       reset();
       state = 'play';
       services.tone(520, 0.06);

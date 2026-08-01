@@ -1,12 +1,12 @@
 import { storage } from './storage.js?v=4.0.1';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
-import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.1';
+import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.2';
 import { setupLslBridge } from './lsl-bridge.js?v=4.0.1';
 import { createArcadeFX } from './arcade-fx.js?v=3.4.0';
-import { LeaderboardClient } from './leaderboard.js?v=4.0.1';
-import { createLeaderboardUI } from './leaderboard-ui.js?v=4.0.1';
-import snakeCartridge from '../games/snake/snake.js?v=3.4.0';
-import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.0';
+import { LeaderboardClient } from './leaderboard.js?v=4.0.3';
+import { createLeaderboardUI } from './leaderboard-ui.js?v=4.0.3';
+import snakeCartridge from '../games/snake/snake.js?v=3.4.1';
+import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.1';
 import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.0';
 import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=3.0.0';
 import petByteCartridge from '../games/pet-byte/pet-byte.js?v=3.2.3';
@@ -61,6 +61,12 @@ const validInputs = new Set(['up', 'down', 'left', 'right', 'a', 'b', 'start', '
 const sync = new GameSync(syncConfigFromLocation());
 const arcadeFx = createArcadeFX({ display: $('#display'), host, storage });
 const leaderboard = new LeaderboardClient({ storage });
+const mediaParams = new URLSearchParams(location.search);
+leaderboard.identify({
+  residentId: mediaParams.get('ownerId'),
+  residentName: mediaParams.get('ownerName'),
+  displayName: mediaParams.get('ownerDisplay')
+});
 leaderboard.setAuthority(!sync.enabled || sync.isHost);
 const CARTRIDGE_PAGE_SIZE = 7;
 const CARTRIDGE_COLUMNS = 2;
@@ -540,6 +546,23 @@ window.GameBoiSP = Object.freeze({ press: requestInput, bridge: lslBridge.enable
 window.addEventListener('hashchange', readHashInput);
 if (location.hash) queueMicrotask(readHashInput);
 document.addEventListener('gameboi-input', event => requestInput(String(event.detail?.key || '').toLowerCase(), event.detail?.pressed !== false));
+
+// Cartridge title and exit buttons used to act only in the viewer that clicked
+// them. Capture those clicks before the cartridge handles them and turn them
+// into normal console inputs so the relay delivers the action to every viewer.
+host.addEventListener('click', event => {
+  const button = event.target.closest?.('button');
+  if (!button || !host.contains(button)) return;
+
+  const action = Object.values(button.dataset).find(value => value === 'start' || value === 'exit');
+  if (!action) return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  const key = action === 'exit' ? 'select' : 'a';
+  requestInput(key, true);
+  queueMicrotask(() => requestInput(key, false));
+}, true);
 
 menuButtons.forEach((button, index) => button.addEventListener('click', () => {
   menuIndex = index;

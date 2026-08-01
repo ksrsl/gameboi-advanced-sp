@@ -7,7 +7,7 @@ const CELL = 10;
 export default {
   id: 'snake',
   title: 'Neon Serpent',
-  version: '3.0.0',
+  version: '3.0.1',
   create() {
     let root;
     let canvas;
@@ -25,6 +25,7 @@ export default {
     let food = {};
     let direction = { x: 1, y: 0 };
     let nextDirection = { x: 1, y: 0 };
+    let turnQueue = [];
     let speed = 145;
 
     const markup = () => `
@@ -42,7 +43,8 @@ export default {
         snake: snake.map(part => ({ ...part })),
         food: { ...food },
         direction: { ...direction },
-        nextDirection: { ...nextDirection }
+        nextDirection: { ...nextDirection },
+        turnQueue: turnQueue.map(turn => ({ ...turn }))
       };
     }
 
@@ -69,6 +71,7 @@ export default {
       moveStartedAt = performance.now();
       nextMoveAt = moveStartedAt + speed;
       direction = nextDirection = { x: 1, y: 0 };
+      turnQueue = [];
       spawnFood();
       updateHud();
     }
@@ -130,7 +133,8 @@ export default {
     function step(time = performance.now()) {
       if (!authority || state !== 'play') return;
       previousSnake = snake.map(part => ({ ...part }));
-      direction = nextDirection;
+      if (turnQueue.length) direction = turnQueue.shift();
+      nextDirection = turnQueue.length ? { ...turnQueue[turnQueue.length - 1] } : { ...direction };
       const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
       if (head.x < 0 || head.x >= WIDTH || head.y < 0 || head.y >= HEIGHT || snake.some(part => part.x === head.x && part.y === head.y)) {
@@ -157,7 +161,6 @@ export default {
     }
 
     function start() {
-      if (!authority) return;
       reset();
       state = 'play';
       services.tone(520, 0.06);
@@ -191,9 +194,13 @@ export default {
 
     function move(x, y) {
       if (!authority || state !== 'play') return;
-      if (x === -direction.x && y === -direction.y) return;
-      if (x === nextDirection.x && y === nextDirection.y) return;
+      const reference = turnQueue.length ? turnQueue[turnQueue.length - 1] : direction;
+      if (x === -reference.x && y === -reference.y) return;
+      if (x === reference.x && y === reference.y) return;
+      if (turnQueue.length >= 2) return;
+      turnQueue.push({ x, y });
       nextDirection = { x, y };
+      publish();
     }
 
     return {
@@ -243,7 +250,12 @@ export default {
         nextMoveAt = moveStartedAt + speed;
         food = remote.food ? { x: remote.food.x, y: remote.food.y } : { x: 5, y: 5 };
         direction = remote.direction ? { ...remote.direction } : { x: 1, y: 0 };
-        nextDirection = remote.nextDirection ? { ...remote.nextDirection } : { ...direction };
+        turnQueue = Array.isArray(remote.turnQueue)
+          ? remote.turnQueue.slice(0, 2).map(turn => ({ x: Number(turn.x) || 0, y: Number(turn.y) || 0 }))
+          : [];
+        nextDirection = turnQueue.length
+          ? { ...turnQueue[turnQueue.length - 1] }
+          : remote.nextDirection ? { ...remote.nextDirection } : { ...direction };
         renderState();
       },
       setAuthority(value) {

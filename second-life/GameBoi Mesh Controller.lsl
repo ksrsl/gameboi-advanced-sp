@@ -1,4 +1,4 @@
-// KSR Gameboi SP - Low-Latency Mesh Controller v2.0.0
+// KSR Gameboi SP - Low-Latency Mesh Controller v2.1.0
 // Put this script in the ROOT/BODY prim of the linked console.
 // Name the display child prim SCREEN. The current display uses face 2.
 // Name the controls UP, DOWN, LEFT, RIGHT, A, B, START, SELECT.
@@ -9,8 +9,9 @@
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
 string SYNC_URL = "https://gameboi-ksr.pages.dev/relay";
-string WEB_VERSION = "4.0.1";
+string WEB_VERSION = "4.0.3";
 integer SCREEN_FACE = 2;
+integer OWNER_ONLY = TRUE;
 integer DEBUG_MODE = FALSE;
 
 integer gScreenLink;
@@ -122,6 +123,15 @@ configureScreen()
     }
 
     gMediaURL = SITE_URL + "?v=" + WEB_VERSION;
+    key ownerId = llGetOwner();
+    string ownerDisplay = llGetDisplayName(ownerId);
+    if (ownerDisplay == "")
+    {
+        ownerDisplay = llKey2Name(ownerId);
+    }
+    gMediaURL += "&ownerId=" + llEscapeURL((string)ownerId)
+        + "&ownerName=" + llEscapeURL(residentUsername(ownerId))
+        + "&ownerDisplay=" + llEscapeURL(ownerDisplay);
     if (SYNC_URL != "" && gSyncToken != "")
     {
         gMediaURL += "&sync=" + llEscapeURL(SYNC_URL)
@@ -134,6 +144,12 @@ configureScreen()
             + "&bridgeToken=" + gBridgeToken;
     }
 
+    integer interactPermissions = PRIM_MEDIA_PERM_ANYONE;
+    if (OWNER_ONLY)
+    {
+        interactPermissions = PRIM_MEDIA_PERM_OWNER;
+    }
+
     integer status = llSetLinkMedia(gScreenLink, SCREEN_FACE,
     [
         PRIM_MEDIA_CURRENT_URL, gMediaURL,
@@ -144,7 +160,7 @@ configureScreen()
         PRIM_MEDIA_FIRST_CLICK_INTERACT, TRUE,
         PRIM_MEDIA_WIDTH_PIXELS, 1024,
         PRIM_MEDIA_HEIGHT_PIXELS, 1024,
-        PRIM_MEDIA_PERMS_INTERACT, PRIM_MEDIA_PERM_ANYONE,
+        PRIM_MEDIA_PERMS_INTERACT, interactPermissions,
         PRIM_MEDIA_PERMS_CONTROL, PRIM_MEDIA_PERM_NONE
     ]);
 
@@ -315,7 +331,19 @@ handleTouches(integer detected, integer pressed)
 
         if (isButtonName(buttonName))
         {
-            sendButton(buttonName, pressed, llDetectedKey(index));
+            key residentId = llDetectedKey(index);
+            if (OWNER_ONLY && residentId != llGetOwner())
+            {
+                if (pressed)
+                {
+                    llRegionSayTo(residentId, 0,
+                        "KSR Gameboi SP is owner-controlled. You are in view-only mode.");
+                }
+            }
+            else
+            {
+                sendButton(buttonName, pressed, residentId);
+            }
         }
         ++index;
     }

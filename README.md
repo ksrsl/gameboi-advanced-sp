@@ -30,7 +30,7 @@ The console and every cartridge remain static GitHub Pages files. A small isolat
 
 The current KSR Arcade System adds a longer, vibrant arcade boot sequence, animated neon arcade menus, a readable paged cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty-one games share the presentation and low-latency input layer. Road Rush draws its lane and shoulder markings in the same curved perspective as the road, eliminating broken-looking vertical stripes. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
 
-The mesh controller is version 2.0.0. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Each mesh event also carries the touching avatar's Resident UUID, Resident username, and display name so the correct player owns the run. Camera-focus and magnifier behavior have been removed.
+The mesh controller is version 2.1.0. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Inputs now respond locally before the matching relay echo returns, while event IDs prevent the echoed input from running twice. The controller supplies the object owner's Resident identity automatically for leaderboard runs. Camera-focus and magnifier behavior have been removed.
 
 ## Public addresses
 
@@ -79,6 +79,8 @@ The interface has a logical **320 x 240** game layout and stretches edge-to-edge
 
 After reset, owner chat should report `KSR Gameboi SP FAST buttons and LIVE relay ready on SCREEN face 2.` The controller requests a temporary secure Second Life URL and keeps one lightweight input connection open from each active media viewer. Mesh-button presses, releases, and the touching Resident's identity are sent through that connection without navigating or reloading the screen on every press. The secure URL is recreated automatically after a region restart. Replace older copies of the controller with the newest `GameBoi Mesh Controller.lsl` so the web page receives the leaderboard identity bridge, live room configuration, fastest input behavior, and current cache refresh.
 
+The controller is owner-controlled by default. Only the object owner can interact with the screen media or operate the named mesh buttons. Other Residents remain connected as live viewers and see the owner's synchronized navigation and gameplay. Set `OWNER_ONLY` to `FALSE` at the top of the controller only when an unrestricted public demo is wanted.
+
 If owner chat reports that the fast-button bridge was denied, the controller falls back to the older URL method. That fallback is suitable for menu testing but is too delayed for action games. Resetting the script usually requests a fresh bridge URL.
 
 Camera focus and magnifier scripts are intentionally not included. Delete any older `GameBoi Direct Camera Focus` or `GameBoi Sit Camera Focus` script from the object's contents. The mesh-button controller handles only Media on a Prim and game input.
@@ -103,9 +105,9 @@ The music-note button mutes the retro sound effects. Mute state, progress, colle
 
 Choose **Leaderboard**, pick a game, then view its **Highest Scores** list. Each game keeps one best result per Second Life Resident. A better result replaces that Resident's previous result; Mini Golf and Pixel Kart treat a lower result as better.
 
-The board shows the unique Resident username, not the changeable display name. For example, display name `Osama Wixx` with Resident username `corp` appears as `CORP`. Press a physical mesh button before starting a cartridge so the run is tied to the correct Resident. Direct browser or screen-only controls still work, but cannot identify a Second Life Resident and therefore do not submit a global score.
+The board shows the unique Resident username, not the changeable display name. For example, display name `Osama Wixx` with Resident username `corp` appears as `CORP`. The owner-controlled mesh controller supplies that identity automatically, so both mesh-button and screen-control runs submit for the object owner. Opening a cartridge also submits that owner's existing saved personal best when it is higher than the global record currently stored for that Resident.
 
-The player who starts a cartridge run remains assigned to that run, so another Resident touching a button later cannot take ownership of its score. Resident UUIDs are retained only as internal database identifiers and are never returned by the public score-list API. This first leaderboard release validates identities, score types, and game-specific score limits, but it is not a fully server-authoritative anti-cheat system.
+The object owner remains assigned to the run, and view-only Residents cannot take ownership of its score. Resident UUIDs are retained only as internal database identifiers and are never returned by the public score-list API. This first leaderboard release validates identities, score types, and game-specific score limits, but it is not a fully server-authoritative anti-cheat system.
 
 The leaderboard service source, D1 migration, deployment configuration, and service documentation are in `leaderboard-worker/`.
 
@@ -301,7 +303,7 @@ Survive a 1500 x 1000 scrolling light grid against seven CPU riders. Every cycle
 
 ## Multiplayer direction
 
-The real-time relay now provides shared viewing and shared controls for one physical console: menus, inputs, viewer count, host authority, and supported cartridge snapshots travel through a hibernating Cloudflare room. Neon Serpent and Block Drop already publish authoritative snapshots; every cartridge receives the same deduplicated inputs.
+The real-time relay now provides owner-controlled shared viewing for one physical console: menus, owner inputs, viewer count, host authority, and supported cartridge snapshots travel through a hibernating Cloudflare room. Neon Serpent and Block Drop already publish authoritative snapshots; every cartridge receives the same deduplicated owner inputs.
 
 This is shared-console synchronization, not yet a competitive online mode where each Resident owns a separate racer or fighter. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Tron Cycle remain designed for those later multi-player modes. The relay source and deployment configuration are in `sync-worker/`.
 

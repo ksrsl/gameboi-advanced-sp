@@ -85,6 +85,10 @@ export class LeaderboardClient {
 
   setAuthority(value) {
     this.authority = Boolean(value);
+    if (this.authority && this.runGameId && this.runPlayer) {
+      const game = gameById.get(this.runGameId);
+      if (game) this.capture(game.storageKey, this.storage?.get?.(game.storageKey, 0));
+    }
   }
 
   identify(player) {
@@ -98,7 +102,9 @@ export class LeaderboardClient {
 
   beginGame(gameId) {
     this.runGameId = gameById.has(gameId) ? gameId : '';
-    this.runPlayer = Date.now() - this.playerSeenAt < 15000 ? this.player : null;
+    this.runPlayer = this.player;
+    const game = gameById.get(this.runGameId);
+    if (game && this.runPlayer) this.capture(game.storageKey, this.storage?.get?.(game.storageKey, 0));
   }
 
   endGame() {

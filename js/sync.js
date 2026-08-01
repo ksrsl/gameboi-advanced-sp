@@ -14,6 +14,8 @@ export class GameSync {
     this.retry = 0;
     this.queue = [];
     this.listeners = new Map();
+    this.seenInputIds = new Set();
+    this.seenInputOrder = [];
   }
 
   on(type, handler) {
@@ -58,7 +60,7 @@ export class GameSync {
         this.emit('role', { host: this.isHost });
         if (message.state) this.emit('state', message.state);
       } else if (message.type === 'input') {
-        this.emit('input', { key: message.key, pressed: message.pressed !== false });
+        this.applyInputOnce(message.key, message.pressed !== false, message.eventId);
       } else if (message.type === 'command') {
         this.emit('command', { name: message.name, data: message.data || {} });
       } else if (message.type === 'state') {
@@ -95,9 +97,25 @@ export class GameSync {
     return true;
   }
 
+  applyInputOnce(key, pressed, eventId) {
+    const id = String(eventId || '');
+    if (id) {
+      if (this.seenInputIds.has(id)) return false;
+      this.seenInputIds.add(id);
+      this.seenInputOrder.push(id);
+      if (this.seenInputOrder.length > 512) {
+        this.seenInputIds.delete(this.seenInputOrder.shift());
+      }
+    }
+    this.emit('input', { key, pressed: pressed !== false });
+    return true;
+  }
+
   sendInput(key, pressed = true, eventId = makeEventId()) {
     if (!VALID_INPUTS.has(key)) return;
-    this.send({ type: 'input', key, pressed: pressed !== false, eventId });
+    const normalizedPressed = pressed !== false;
+    this.applyInputOnce(key, normalizedPressed, eventId);
+    this.send({ type: 'input', key, pressed: normalizedPressed, eventId });
   }
 
   sendCommand(name, data = {}) {
