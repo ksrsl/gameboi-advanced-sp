@@ -388,7 +388,7 @@ export default {
           pointerActive = true;
           movePointer(event);
           if (state === 'play' && !launched) startOrAdvance();
-          canvas.setPointerCapture?.(event.pointerId);
+          try { canvas.setPointerCapture?.(event.pointerId); } catch {}
         });
         canvas.addEventListener('pointermove', event => { if (pointerActive) movePointer(event); });
         canvas.addEventListener('pointerup', () => { pointerActive = false; });

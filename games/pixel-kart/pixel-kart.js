@@ -391,7 +391,7 @@ export default {
         host.innerHTML = markup(); root = host.firstElementChild;
         canvas = root.querySelector('canvas'); ctx = createGameContext(canvas, WIDTH, HEIGHT); resetRace(); state = 'title'; renderUi(); previousTime = performance.now(); frame = requestAnimationFrame(loop);
         root.addEventListener('click', event => { const action = event.target.closest?.('[data-kart]')?.dataset.kart; if (action === 'start') start(); if (action === 'track') cycleTrack(); if (action === 'exit') services.exit(); });
-        canvas.addEventListener('pointerdown', event => { const rect = canvas.getBoundingClientRect(); const x = (event.clientX - rect.left) / rect.width; touchPointer = event.pointerId; canvas.setPointerCapture?.(event.pointerId); if (x < .36) leftHeld = true; else if (x > .64) rightHeld = true; else useItem(); });
+        canvas.addEventListener('pointerdown', event => { const rect = canvas.getBoundingClientRect(); const x = (event.clientX - rect.left) / rect.width; touchPointer = event.pointerId; try { canvas.setPointerCapture?.(event.pointerId); } catch {} if (x < .36) leftHeld = true; else if (x > .64) rightHeld = true; else useItem(); });
         canvas.addEventListener('pointerup', event => { if (touchPointer !== event.pointerId) return; leftHeld = false; rightHeld = false; touchPointer = null; });
         canvas.addEventListener('pointercancel', () => { leftHeld = false; rightHeld = false; touchPointer = null; });
       },

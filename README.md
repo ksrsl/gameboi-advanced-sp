@@ -30,7 +30,7 @@ The console and every cartridge remain static GitHub Pages files. A small isolat
 
 The current KSR Arcade System adds a longer, vibrant arcade boot sequence, animated neon arcade menus, a readable paged cartridge library, cartridge-specific accent lighting, sharper HUDs and title cards, glass and scanline effects, responsive input flashes, upgraded layered sound, and a lightweight mode that activates below 42 FPS in Second Life's media browser. All twenty-one games share the presentation and low-latency input layer. Road Rush draws its lane and shoulder markings in the same curved perspective as the road, eliminating broken-looking vertical stripes. CPU opponents use game-specific pursuit, prediction, defense, and pressure logic instead of passive random movement.
 
-The mesh controller is version 2.1.0. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Inputs now respond locally before the matching relay echo returns, while event IDs prevent the echoed input from running twice. The controller supplies the object owner's Resident identity automatically for leaderboard runs. Camera-focus and magnifier behavior have been removed.
+The mesh controller is version 2.1.1. Its persistent long-poll bridge hands a completed button response directly into the next poll, removing an unnecessary browser timer between inputs while retaining the safe URL fallback. Inputs now respond locally before the matching relay echo returns, while event IDs prevent the echoed input from running twice. The controller supplies the object owner's Resident identity automatically for leaderboard runs. Camera-focus and magnifier behavior have been removed.
 
 ## Public addresses
 
@@ -303,7 +303,7 @@ Survive a 1500 x 1000 scrolling light grid against seven CPU riders. Every cycle
 
 ## Multiplayer direction
 
-The real-time relay now provides owner-controlled shared viewing for one physical console: menus, owner inputs, viewer count, host authority, and supported cartridge snapshots travel through a hibernating Cloudflare room. Neon Serpent, Block Drop, and Sky Pulse publish authoritative snapshots; every cartridge receives the same deduplicated owner inputs. Sky Pulse screen taps are relayed as shared A-button presses, so every viewer receives each flap instead of running a separate falling flyer.
+The real-time relay now provides owner-controlled shared viewing for one physical console: menus, owner inputs, viewer count, host authority, and supported cartridge snapshots travel through a hibernating Cloudflare room. Each room supports one active player and up to thirty-one connected viewers. Neon Serpent, Block Drop, and Sky Pulse publish authoritative snapshots; every cartridge receives the same deduplicated owner inputs. Owner pointer presses, releases, clicks, holds, and smooth drag movement are normalized to the 320 x 240 screen and replayed for viewers across every cartridge. Viewer pointer input is blocked.
 
 This is shared-console synchronization, not yet a competitive online mode where each Resident owns a separate racer or fighter. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Tron Cycle remain designed for those later multi-player modes. The relay source and deployment configuration are in `sync-worker/`.
 

@@ -1,6 +1,6 @@
 const base = process.env.TEST_RELAY_URL || 'ws://127.0.0.1:8792';
-const room = '11111111-1111-4111-8111-111111111111';
-const token = '1234567890abcdef1234567890abcdef';
+const room = crypto.randomUUID();
+const token = crypto.randomUUID().replaceAll('-', '');
 
 function wait(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -32,7 +32,7 @@ function assert(value, message) {
 
 const httpBase = base.replace(/^ws/, 'http');
 const health = await fetch(`${httpBase}/v1/health`).then(response => response.json());
-assert(health.ok && health.service === 'ksr-gameboi-relay', 'Health endpoint failed');
+assert(health.ok && health.service === 'ksr-gameboi-relay' && health.protocol === 2, 'Health endpoint failed');
 
 const first = await connect();
 await wait(80);
@@ -53,6 +53,16 @@ first.socket.send(JSON.stringify({ type: 'input', key: 'left', pressed: false, e
 await wait(80);
 assert(latest(second.messages, 'input')?.pressed === false, 'Button release was not relayed');
 
+second.socket.send(JSON.stringify({ type: 'pointer', phase: 'down', x: 0.9, y: 0.9, pointerId: 7, eventId: 'viewer-pointer' }));
+await wait(80);
+assert(!second.messages.some(message => message.type === 'pointer' && message.eventId === 'viewer-pointer'), 'Viewer pointer input was accepted');
+
+first.socket.send(JSON.stringify({ type: 'pointer', phase: 'down', x: 0.25, y: 0.75, pointerId: 7, buttons: 1, pressure: 0.5, eventId: 'host-pointer' }));
+await wait(80);
+const relayedPointer = latest(second.messages, 'pointer');
+assert(relayedPointer?.eventId === 'host-pointer', 'Host pointer input was not relayed');
+assert(relayedPointer.x === 0.25 && relayedPointer.y === 0.75, 'Pointer coordinates changed in transit');
+
 second.socket.send(JSON.stringify({ type: 'state', state: { gameId: 'snake', snapshot: { score: 999 } } }));
 first.socket.send(JSON.stringify({ type: 'state', state: { gameId: 'snake', snapshot: { score: 120 } } }));
 await wait(120);
@@ -69,6 +79,8 @@ console.log(JSON.stringify({
   hostElection: true,
   duplicateSuppression: true,
   buttonRelease: true,
+  hostOnlyPointer: true,
+  pointerCoordinates: true,
   authoritativeState: true,
   hostFailover: true
 }));

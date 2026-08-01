@@ -1,4 +1,4 @@
-// KSR Gameboi SP - Low-Latency Mesh Controller v2.1.0
+// KSR Gameboi SP - Low-Latency Mesh Controller v2.1.1
 // Put this script in the ROOT/BODY prim of the linked console.
 // Name the display child prim SCREEN. The current display uses face 2.
 // Name the controls UP, DOWN, LEFT, RIGHT, A, B, START, SELECT.
@@ -9,7 +9,7 @@
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
 string SYNC_URL = "https://gameboi-ksr.pages.dev/relay";
-string WEB_VERSION = "4.0.4";
+string WEB_VERSION = "4.0.5";
 integer SCREEN_FACE = 2;
 integer OWNER_ONLY = TRUE;
 integer DEBUG_MODE = FALSE;

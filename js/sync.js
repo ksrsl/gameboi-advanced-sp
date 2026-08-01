@@ -16,6 +16,8 @@ export class GameSync {
     this.listeners = new Map();
     this.seenInputIds = new Set();
     this.seenInputOrder = [];
+    this.seenPointerIds = new Set();
+    this.seenPointerOrder = [];
   }
 
   on(type, handler) {
@@ -61,6 +63,8 @@ export class GameSync {
         if (message.state) this.emit('state', message.state);
       } else if (message.type === 'input') {
         this.applyInputOnce(message.key, message.pressed !== false, message.eventId);
+      } else if (message.type === 'pointer') {
+        this.applyPointerOnce(message);
       } else if (message.type === 'command') {
         this.emit('command', { name: message.name, data: message.data || {} });
       } else if (message.type === 'state') {
@@ -116,6 +120,32 @@ export class GameSync {
     const normalizedPressed = pressed !== false;
     this.applyInputOnce(key, normalizedPressed, eventId);
     this.send({ type: 'input', key, pressed: normalizedPressed, eventId });
+  }
+
+  applyPointerOnce(message) {
+    const id = String(message?.eventId || '');
+    if (id) {
+      if (this.seenPointerIds.has(id)) return false;
+      this.seenPointerIds.add(id);
+      this.seenPointerOrder.push(id);
+      if (this.seenPointerOrder.length > 512) {
+        this.seenPointerIds.delete(this.seenPointerOrder.shift());
+      }
+    }
+    this.emit('pointer', message);
+    return true;
+  }
+
+  sendPointer(pointer) {
+    if (!this.enabled || !this.isHost || !pointer) return;
+    const eventId = makeEventId();
+    this.seenPointerIds.add(eventId);
+    this.seenPointerOrder.push(eventId);
+    if (this.seenPointerOrder.length > 512) {
+      this.seenPointerIds.delete(this.seenPointerOrder.shift());
+    }
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+    this.socket.send(JSON.stringify({ type: 'pointer', ...pointer, eventId }));
   }
 
   sendCommand(name, data = {}) {

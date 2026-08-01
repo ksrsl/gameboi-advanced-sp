@@ -1,14 +1,15 @@
 import { storage } from './storage.js?v=4.0.1';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
-import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.2';
+import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.5';
+import { setupPointerRelay } from './pointer-relay.js?v=4.0.5';
 import { setupLslBridge } from './lsl-bridge.js?v=4.0.1';
 import { createArcadeFX } from './arcade-fx.js?v=3.4.0';
 import { LeaderboardClient } from './leaderboard.js?v=4.0.3';
 import { createLeaderboardUI } from './leaderboard-ui.js?v=4.0.3';
 import snakeCartridge from '../games/snake/snake.js?v=3.4.1';
 import blockDropCartridge from '../games/block-drop/block-drop.js?v=3.0.1';
-import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.0';
-import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=3.0.0';
+import brickBlasterCartridge from '../games/brick-blaster/brick-blaster.js?v=3.0.1';
+import astroDefenderCartridge from '../games/astro-defender/astro-defender.js?v=3.0.1';
 import petByteCartridge from '../games/pet-byte/pet-byte.js?v=3.2.3';
 import byteFlyerCartridge from '../games/byte-flyer/byte-flyer.js?v=3.2.4';
 import roadRushCartridge from '../games/road-rush/road-rush.js?v=3.0.0';
@@ -17,7 +18,7 @@ import fishingByteCartridge from '../games/fishing-byte/fishing-byte.js?v=3.2.3'
 import mazeMuncherCartridge from '../games/maze-muncher/maze-muncher.js?v=3.0.0';
 import miniGolfCartridge from '../games/mini-golf/mini-golf.js?v=3.0.0';
 import pocketTennisCartridge from '../games/pocket-tennis/pocket-tennis.js?v=3.0.0';
-import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=3.2.3';
+import pixelKartCartridge from '../games/pixel-kart/pixel-kart.js?v=3.2.4';
 import survivorByteCartridge from '../games/survivor-byte/survivor-byte.js?v=3.2.3';
 import bombGridCartridge from '../games/bomb-grid/bomb-grid.js?v=3.0.0';
 import pixelQuestCartridge from '../games/pixel-quest/pixel-quest.js?v=3.0.0';
@@ -438,11 +439,13 @@ function applyInput(key, pressed = true) {
 
 function requestInput(key, pressed = true, eventId) {
   if (!validInputs.has(key)) return;
+  if (sync.enabled && !sync.isHost) return;
   if (sync.enabled) sync.sendInput(key, pressed, eventId);
   else applyInput(key, pressed);
 }
 
 function requestCommand(name, data, localAction) {
+  if (sync.enabled && !sync.isHost) return;
   if (sync.enabled) sync.sendCommand(name, data);
   else localAction();
 }
@@ -497,6 +500,7 @@ host.addEventListener('pointerdown', event => {
     try { event.target.setPointerCapture(event.pointerId); } catch {}
   }
 }, true);
+const pointerRelay = setupPointerRelay({ root: host, sync });
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('dragstart', event => event.preventDefault());
 
@@ -641,6 +645,7 @@ $('#panel-content').addEventListener('click', event => {
 });
 
 sync.on('input', ({ key, pressed }) => applyInput(key, pressed));
+sync.on('pointer', pointerRelay.replay);
 sync.on('command', applyCommand);
 sync.on('state', applyRemoteState);
 sync.on('role', ({ host: authority }) => {
@@ -653,6 +658,7 @@ window.addEventListener('beforeunload', () => {
   arcadeFx.close();
   lslBridge.close();
   leaderboard.close();
+  pointerRelay.close();
   sync.close();
 });
 

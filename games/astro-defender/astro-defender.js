@@ -449,7 +449,7 @@ export default {
           movePointer(event);
           held.fire = true;
           if (state === 'play') fire();
-          canvas.setPointerCapture?.(event.pointerId);
+          try { canvas.setPointerCapture?.(event.pointerId); } catch {}
         });
         canvas.addEventListener('pointermove', event => { if (pointerActive) movePointer(event); });
         canvas.addEventListener('pointerup', () => { pointerActive = false; held.fire = false; });

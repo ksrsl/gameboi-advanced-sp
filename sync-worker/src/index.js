@@ -11,6 +11,7 @@ const VALID_INPUTS = new Set(['up', 'down', 'left', 'right', 'a', 'b', 'start', 
 const ROOM_PATTERN = /^[a-z0-9][a-z0-9_-]{7,79}$/i;
 const TOKEN_PATTERN = /^[a-f0-9]{20,64}$/i;
 const COMMAND_PATTERN = /^[a-z][a-zA-Z0-9_-]{0,31}$/;
+const POINTER_PHASES = new Set(['down', 'move', 'up', 'cancel', 'click']);
 const MAX_VIEWERS = 32;
 const MAX_MESSAGE_BYTES = 16384;
 
@@ -173,6 +174,27 @@ export class GameRoom extends DurableObject {
       return;
     }
 
+    if (message?.type === 'pointer' && socket === this.hostSocket()) {
+      const phase = String(message.phase || '');
+      const eventId = String(message.eventId || '').slice(0, 96);
+      const x = Number(message.x);
+      const y = Number(message.y);
+      if (!POINTER_PHASES.has(phase) || !Number.isFinite(x) || !Number.isFinite(y)) return;
+      if (x < 0 || x > 1 || y < 0 || y > 1 || !this.rememberEvent(eventId)) return;
+      this.broadcast({
+        type: 'pointer',
+        phase,
+        x,
+        y,
+        pointerId: Math.max(1, Math.min(2147483647, Math.trunc(Number(message.pointerId) || 1))),
+        button: Math.max(-1, Math.min(4, Math.trunc(Number(message.button) || 0))),
+        buttons: Math.max(0, Math.min(31, Math.trunc(Number(message.buttons) || 0))),
+        pressure: Math.max(0, Math.min(1, Number(message.pressure) || 0)),
+        eventId
+      });
+      return;
+    }
+
     if (message?.type === 'state' && socket === this.hostSocket()) {
       const state = message.state;
       if (!state || typeof state !== 'object' || typeof state.gameId !== 'string' || state.gameId.length > 48) return;
@@ -199,7 +221,7 @@ export default {
     const origin = requestOrigin(request);
     if (!originAllowed(request)) return json({ ok: false, error: 'ORIGIN_NOT_ALLOWED' }, 403);
     if (request.method === 'GET' && url.pathname === '/v1/health') {
-      return json({ ok: true, service: 'ksr-gameboi-relay', protocol: 1 }, 200, origin || undefined);
+      return json({ ok: true, service: 'ksr-gameboi-relay', protocol: 2 }, 200, origin || undefined);
     }
     if (request.method !== 'GET' || !url.pathname.startsWith('/room/')) {
       return json({ ok: false, error: 'NOT_FOUND' }, 404, origin || undefined);
