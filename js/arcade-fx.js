@@ -29,6 +29,7 @@ export function createArcadeFX({ display, host, storage }) {
     if (!INPUT_KEYS.includes(key)) return;
     display.classList.toggle(`arcade-key-${key}`, pressed);
     if (!pressed || !enabled) return;
+    if (host.dataset.cartridge === 'snake' && ['up', 'down', 'left', 'right'].includes(key)) return;
 
     animate(flash, [
       { opacity: 0, background: 'transparent' },

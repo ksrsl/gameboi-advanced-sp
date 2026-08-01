@@ -3,18 +3,16 @@ import { createGameContext } from '../../js/render-utils.js?v=3.0.0';
 const WIDTH = 30;
 const HEIGHT = 20;
 const CELL = 10;
-const TURN_RESPONSE_MS = 32;
 
 export default {
   id: 'snake',
   title: 'Neon Serpent',
-  version: '2.0.0',
+  version: '3.0.0',
   create() {
     let root;
     let canvas;
     let ctx;
     let services;
-    let timer = null;
     let frame = 0;
     let authority = true;
     let state = 'title';
@@ -23,11 +21,11 @@ export default {
     let snake = [];
     let previousSnake = [];
     let moveStartedAt = 0;
+    let nextMoveAt = 0;
     let food = {};
     let direction = { x: 1, y: 0 };
     let nextDirection = { x: 1, y: 0 };
     let speed = 145;
-    let turnResponseQueued = false;
 
     const markup = () => `
       <div class="snake-game">
@@ -69,8 +67,8 @@ export default {
       snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
       previousSnake = snake.map(part => ({ ...part }));
       moveStartedAt = performance.now();
+      nextMoveAt = moveStartedAt + speed;
       direction = nextDirection = { x: 1, y: 0 };
-      turnResponseQueued = false;
       spawnFood();
       updateHud();
     }
@@ -107,6 +105,7 @@ export default {
     }
 
     function renderLoop(time) {
+      if (authority && state === 'play' && time >= nextMoveAt) step(time);
       draw(time);
       frame = requestAnimationFrame(renderLoop);
     }
@@ -128,17 +127,9 @@ export default {
       }
     }
 
-    function scheduleLoop() {
-      clearTimeout(timer);
+    function step(time = performance.now()) {
       if (!authority || state !== 'play') return;
-      timer = setTimeout(loop, speed);
-    }
-
-    function loop() {
-      clearTimeout(timer);
-      if (!authority || state !== 'play') return;
-      previousSnake = currentDrawPositions();
-      turnResponseQueued = false;
+      previousSnake = snake.map(part => ({ ...part }));
       direction = nextDirection;
       const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
@@ -159,11 +150,10 @@ export default {
         snake.pop();
       }
 
-      moveStartedAt = performance.now();
-
-      renderState();
+      moveStartedAt = time;
+      nextMoveAt = time + speed;
+      updateHud();
       publish();
-      scheduleLoop();
     }
 
     function start() {
@@ -173,12 +163,10 @@ export default {
       services.tone(520, 0.06);
       renderState();
       publish();
-      scheduleLoop();
     }
 
     function gameOver() {
       state = 'over';
-      clearTimeout(timer);
       high = Math.max(high, score);
       services.storage.set('snake:highScore', high);
       services.tone(150, 0.22, 'sawtooth');
@@ -190,11 +178,12 @@ export default {
       if (!authority) return;
       if (state === 'play') {
         state = 'pause';
-        clearTimeout(timer);
         services.tone(300, 0.04);
       } else if (state === 'pause') {
         state = 'play';
-        scheduleLoop();
+        previousSnake = snake.map(part => ({ ...part }));
+        moveStartedAt = performance.now();
+        nextMoveAt = moveStartedAt + speed;
       }
       renderState();
       publish();
@@ -205,13 +194,6 @@ export default {
       if (x === -direction.x && y === -direction.y) return;
       if (x === nextDirection.x && y === nextDirection.y) return;
       nextDirection = { x, y };
-
-      const remaining = speed - (performance.now() - moveStartedAt);
-      if (!turnResponseQueued && remaining > TURN_RESPONSE_MS) {
-        clearTimeout(timer);
-        timer = setTimeout(loop, TURN_RESPONSE_MS);
-        turnResponseQueued = true;
-      }
     }
 
     return {
@@ -245,28 +227,34 @@ export default {
       },
       hydrate(remote) {
         if (!remote) return;
-        clearTimeout(timer);
+        const currentPositions = snake.length ? currentDrawPositions() : [];
         state = remote.state || 'title';
         score = Number(remote.score) || 0;
         high = Number(remote.high) || 0;
         speed = Number(remote.speed) || 145;
-        snake = Array.isArray(remote.snake) ? remote.snake.map(part => ({ x: part.x, y: part.y })) : [];
-        previousSnake = snake.map(part => ({ ...part }));
+        const incomingSnake = Array.isArray(remote.snake) ? remote.snake.map(part => ({ x: part.x, y: part.y })) : [];
+        previousSnake = incomingSnake.map((part, index) => {
+          const current = currentPositions[index];
+          if (!current || Math.abs(part.x - current.x) > 2 || Math.abs(part.y - current.y) > 2) return { ...part };
+          return { ...current };
+        });
+        snake = incomingSnake;
         moveStartedAt = performance.now();
+        nextMoveAt = moveStartedAt + speed;
         food = remote.food ? { x: remote.food.x, y: remote.food.y } : { x: 5, y: 5 };
         direction = remote.direction ? { ...remote.direction } : { x: 1, y: 0 };
         nextDirection = remote.nextDirection ? { ...remote.nextDirection } : { ...direction };
-        turnResponseQueued = false;
         renderState();
-        scheduleLoop();
       },
       setAuthority(value) {
         authority = Boolean(value);
-        if (!authority) clearTimeout(timer);
-        else scheduleLoop();
+        if (authority && state === 'play') {
+          previousSnake = snake.map(part => ({ ...part }));
+          moveStartedAt = performance.now();
+          nextMoveAt = moveStartedAt + speed;
+        }
       },
       unmount() {
-        clearTimeout(timer);
         cancelAnimationFrame(frame);
       }
     };
