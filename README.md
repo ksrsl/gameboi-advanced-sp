@@ -303,7 +303,7 @@ Survive a 1500 x 1000 scrolling light grid against seven CPU riders. Every cycle
 
 ## Multiplayer direction
 
-The real-time relay now provides owner-controlled shared viewing for one physical console: menus, owner inputs, viewer count, host authority, and supported cartridge snapshots travel through a hibernating Cloudflare room. Neon Serpent and Block Drop already publish authoritative snapshots; every cartridge receives the same deduplicated owner inputs.
+The real-time relay now provides owner-controlled shared viewing for one physical console: menus, owner inputs, viewer count, host authority, and supported cartridge snapshots travel through a hibernating Cloudflare room. Neon Serpent, Block Drop, and Sky Pulse publish authoritative snapshots; every cartridge receives the same deduplicated owner inputs. Sky Pulse screen taps are relayed as shared A-button presses, so every viewer receives each flap instead of running a separate falling flyer.
 
 This is shared-console synchronization, not yet a competitive online mode where each Resident owns a separate racer or fighter. Pixel Kart, Pocket Tennis, Battle Tanks, Pocket Fighter, Pocket Bowling, and Tron Cycle remain designed for those later multi-player modes. The relay source and deployment configuration are in `sync-worker/`.
 

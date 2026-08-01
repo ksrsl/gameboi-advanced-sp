@@ -14,7 +14,7 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 export default {
   id: 'byte-flyer',
   title: 'Sky Pulse',
-  version: '1.0.0',
+  version: '1.1.0',
   create() {
     let root;
     let canvas;
@@ -22,6 +22,8 @@ export default {
     let services;
     let frame = 0;
     let previousTime = 0;
+    let lastPublishedAt = 0;
+    let authority = true;
     let state = 'title';
     let bird;
     let gates = [];
@@ -32,6 +34,29 @@ export default {
     let totalCoins = 0;
     let skinIndex = 0;
     let wingTick = 0;
+
+    function snapshot() {
+      return {
+        state,
+        bird: bird ? { ...bird } : null,
+        gates: gates.map(gate => ({ ...gate })),
+        spawnTimer,
+        score,
+        high,
+        runCoins,
+        totalCoins,
+        skinIndex,
+        wingTick
+      };
+    }
+
+    function publish(force = false) {
+      if (!authority) return;
+      const now = performance.now();
+      if (!force && now - lastPublishedAt < 50) return;
+      lastPublishedAt = now;
+      services.publishState(snapshot());
+    }
 
     const markup = () => `
       <div class="flyer-game">
@@ -100,6 +125,7 @@ export default {
       services.tone(620, 0.06);
       flap();
       renderUi();
+      publish(true);
     }
 
     function flap() {
@@ -108,6 +134,7 @@ export default {
       bird.vy = -178;
       wingTick = 0.12;
       services.tone(570, 0.025);
+      publish(true);
     }
 
     function pause() {
@@ -116,6 +143,7 @@ export default {
       else { start(); return; }
       services.tone(300, 0.04);
       renderUi();
+      publish(true);
     }
 
     function cycleSkin() {
@@ -125,6 +153,7 @@ export default {
       save();
       services.tone(720, 0.05);
       renderUi();
+      publish(true);
     }
 
     function spawnGate() {
@@ -147,6 +176,7 @@ export default {
       save();
       services.tone(105, 0.24, 'sawtooth');
       renderUi();
+      publish(true);
     }
 
     function update(dt) {
@@ -189,6 +219,17 @@ export default {
         if (hitGate(gate)) gameOver();
       });
       gates = gates.filter(gate => gate.x + gate.width > -8);
+      publish();
+    }
+
+    function updateReplica(dt) {
+      if (state !== 'play' || !bird) return;
+      bird.vy += 485 * dt;
+      bird.y += bird.vy * dt;
+      bird.rotation = clamp(bird.vy / 260, -0.55, 0.9);
+      wingTick = Math.max(0, wingTick - dt);
+      const speed = Math.min(148, 73 + score * 2.1);
+      gates.forEach(gate => { gate.x -= speed * dt; });
     }
 
     function drawBackground() {
@@ -266,7 +307,8 @@ export default {
     function loop(time) {
       const dt = safeDelta(time, previousTime);
       previousTime = time;
-      update(dt);
+      if (authority) update(dt);
+      else updateReplica(dt);
       draw();
       frame = requestAnimationFrame(loop);
     }
@@ -274,6 +316,7 @@ export default {
     return {
       async mount(host, providedServices) {
         services = providedServices;
+        authority = services.isAuthority();
         high = services.storage.get('byteFlyer:highScore', 0);
         totalCoins = services.storage.get('byteFlyer:coins', 0);
         skinIndex = Math.min(services.storage.get('byteFlyer:skin', 0), UNLOCKS.filter(value => value <= totalCoins).length - 1);
@@ -291,7 +334,11 @@ export default {
           if (action === 'start') start();
           if (action === 'exit') services.exit();
         });
-        canvas.addEventListener('pointerdown', () => flap());
+        canvas.addEventListener('pointerdown', event => {
+          event.preventDefault();
+          services.requestInput('a', true);
+          queueMicrotask(() => services.requestInput('a', false));
+        });
       },
       input(key, down) {
         if (!down) return;
@@ -300,9 +347,27 @@ export default {
         if (key === 'start') pause();
         if (key === 'select') services.exit();
       },
-      setAuthority() {},
+      hydrate(remote) {
+        if (!remote) return;
+        state = remote.state || 'title';
+        bird = remote.bird ? { ...remote.bird } : bird;
+        gates = Array.isArray(remote.gates) ? remote.gates.map(gate => ({ ...gate })) : [];
+        spawnTimer = Number(remote.spawnTimer) || 0;
+        score = Number(remote.score) || 0;
+        high = Number(remote.high) || 0;
+        runCoins = Number(remote.runCoins) || 0;
+        totalCoins = Number(remote.totalCoins) || 0;
+        skinIndex = Math.max(0, Math.min(SKINS.length - 1, Number(remote.skinIndex) || 0));
+        wingTick = Number(remote.wingTick) || 0;
+        renderUi();
+      },
+      setAuthority(value) {
+        authority = Boolean(value);
+        previousTime = performance.now();
+        if (authority) publish(true);
+      },
       unmount() {
-        save();
+        if (authority) save();
         cancelAnimationFrame(frame);
       }
     };
