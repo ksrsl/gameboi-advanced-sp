@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#c8edff">
+  <meta name="author" content="Corp">
+  <title>KSR Gameboi Duo</title>
+  <link rel="stylesheet" href="css/duo.css?v=0.1.0">
+</head>
+<body>
+  <main id="duo-device" aria-label="KSR Gameboi Duo">
+    <section id="top-screen" class="duo-screen top-screen" aria-label="Upper display">
+      <div class="screen-glass" aria-hidden="true"></div>
+      <div class="boot-layer">
+        <div class="boot-orbit"><i></i><i></i><i></i></div>
+        <div class="boot-mark">KSR</div>
+        <strong>GAMEBOI DUO</strong>
+        <small>DUAL CORE ENTERTAINMENT SYSTEM</small>
+        <div class="boot-progress"><i></i></div>
+      </div>
+
+      <div class="top-home interface-layer" hidden>
+        <header class="top-status">
+          <div class="brand-chip"><b>KSR</b><span>DUO</span></div>
+          <div class="status-center"><b id="clock-time">12:00</b><span id="clock-date">FRI 01 AUG</span></div>
+          <div class="status-icons" aria-label="System status">
+            <i class="signal"><b></b><b></b><b></b></i>
+            <i class="battery"><b></b></i>
+          </div>
+        </header>
+
+        <div class="top-stage">
+          <div class="ambient-orbit orbit-one" aria-hidden="true"></div>
+          <div class="ambient-orbit orbit-two" aria-hidden="true"></div>
+          <div id="hero-icon" class="hero-icon" aria-hidden="true"></div>
+          <div class="hero-copy">
+            <span id="hero-kicker">KSR SYSTEM</span>
+            <h1 id="hero-title">GAME VAULT</h1>
+            <p id="hero-description">YOUR KSR ARCADE COLLECTION</p>
+          </div>
+          <div id="hero-badge" class="hero-badge">21 READY</div>
+        </div>
+
+        <footer class="top-notice">
+          <span class="notice-light"></span>
+          <p><b id="notice-title">WELCOME BACK, CORP</b><small id="notice-copy">TOUCH AN ICON BELOW TO BEGIN</small></p>
+          <span id="top-page">1 / 2</span>
+        </footer>
+      </div>
+
+      <div class="top-app interface-layer" hidden>
+        <header class="app-topbar">
+          <span id="app-top-kicker">KSR APPLICATION</span>
+          <span id="app-top-clock">12:00</span>
+        </header>
+        <div class="app-scene">
+          <div class="app-horizon" aria-hidden="true"></div>
+          <div id="app-scene-icon" class="scene-icon"></div>
+          <div class="scene-copy">
+            <small id="app-scene-kicker">NOW OPEN</small>
+            <h2 id="app-scene-title">GAME VAULT</h2>
+            <p id="app-scene-description">YOUR KSR ARCADE COLLECTION</p>
+          </div>
+          <div class="scene-stats" id="app-scene-stats"></div>
+        </div>
+      </div>
+
+      <button class="wake-layer" aria-label="Wake KSR Gameboi Duo" hidden>
+        <span></span><small>TOUCH TO WAKE</small>
+      </button>
+    </section>
+
+    <div class="duo-hinge" aria-hidden="true"><i></i><b>KSR</b><i></i></div>
+
+    <section id="bottom-screen" class="duo-screen bottom-screen" aria-label="Lower touch display">
+      <div class="screen-glass" aria-hidden="true"></div>
+      <div class="boot-layer">
+        <div class="boot-grid" aria-hidden="true"></div>
+        <strong>TOUCH SYSTEM</strong>
+        <small>CALIBRATING</small>
+        <div class="touch-calibration"><i></i></div>
+      </div>
+
+      <div class="bottom-home interface-layer" hidden>
+        <header class="touch-status">
+          <button id="profile-button" class="profile-pill" type="button" aria-label="Open KSR profile">
+            <span>C</span><b>CORP</b>
+          </button>
+          <div class="touch-status-copy"><b id="selected-title">GAME VAULT</b><small id="selected-subtitle">21 CLASSICS READY</small></div>
+          <button id="sound-button" class="round-system-button" type="button" aria-label="Toggle sound" aria-pressed="false">
+            <span class="sound-glyph">♪</span>
+          </button>
+        </header>
+
+        <div id="tile-viewport" class="tile-viewport">
+          <div id="tile-pages" class="tile-pages"></div>
+        </div>
+
+        <div class="touch-actions">
+          <button id="previous-page" type="button" aria-label="Previous page">‹</button>
+          <div id="page-dots" class="page-dots" aria-label="Home pages"></div>
+          <button id="open-app" class="open-app" type="button"><span>OPEN</span><small>A</small></button>
+          <button id="next-page" type="button" aria-label="Next page">›</button>
+        </div>
+
+        <footer class="touch-footer"><span>TOUCH OR D-PAD</span><b id="wireless-state">LOCAL LINK</b></footer>
+      </div>
+
+      <div class="bottom-app interface-layer" hidden>
+        <header class="bottom-app-header">
+          <button id="app-back" type="button" aria-label="Back to Home">‹</button>
+          <div><b id="app-bottom-title">GAME VAULT</b><small id="app-bottom-subtitle">KSR APPLICATION</small></div>
+          <span id="app-bottom-icon"></span>
+        </header>
+        <div id="app-content" class="app-content"></div>
+        <footer class="bottom-app-footer"><span>B BACK</span><b>TOUCH TO SELECT</b></footer>
+      </div>
+
+      <button class="wake-layer" aria-label="Wake KSR Gameboi Duo" hidden>
+        <span></span><small>TOUCH TO WAKE</small>
+      </button>
+    </section>
+
+    <div class="device-controls" aria-hidden="true">
+      <div class="circle-pad"></div>
+      <div class="dpad"><i></i><b></b></div>
+      <div class="abxy"><i>A</i><i>B</i><i>X</i><i>Y</i></div>
+    </div>
+  </main>
+
+  <script type="module" src="js/duo.js?v=0.1.0"></script>
+</body>
+</html>
