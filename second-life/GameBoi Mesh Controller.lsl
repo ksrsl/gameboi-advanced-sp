@@ -1,4 +1,4 @@
-// KSR Gameboi SP - Low-Latency Mesh Controller v2.1.1
+// KSR Gameboi SP - Low-Latency Mesh Controller v2.1.2
 // Put this script in the ROOT/BODY prim of the linked console.
 // Name the display child prim SCREEN. The current display uses face 2.
 // Name the controls UP, DOWN, LEFT, RIGHT, A, B, START, SELECT.
@@ -9,9 +9,9 @@
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
 string SYNC_URL = "https://gameboi-ksr.pages.dev/relay";
-string WEB_VERSION = "4.0.5";
+string WEB_VERSION = "4.0.8";
 integer SCREEN_FACE = 2;
-integer OWNER_ONLY = TRUE;
+integer OWNER_ONLY = FALSE;
 integer DEBUG_MODE = FALSE;
 
 integer gScreenLink;
@@ -132,6 +132,10 @@ configureScreen()
     gMediaURL += "&ownerId=" + llEscapeURL((string)ownerId)
         + "&ownerName=" + llEscapeURL(residentUsername(ownerId))
         + "&ownerDisplay=" + llEscapeURL(ownerDisplay);
+    if (!OWNER_ONLY)
+    {
+        gMediaURL += "&public=1";
+    }
     if (SYNC_URL != "" && gSyncToken != "")
     {
         gMediaURL += "&sync=" + llEscapeURL(SYNC_URL)
@@ -169,8 +173,8 @@ configureScreen()
         if (gBridgeURL != "")
         {
             gBridgeReady = TRUE;
-            llOwnerSay("KSR Gameboi SP FAST buttons and LIVE relay ready on SCREEN face "
-                + (string)SCREEN_FACE + ".");
+            llOwnerSay("KSR Gameboi SP PUBLIC FAST buttons and LIVE relay ready on SCREEN face "
+                + (string)SCREEN_FACE + ". Anyone can play.");
         }
         else
         {

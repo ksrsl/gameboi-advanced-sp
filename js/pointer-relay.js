@@ -3,7 +3,7 @@ const MOVE_INTERVAL_MS = 24;
 
 const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
 
-export function setupPointerRelay({ root, sync }) {
+export function setupPointerRelay({ root, sync, publicControls = false }) {
   let replaying = false;
   let lastMoveSentAt = 0;
   const remoteTargets = new Map();
@@ -22,6 +22,7 @@ export function setupPointerRelay({ root, sync }) {
     if (replaying || !sync.enabled) return;
 
     if (!sync.isHost) {
+      if (publicControls) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       return;

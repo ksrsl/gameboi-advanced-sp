@@ -1,7 +1,7 @@
 import { storage } from './storage.js?v=4.0.1';
 import { registerCartridge, loadCartridge, listCartridges } from './game-loader.js';
 import { GameSync, syncConfigFromLocation } from './sync.js?v=4.0.5';
-import { setupPointerRelay } from './pointer-relay.js?v=4.0.5';
+import { setupPointerRelay } from './pointer-relay.js?v=4.0.6';
 import { setupLslBridge } from './lsl-bridge.js?v=4.0.1';
 import { createArcadeFX } from './arcade-fx.js?v=3.4.0';
 import { LeaderboardClient } from './leaderboard.js?v=4.0.3';
@@ -64,6 +64,7 @@ const arcadeFx = createArcadeFX({ display: $('#display'), host, storage });
 const leaderboard = new LeaderboardClient({ storage });
 const mediaParams = new URLSearchParams(location.search);
 const duoEmbedded = mediaParams.get('embed') === 'duo';
+const publicControls = mediaParams.get('public') === '1';
 if (duoEmbedded) document.body.classList.add('duo-embed');
 leaderboard.identify({
   residentId: mediaParams.get('ownerId'),
@@ -446,13 +447,13 @@ function applyInput(key, pressed = true) {
 
 function requestInput(key, pressed = true, eventId) {
   if (!validInputs.has(key)) return;
-  if (sync.enabled && !sync.isHost) return;
+  if (sync.enabled && !sync.isHost && !publicControls) return;
   if (sync.enabled) sync.sendInput(key, pressed, eventId);
   else applyInput(key, pressed);
 }
 
 function requestCommand(name, data, localAction) {
-  if (sync.enabled && !sync.isHost) return;
+  if (sync.enabled && !sync.isHost && !publicControls) return;
   if (sync.enabled) sync.sendCommand(name, data);
   else localAction();
 }
@@ -507,7 +508,7 @@ host.addEventListener('pointerdown', event => {
     try { event.target.setPointerCapture(event.pointerId); } catch {}
   }
 }, true);
-const pointerRelay = setupPointerRelay({ root: host, sync });
+const pointerRelay = setupPointerRelay({ root: host, sync, publicControls });
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('dragstart', event => event.preventDefault());
 
