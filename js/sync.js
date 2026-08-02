@@ -18,6 +18,13 @@ export class GameSync {
     this.seenInputOrder = [];
     this.seenPointerIds = new Set();
     this.seenPointerOrder = [];
+    this.clientId = makeEventId();
+  }
+
+  applyStateIfRemote(state) {
+    if (!state || state._sourceId === this.clientId) return false;
+    this.emit('state', state);
+    return true;
   }
 
   on(type, handler) {
@@ -56,11 +63,11 @@ export class GameSync {
       if (message.type === 'welcome') {
         this.isHost = Boolean(message.host);
         this.emit('role', { host: this.isHost });
-        if (message.state) this.emit('state', message.state);
+        if (message.state) this.applyStateIfRemote(message.state);
       } else if (message.type === 'role') {
         this.isHost = Boolean(message.host);
         this.emit('role', { host: this.isHost });
-        if (message.state) this.emit('state', message.state);
+        if (message.state) this.applyStateIfRemote(message.state);
       } else if (message.type === 'input') {
         this.applyInputOnce(message.key, message.pressed !== false, message.eventId);
       } else if (message.type === 'pointer') {
@@ -68,7 +75,7 @@ export class GameSync {
       } else if (message.type === 'command') {
         this.emit('command', { name: message.name, data: message.data || {} });
       } else if (message.type === 'state') {
-        this.emit('state', message.state);
+        this.applyStateIfRemote(message.state);
       } else if (message.type === 'viewers') {
         this.emit('viewers', message.count);
       }
@@ -154,7 +161,7 @@ export class GameSync {
 
   publish(gameId, snapshot) {
     if (!this.enabled || !this.isHost) return;
-    this.send({ type: 'state', state: { gameId, snapshot } });
+    this.send({ type: 'state', state: { gameId, snapshot, _sourceId: this.clientId } });
   }
 
   close() {

@@ -591,7 +591,6 @@ body,
 }
 
 #game-host canvas {
-  will-change: contents;
   backface-visibility: hidden;
 }
 
@@ -688,6 +687,14 @@ body,
 .arcade-fx-disabled #arcade-fx { display: none; }
 .arcade-lite .arcade-scanlines { display: none; }
 .arcade-lite #game-host [class$="-overlay"] { backdrop-filter: none; }
+.arcade-lite #game-host canvas { filter: none !important; }
+
+.arcade-game-active .arcade-scanlines {
+  opacity: .09;
+  mix-blend-mode: normal;
+}
+
+.arcade-game-active .arcade-glass { display: none; }
 
 .arcade-key-a .arcade-glass,
 .arcade-key-b .arcade-glass,

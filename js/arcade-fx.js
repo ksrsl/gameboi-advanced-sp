@@ -29,7 +29,7 @@ export function createArcadeFX({ display, host, storage }) {
     if (!INPUT_KEYS.includes(key)) return;
     display.classList.toggle(`arcade-key-${key}`, pressed);
     if (!pressed || !enabled) return;
-    if (host.dataset.cartridge === 'snake' && ['up', 'down', 'left', 'right'].includes(key)) return;
+    if (host.dataset.cartridge) return;
 
     animate(flash, [
       { opacity: 0, background: 'transparent' },
@@ -65,6 +65,7 @@ export function createArcadeFX({ display, host, storage }) {
 
   function gameStart(gameId) {
     host.dataset.cartridge = gameId || '';
+    display.classList.add('arcade-game-active');
     animate(host, [
       { opacity: 0, transform: 'scale(1.035)', filter: 'brightness(1.65) saturate(.45)' },
       { opacity: 1, transform: 'scale(1)', filter: 'brightness(1) saturate(1)' }
@@ -73,6 +74,7 @@ export function createArcadeFX({ display, host, storage }) {
 
   function gameEnd() {
     delete host.dataset.cartridge;
+    display.classList.remove('arcade-game-active');
     INPUT_KEYS.forEach(key => display.classList.remove(`arcade-key-${key}`));
   }
 

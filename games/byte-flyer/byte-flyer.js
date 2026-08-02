@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta } from '../../js/render-utils.js?v=3.0.0';
+import { createGameContext, safeDelta } from '../../js/render-utils.js?v=3.1.0';
 
 const WIDTH = 320;
 const HEIGHT = 240;
@@ -23,6 +23,8 @@ export default {
     let frame = 0;
     let previousTime = 0;
     let lastPublishedAt = 0;
+    let simulationTime = 0;
+    let localFlapGuardUntil = 0;
     let authority = true;
     let state = 'title';
     let bird;
@@ -34,6 +36,14 @@ export default {
     let totalCoins = 0;
     let skinIndex = 0;
     let wingTick = 0;
+    let scoreNode;
+    let coinsNode;
+    let highNode;
+    let overlayNode;
+    let pauseNode;
+    let hudSignature = '';
+    let overlaySignature = '';
+    let uiSignature = '';
 
     function snapshot() {
       return {
@@ -46,14 +56,15 @@ export default {
         runCoins,
         totalCoins,
         skinIndex,
-        wingTick
+        wingTick,
+        simulationTime
       };
     }
 
     function publish(force = false) {
       if (!authority) return;
       const now = performance.now();
-      if (!force && now - lastPublishedAt < 50) return;
+      if (!force && now - lastPublishedAt < 80) return;
       lastPublishedAt = now;
       services.publishState(snapshot());
     }
@@ -84,20 +95,32 @@ export default {
     }
 
     function updateHud() {
-      root.querySelector('#flyer-score').textContent = String(score).padStart(3, '0');
-      root.querySelector('#flyer-coins').textContent = String(totalCoins).padStart(3, '0');
-      root.querySelector('#flyer-hi').textContent = String(high).padStart(3, '0');
+      const signature = `${score}|${totalCoins}|${high}`;
+      if (signature === hudSignature) return;
+      hudSignature = signature;
+      scoreNode.textContent = String(score).padStart(3, '0');
+      coinsNode.textContent = String(totalCoins).padStart(3, '0');
+      highNode.textContent = String(high).padStart(3, '0');
     }
 
     function showOverlay(title, copy, button, hint) {
-      const overlay = root.querySelector('#flyer-overlay');
-      overlay.hidden = false;
-      overlay.innerHTML = `<strong>${title}</strong><small>${copy}</small><button data-flyer="start">${button}</button><em>${hint}</em>`;
+      const signature = `${title}|${copy}|${button}|${hint}`;
+      overlayNode.hidden = false;
+      if (signature === overlaySignature) return;
+      overlaySignature = signature;
+      overlayNode.innerHTML = `<strong>${title}</strong><small>${copy}</small><button data-flyer="start">${button}</button><em>${hint}</em>`;
     }
 
     function renderUi() {
       updateHud();
-      root.querySelector('#flyer-pause').hidden = state !== 'pause';
+      const signature = state === 'title'
+        ? `${state}|${totalCoins}|${skinIndex}`
+        : state === 'over'
+          ? `${state}|${score}|${runCoins}`
+          : state;
+      if (signature === uiSignature) return;
+      uiSignature = signature;
+      pauseNode.hidden = state !== 'pause';
       if (state === 'title') {
         const nextUnlock = UNLOCKS.find(value => value > totalCoins);
         const unlockText = nextUnlock ? `NEXT SKIN AT ${nextUnlock} COINS` : 'ALL SKINS UNLOCKED';
@@ -106,7 +129,7 @@ export default {
         const medal = score >= 25 ? 'PLATINUM' : score >= 15 ? 'GOLD' : score >= 7 ? 'SILVER' : 'BRONZE';
         showOverlay('SIGNAL LOST', `SCORE ${score} • ${medal}<br>COINS FOUND ${runCoins}`, 'FLY AGAIN', 'A / START');
       } else {
-        root.querySelector('#flyer-overlay').hidden = true;
+        overlayNode.hidden = true;
       }
     }
 
@@ -117,6 +140,7 @@ export default {
       score = 0;
       runCoins = 0;
       wingTick = 0;
+      simulationTime = 0;
     }
 
     function start() {
@@ -133,6 +157,7 @@ export default {
       if (state !== 'play') return;
       bird.vy = -178;
       wingTick = 0.12;
+      if (!authority) localFlapGuardUntil = performance.now() + 170;
       services.tone(570, 0.025);
       publish(true);
     }
@@ -181,6 +206,7 @@ export default {
 
     function update(dt) {
       if (state !== 'play') return;
+      simulationTime += dt;
       bird.vy += 485 * dt;
       bird.y += bird.vy * dt;
       bird.rotation = clamp(bird.vy / 260, -0.55, 0.9);
@@ -224,6 +250,7 @@ export default {
 
     function updateReplica(dt) {
       if (state !== 'play' || !bird) return;
+      simulationTime += dt;
       bird.vy += 485 * dt;
       bird.y += bird.vy * dt;
       bird.rotation = clamp(bird.vy / 260, -0.55, 0.9);
@@ -323,6 +350,11 @@ export default {
         host.innerHTML = markup();
         root = host.firstElementChild;
         canvas = root.querySelector('canvas');
+        scoreNode = root.querySelector('#flyer-score');
+        coinsNode = root.querySelector('#flyer-coins');
+        highNode = root.querySelector('#flyer-hi');
+        overlayNode = root.querySelector('#flyer-overlay');
+        pauseNode = root.querySelector('#flyer-pause');
         ctx = createGameContext(canvas, WIDTH, HEIGHT);
         reset();
         state = 'title';
@@ -349,16 +381,55 @@ export default {
       },
       hydrate(remote) {
         if (!remote) return;
-        state = remote.state || 'title';
-        bird = remote.bird ? { ...remote.bird } : bird;
-        gates = Array.isArray(remote.gates) ? remote.gates.map(gate => ({ ...gate })) : [];
+        const nextState = remote.state || 'title';
+        const remoteBird = remote.bird ? { ...remote.bird } : null;
+        const remoteTime = Number.isFinite(Number(remote.simulationTime)) ? Number(remote.simulationTime) : simulationTime;
+        const stateChanged = nextState !== state;
+        const remoteGates = Array.isArray(remote.gates) ? remote.gates.map(gate => ({ ...gate })) : [];
+
+        if (stateChanged || nextState !== 'play' || !bird || !remoteBird) {
+          state = nextState;
+          bird = remoteBird || bird;
+          gates = remoteGates;
+          simulationTime = remoteTime;
+        } else {
+          const prediction = clamp(simulationTime - remoteTime, 0, 0.18);
+          const predictedVy = remoteBird.vy + 485 * prediction;
+          const predictedY = remoteBird.y + remoteBird.vy * prediction + 242.5 * prediction * prediction;
+          const positionError = predictedY - bird.y;
+          const velocityError = predictedVy - bird.vy;
+
+          if (performance.now() >= localFlapGuardUntil) {
+            if (Math.abs(positionError) > 28) bird.y = predictedY;
+            else bird.y += positionError * 0.38;
+            if (Math.abs(velocityError) > 125) bird.vy = predictedVy;
+            else bird.vy += velocityError * 0.46;
+            bird.rotation = clamp(bird.vy / 260, -0.55, 0.9);
+          }
+
+          const speed = Math.min(148, 73 + (Number(remote.score) || 0) * 2.1);
+          const predictedGates = remoteGates.map(gate => ({ ...gate, x: gate.x - speed * prediction }));
+          const canBlendGates = gates.length === predictedGates.length
+            && gates.every((gate, index) => Math.abs(gate.x - predictedGates[index].x) < 42);
+          if (canBlendGates) {
+            gates = gates.map((gate, index) => {
+              const target = predictedGates[index];
+              const error = target.x - gate.x;
+              return { ...target, x: Math.abs(error) > 16 ? target.x : gate.x + error * 0.3 };
+            });
+          } else {
+            gates = predictedGates;
+          }
+          state = nextState;
+          simulationTime = Math.max(simulationTime, remoteTime);
+        }
         spawnTimer = Number(remote.spawnTimer) || 0;
         score = Number(remote.score) || 0;
         high = Number(remote.high) || 0;
         runCoins = Number(remote.runCoins) || 0;
         totalCoins = Number(remote.totalCoins) || 0;
         skinIndex = Math.max(0, Math.min(SKINS.length - 1, Number(remote.skinIndex) || 0));
-        wingTick = Number(remote.wingTick) || 0;
+        if (performance.now() >= localFlapGuardUntil) wingTick = Number(remote.wingTick) || 0;
         renderUi();
       },
       setAuthority(value) {

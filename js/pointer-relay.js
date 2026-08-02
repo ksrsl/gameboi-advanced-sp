@@ -1,5 +1,5 @@
 const POINTER_PHASES = new Set(['down', 'move', 'up', 'cancel', 'click']);
-const MOVE_INTERVAL_MS = 24;
+const MOVE_INTERVAL_MS = 32;
 
 const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
 
@@ -7,6 +7,7 @@ export function setupPointerRelay({ root, sync, publicControls = false }) {
   let replaying = false;
   let lastMoveSentAt = 0;
   const remoteTargets = new Map();
+  const localPointers = new Set();
   const removers = [];
 
   function pointFromEvent(event) {
@@ -28,8 +29,15 @@ export function setupPointerRelay({ root, sync, publicControls = false }) {
       return;
     }
 
+    const pointerId = Number.isInteger(event.pointerId) ? event.pointerId : 1;
+    if (phase === 'down') localPointers.add(pointerId);
+    if (phase === 'move' && !localPointers.has(pointerId) && !event.buttons) return;
+
     const point = pointFromEvent(event);
-    if (!point) return;
+    if (!point) {
+      if (phase === 'up' || phase === 'cancel') localPointers.delete(pointerId);
+      return;
+    }
     if (phase === 'move') {
       const now = performance.now();
       if (now - lastMoveSentAt < MOVE_INTERVAL_MS) return;
@@ -40,11 +48,12 @@ export function setupPointerRelay({ root, sync, publicControls = false }) {
       phase,
       x: point.x,
       y: point.y,
-      pointerId: Number.isInteger(event.pointerId) ? event.pointerId : 1,
+      pointerId,
       button: Number.isInteger(event.button) ? event.button : 0,
       buttons: Number.isInteger(event.buttons) ? event.buttons : 0,
       pressure: Number.isFinite(event.pressure) ? event.pressure : (event.buttons ? 0.5 : 0)
     });
+    if (phase === 'up' || phase === 'cancel') localPointers.delete(pointerId);
   }
 
   function listen(type, phase) {
@@ -124,6 +133,7 @@ export function setupPointerRelay({ root, sync, publicControls = false }) {
     replay,
     close() {
       removers.forEach(remove => remove());
+      localPointers.clear();
       remoteTargets.clear();
     }
   };

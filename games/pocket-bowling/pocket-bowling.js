@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta } from '../../js/render-utils.js?v=3.0.0';
+import { createGameContext, safeDelta } from '../../js/render-utils.js?v=3.1.0';
 
 const WIDTH=320,HEIGHT=240,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const PIN_LAYOUT=[[160,65],[151,75],[169,75],[142,85],[160,85],[178,85],[133,95],[151,95],[169,95],[187,95]];

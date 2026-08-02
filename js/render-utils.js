@@ -1,12 +1,25 @@
-const MAX_RENDER_SCALE = 2;
+const BALANCED_RENDER_SCALE = 1.5;
+const PERFORMANCE_RENDER_SCALE = 1.25;
+const HIGH_RENDER_SCALE = 2;
+
+function selectRenderScale() {
+  const quality = new URLSearchParams(globalThis.location?.search || '').get('quality');
+  if (quality === 'high') return HIGH_RENDER_SCALE;
+  if (quality === 'performance') return PERFORMANCE_RENDER_SCALE;
+  if (document.querySelector('#display')?.classList.contains('arcade-lite')) {
+    return PERFORMANCE_RENDER_SCALE;
+  }
+  return BALANCED_RENDER_SCALE;
+}
 
 export function createGameContext(canvas, logicalWidth, logicalHeight) {
-  // Always supersample at 2x. This stays crisp even when a MOAP browser
-  // reports devicePixelRatio 1, then downsamples to the 320x240 surface.
-  const scale = MAX_RENDER_SCALE;
+  // Balanced supersampling stays crisp on a 320x240 MOAP surface without
+  // forcing every cartridge to shade four times the visible pixel count.
+  const scale = selectRenderScale();
 
   canvas.width = Math.round(logicalWidth * scale);
   canvas.height = Math.round(logicalHeight * scale);
+  canvas.dataset.renderScale = String(scale);
   canvas.style.width = `${logicalWidth}px`;
   canvas.style.height = `${logicalHeight}px`;
   canvas.style.contain = 'strict';

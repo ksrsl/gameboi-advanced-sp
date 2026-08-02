@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=3.0.0';
+import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=3.1.0';
 
 const WIDTH=320,HEIGHT=240,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const WALLS=[[68,72,54,12],[198,72,54,12],[145,45,30,50],[145,145,30,50],[50,142,48,12],[222,142,48,12]];

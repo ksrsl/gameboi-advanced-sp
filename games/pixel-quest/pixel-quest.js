@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=3.0.0';
+import { createGameContext, safeDelta, smoothToward } from '../../js/render-utils.js?v=3.1.0';
 
 const WIDTH=320,HEIGHT=240,WORLD=1520;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));

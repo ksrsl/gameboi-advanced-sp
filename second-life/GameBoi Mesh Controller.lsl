@@ -9,7 +9,7 @@
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/";
 string SYNC_URL = "https://gameboi-ksr.pages.dev/relay";
-string WEB_VERSION = "4.0.8";
+string WEB_VERSION = "4.1.0";
 integer SCREEN_FACE = 2;
 integer OWNER_ONLY = FALSE;
 integer DEBUG_MODE = FALSE;

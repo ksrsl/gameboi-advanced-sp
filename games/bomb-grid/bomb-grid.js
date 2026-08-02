@@ -1,4 +1,4 @@
-import { createGameContext, safeDelta } from '../../js/render-utils.js?v=3.0.0';
+import { createGameContext, safeDelta } from '../../js/render-utils.js?v=3.1.0';
 
 const WIDTH=320,HEIGHT=240,COLS=15,ROWS=9,TILE=18,OX=25,OY=48;
 const DIRS=[{x:1,y:0,name:'right'},{x:0,y:1,name:'down'},{x:-1,y:0,name:'left'},{x:0,y:-1,name:'up'}];
