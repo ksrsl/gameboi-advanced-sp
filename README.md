@@ -42,7 +42,7 @@ The mesh controller is version 2.1.1. Its persistent long-poll bridge hands a co
 
 ## KSR Gameboi Duo
 
-The repository now includes the first KSR dual-screen handheld interface. Its upper display and lower touchscreen can run on separate Second Life media faces while remaining synchronized as one device. Open `duo/` for the complete handheld preview, or use `duo/?screen=top` and `duo/?screen=bottom` for the individual display faces. Setup details and the linked-mesh screen script are inside `duo/`.
+The repository now includes the first playable KSR dual-screen handheld interface. Its upper display runs all twenty-one arcade cartridges while the lower touchscreen becomes the live game controller. The two Second Life media faces remain synchronized as one device, including for additional live viewers. Open `duo/` for the complete handheld preview, or use `duo/?screen=top` and `duo/?screen=bottom` for the individual display faces. Setup details and the linked-mesh screen script are inside `duo/`.
 
 Install the included controller and let it configure the media face.
 

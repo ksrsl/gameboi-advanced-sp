@@ -1,11 +1,11 @@
-// KSR Gameboi Duo - Dual Screen Setup v0.1.0
+// KSR Gameboi Duo - Dual Screen Setup v0.2.0
 // Place this script in the ROOT/BODY prim.
 // Name the upper display prim TOP SCREEN.
 // Name the lower touch display prim TOUCH SCREEN.
 
 string SITE_URL = "https://ksrsl.github.io/gameboi-advanced-sp/duo/";
 string SYNC_URL = "https://gameboi-ksr.pages.dev/relay";
-string WEB_VERSION = "0.1.0";
+string WEB_VERSION = "0.2.0";
 
 integer TOP_SCREEN_FACE = 0;
 integer TOUCH_SCREEN_FACE = 0;

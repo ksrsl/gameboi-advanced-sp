@@ -63,6 +63,8 @@ const sync = new GameSync(syncConfigFromLocation());
 const arcadeFx = createArcadeFX({ display: $('#display'), host, storage });
 const leaderboard = new LeaderboardClient({ storage });
 const mediaParams = new URLSearchParams(location.search);
+const duoEmbedded = mediaParams.get('embed') === 'duo';
+if (duoEmbedded) document.body.classList.add('duo-embed');
 leaderboard.identify({
   residentId: mediaParams.get('ownerId'),
   residentName: mediaParams.get('ownerName'),
@@ -287,7 +289,12 @@ function gameServices(gameId) {
     storage,
     tone,
     fx: arcadeFx,
-    exit: () => exitGame(),
+    exit: () => {
+      exitGame();
+      if (duoEmbedded && (!sync.enabled || sync.isHost)) {
+        window.parent.postMessage({ type: 'ksr-duo-game-exit' }, location.origin);
+      }
+    },
     requestInput,
     isAuthority: () => !sync.enabled || sync.isHost,
     publishState: snapshot => sync.publish(gameId, snapshot)
@@ -547,6 +554,14 @@ const lslBridge = setupLslBridge({
 });
 
 window.GameBoiSP = Object.freeze({ press: requestInput, bridge: lslBridge.enabled });
+window.addEventListener('message', event => {
+  if (!duoEmbedded || event.source !== window.parent || event.origin !== location.origin) return;
+  const message = event.data;
+  if (!message || message.type !== 'ksr-duo-input') return;
+  const key = String(message.key || '').toLowerCase();
+  if (!validInputs.has(key)) return;
+  requestInput(key, message.pressed !== false, String(message.eventId || ''));
+});
 window.addEventListener('hashchange', readHashInput);
 if (location.hash) queueMicrotask(readHashInput);
 document.addEventListener('gameboi-input', event => requestInput(String(event.detail?.key || '').toLowerCase(), event.detail?.pressed !== false));
@@ -664,4 +679,12 @@ window.addEventListener('beforeunload', () => {
 
 setMuted(muted);
 updateCartridgePage();
-runBootSequence({ connectAfter: true });
+const directGame = mediaParams.get('game') || '';
+if (duoEmbedded && cartridgeInfo.has(directGame)) {
+  $('#mute').hidden = true;
+  $('#live-status').hidden = true;
+  sync.connect();
+  startGame(directGame);
+} else {
+  runBootSequence({ connectAfter: true });
+}

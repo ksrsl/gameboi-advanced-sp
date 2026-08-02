@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#c8edff">
   <meta name="author" content="Corp">
   <title>KSR Gameboi Duo</title>
-  <link rel="stylesheet" href="css/duo.css?v=0.1.0">
+  <link rel="stylesheet" href="css/duo.css?v=0.2.0">
 </head>
 <body>
   <main id="duo-device" aria-label="KSR Gameboi Duo">
@@ -66,6 +66,12 @@
         </div>
       </div>
 
+      <div class="top-game interface-layer" hidden>
+        <div class="game-rail game-rail-left"><b>KSR</b><span>DUO PLAY</span></div>
+        <iframe id="game-frame" title="KSR cartridge display" allow="autoplay"></iframe>
+        <div class="game-rail game-rail-right"><i></i><small>LIVE</small></div>
+      </div>
+
       <button class="wake-layer" aria-label="Wake KSR Gameboi Duo" hidden>
         <span></span><small>TOUCH TO WAKE</small>
       </button>
@@ -117,6 +123,32 @@
         <footer class="bottom-app-footer"><span>B BACK</span><b>TOUCH TO SELECT</b></footer>
       </div>
 
+      <div class="bottom-game interface-layer" hidden>
+        <header class="game-control-header">
+          <button id="game-home" type="button" aria-label="Leave game and return to Game Vault">&#8249;</button>
+          <div><b id="game-control-title">KSR GAME</b><small>TOUCH CONTROLLER</small></div>
+          <span class="game-live-light">LIVE</span>
+        </header>
+        <div class="game-controls" aria-label="Game controls">
+          <div class="touch-dpad">
+            <button type="button" data-game-input="up" aria-label="Up">&#9650;</button>
+            <button type="button" data-game-input="left" aria-label="Left">&#9664;</button>
+            <i></i>
+            <button type="button" data-game-input="right" aria-label="Right">&#9654;</button>
+            <button type="button" data-game-input="down" aria-label="Down">&#9660;</button>
+          </div>
+          <div class="touch-face-buttons">
+            <button type="button" data-game-input="b" aria-label="B button">B</button>
+            <button type="button" data-game-input="a" aria-label="A button">A</button>
+          </div>
+          <div class="touch-system-buttons">
+            <button type="button" data-game-input="select">SELECT</button>
+            <button type="button" data-game-input="start">START</button>
+          </div>
+        </div>
+        <footer class="game-control-footer"><span>D-PAD MOVE</span><b>A ACTION</b><span>B BACK</span></footer>
+      </div>
+
       <button class="wake-layer" aria-label="Wake KSR Gameboi Duo" hidden>
         <span></span><small>TOUCH TO WAKE</small>
       </button>
@@ -129,6 +161,6 @@
     </div>
   </main>
 
-  <script type="module" src="js/duo.js?v=0.1.0"></script>
+  <script type="module" src="js/duo.js?v=0.2.0"></script>
 </body>
 </html>

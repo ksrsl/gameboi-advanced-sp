@@ -34,6 +34,8 @@ Each view stretches exactly to its assigned prim face without browser scrolling 
 - D-pad and keyboard navigation
 - Touch selection and swipe paging
 - Application preview panels
+- All twenty-one KSR arcade cartridges playable on the upper display
+- Dedicated lower-screen D-pad, A, B, Start, Select, and Home controls
 - Pearl, Midnight, and Sunset themes
 - System sound and mute setting
 - Sleep and wake animation
@@ -63,3 +65,4 @@ Each view stretches exactly to its assigned prim face without browser scrolling 
 
 The top screen is view-only. The lower screen is owner-interactive by default. Both receive the same device room and private relay token.
 
+Open **Game Vault** on the lower display and touch any cartridge to launch it on the upper display. The lower display automatically changes into the game controller. Use the Home arrow in the controller header to return to Game Vault.

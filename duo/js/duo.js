@@ -1,4 +1,4 @@
-import { DuoSync, duoConfig } from './duo-sync.js?v=0.1.0';
+import { DuoSync, duoConfig } from './duo-sync.js?v=0.2.0';
 
 const $ = selector => document.querySelector(selector);
 const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
@@ -23,21 +23,47 @@ const icons = {
 
 const apps = [
   { id: 'vault', title: 'GAME VAULT', subtitle: '21 CLASSICS READY', description: 'YOUR KSR ARCADE COLLECTION', kicker: 'KSR SYSTEM', badge: '21 READY', color: '#f2ad37', stats: ['21 INSTALLED', '4 FAVORITES'], icon: icons.vault },
-  { id: 'kart', title: 'KSR KART WORLD', subtitle: 'DUO EXCLUSIVE', description: 'RACE NEW CIRCUITS WITH A LIVE TOUCH MAP', kicker: 'FEATURED GAME', badge: 'NEW', color: '#e65f63', stats: ['6 RACERS', '3 CIRCUITS'], icon: icons.kart, notice: true },
-  { id: 'companion', title: 'COMPANION WORLD', subtitle: 'NOVA IS WAITING', description: 'CARE, PLAY AND EXPLORE WITH NOVA', kicker: 'KSR LIFE', badge: 'LV 12', color: '#f08bbb', stats: ['NOVA LV 12', '84% HAPPY'], icon: icons.companion },
-  { id: 'shadow', title: 'SHADOW CIRCUIT II', subtitle: 'CONTINUE FLOOR 07', description: 'A DEEPER DUAL-SCREEN DUNGEON ADVENTURE', kicker: 'CONTINUE QUEST', badge: 'FLOOR 07', color: '#745cd9', stats: ['FLOOR 07', '3 RELICS'], icon: icons.shadow },
+  { id: 'kart', gameId: 'pixel-kart', title: 'KSR KART WORLD', subtitle: 'DUO EXCLUSIVE', description: 'RACE NEW CIRCUITS WITH A LIVE TOUCH MAP', kicker: 'FEATURED GAME', badge: 'PLAY', color: '#e65f63', stats: ['6 RACERS', '3 CIRCUITS'], icon: icons.kart, notice: true },
+  { id: 'companion', gameId: 'pet-byte', title: 'COMPANION WORLD', subtitle: 'NOVA IS WAITING', description: 'CARE, PLAY AND EXPLORE WITH NOVA', kicker: 'KSR LIFE', badge: 'PLAY', color: '#f08bbb', stats: ['NOVA LV 12', '84% HAPPY'], icon: icons.companion },
+  { id: 'shadow', gameId: 'dungeon-byte', title: 'SHADOW CIRCUIT II', subtitle: 'CONTINUE FLOOR 07', description: 'A DEEPER DUAL-SCREEN DUNGEON ADVENTURE', kicker: 'CONTINUE QUEST', badge: 'PLAY', color: '#745cd9', stats: ['FLOOR 07', '3 RELICS'], icon: icons.shadow },
   { id: 'pass', title: 'KSR PASS', subtitle: '3 NEARBY SIGNALS', description: 'MEET PLAYERS, TRADE CARDS AND FIND CHALLENGES', kicker: 'NEARBY LINK', badge: '3 FOUND', color: '#30b997', stats: ['3 NEARBY', '18 CARDS'], icon: icons.pass, notice: true },
   { id: 'friends', title: 'FRIENDS', subtitle: '4 ONLINE', description: 'SEE WHO IS ONLINE AND WHAT THEY ARE PLAYING', kicker: 'SOCIAL LINK', badge: '4 ONLINE', color: '#4ca6e8', stats: ['42 FRIENDS', '4 ONLINE'], icon: icons.friends },
   { id: 'notes', title: 'GAME NOTES', subtitle: '7 SAVED NOTES', description: 'KEEP CLUES, RECORDS AND ARCADE GOALS', kicker: 'QUICK TOOL', badge: '7 NOTES', color: '#54bf6c', stats: ['7 NOTES', 'AUTO SAVED'], icon: icons.notes },
   { id: 'sketch', title: 'SKETCH LINK', subtitle: 'DRAW AND SHARE', description: 'MAKE QUICK TOUCH DRAWINGS FOR YOUR FRIENDS', kicker: 'CREATIVE LINK', badge: 'TOUCH', color: '#ef8b42', stats: ['12 COLORS', '8 SLOTS'], icon: icons.sketch },
   { id: 'camera', title: 'KSR CAMERA', subtitle: 'PHOTO GALLERY', description: 'FRAME YOUR SECOND LIFE MOMENTS', kicker: 'MEDIA TOOL', badge: '24 SAVED', color: '#687a8e', stats: ['24 PHOTOS', '6 FRAMES'], icon: icons.camera },
   { id: 'music', title: 'BEAT DISTRICT', subtitle: 'RHYTHM STUDIO', description: 'PERFORM ON THE TOP SCREEN WITH TOUCH PADS BELOW', kicker: 'DUO EXCLUSIVE', badge: '8 TRACKS', color: '#e55caa', stats: ['8 TRACKS', 'BEST A+'], icon: icons.music },
-  { id: 'settings', title: 'SYSTEM SETTINGS', subtitle: 'PERSONALIZE YOUR DUO', description: 'THEMES, AUDIO, PROFILE AND CONNECTIONS', kicker: 'KSR SYSTEM', badge: 'READY', color: '#7392a8', stats: ['VERSION 0.1', 'LINK READY'], icon: icons.settings },
+  { id: 'settings', title: 'SYSTEM SETTINGS', subtitle: 'PERSONALIZE YOUR DUO', description: 'THEMES, AUDIO, PROFILE AND CONNECTIONS', kicker: 'KSR SYSTEM', badge: 'READY', color: '#7392a8', stats: ['VERSION 0.2', 'LINK READY'], icon: icons.settings },
   { id: 'power', title: 'SLEEP MODE', subtitle: 'SAVE POWER', description: 'SUSPEND BOTH SCREENS UNTIL YOUR NEXT TOUCH', kicker: 'POWER CONTROL', badge: 'SLEEP', color: '#40556a', stats: ['QUICK RESUME', 'SAVE SAFE'], icon: icons.power }
+];
+
+const cartridges = [
+  { id: 'snake', title: 'NEON SERPENT', genre: 'ARCADE', mark: 'NS', color: '#2fbf89' },
+  { id: 'block-drop', title: 'BLOCK DROP', genre: 'PUZZLE', mark: 'BD', color: '#6f62dd' },
+  { id: 'brick-blaster', title: 'BRICK BLASTER', genre: 'ACTION', mark: 'BB', color: '#ef7c42' },
+  { id: 'astro-defender', title: 'ASTRO DEFENDER', genre: 'SHOOTER', mark: 'AD', color: '#408cd9' },
+  { id: 'pet-byte', title: 'KSR COMPANION', genre: 'VIRTUAL PET', mark: 'KC', color: '#ed82ad' },
+  { id: 'byte-flyer', title: 'SKY PULSE', genre: 'ONE BUTTON', mark: 'SP', color: '#54b9e7' },
+  { id: 'road-rush', title: 'ROAD RUSH', genre: 'RACING', mark: 'RR', color: '#e65f63' },
+  { id: 'dungeon-byte', title: 'SHADOW CIRCUIT', genre: 'RPG', mark: 'SC', color: '#745cd9' },
+  { id: 'fishing-byte', title: 'NEON ANGLER', genre: 'COLLECTION', mark: 'NA', color: '#27aeb6' },
+  { id: 'maze-muncher', title: 'MAZE MUNCHER', genre: 'MAZE CHASE', mark: 'MM', color: '#efb637' },
+  { id: 'mini-golf', title: 'MINI GOLF', genre: 'SPORTS', mark: 'MG', color: '#42ad68' },
+  { id: 'pocket-tennis', title: 'POCKET TENNIS', genre: 'SPORTS', mark: 'PT', color: '#75b845' },
+  { id: 'pixel-kart', title: 'PIXEL KART', genre: 'KART RACING', mark: 'PK', color: '#ec5f61' },
+  { id: 'survivor-byte', title: 'NEON ONSLAUGHT', genre: 'ROGUELITE', mark: 'NO', color: '#b05bdb' },
+  { id: 'bomb-grid', title: 'BOMB GRID', genre: 'ACTION', mark: 'BG', color: '#ef9142' },
+  { id: 'pixel-quest', title: 'PIXEL QUEST', genre: 'PLATFORM', mark: 'PQ', color: '#42a4df' },
+  { id: 'battle-tanks', title: 'BATTLE TANKS', genre: 'COMBAT', mark: 'BT', color: '#6a9666' },
+  { id: 'pocket-fighter', title: 'POCKET FIGHTER', genre: 'FIGHTING', mark: 'PF', color: '#d65378' },
+  { id: 'street-hoops', title: 'STREET HOOPS', genre: 'SPORTS', mark: 'SH', color: '#eb883d' },
+  { id: 'pocket-bowling', title: 'POCKET BOWLING', genre: 'SPORTS', mark: 'PB', color: '#4e97d2' },
+  { id: 'neon-cycle', title: 'TRON CYCLE', genre: 'LIGHT GRID', mark: 'TC', color: '#22cbd2' }
 ];
 
 const PAGE_SIZE = 8;
 const PAGE_COUNT = Math.ceil(apps.length / PAGE_SIZE);
+const VAULT_PAGE_SIZE = 6;
+const VAULT_PAGE_COUNT = Math.ceil(cartridges.length / VAULT_PAGE_SIZE);
 const params = new URLSearchParams(location.search);
 const ownerName = (params.get('ownerDisplay') || params.get('ownerName') || 'Corp').trim().slice(0, 24);
 const saveKey = 'ksrDuo:system:v1';
@@ -51,6 +77,8 @@ const state = {
   selected: clamp(Number(saved.selected) || 0, 0, apps.length - 1),
   page: clamp(Number(saved.page) || 0, 0, PAGE_COUNT - 1),
   openApp: '',
+  gameId: '',
+  vaultPage: 0,
   sleeping: false,
   theme: ['pearl', 'midnight', 'sunset'].includes(saved.theme) ? saved.theme : 'pearl',
   muted: Boolean(saved.muted)
@@ -62,6 +90,7 @@ let audio = null;
 let suppressTileClick = false;
 let lastTileTap = { index: -1, at: 0 };
 let bootTimers = [];
+let settledSnapshotTimer = 0;
 
 function save() {
   try {
@@ -193,6 +222,8 @@ function snapshot() {
     selected: state.selected,
     page: state.page,
     openApp: state.openApp,
+    gameId: state.gameId,
+    vaultPage: state.vaultPage,
     sleeping: state.sleeping,
     theme: state.theme,
     muted: state.muted
@@ -202,6 +233,14 @@ function snapshot() {
 function sendAction(action, data = {}) {
   sync.sendAction({ action, ...data });
   sync.publishSnapshot(snapshot());
+  scheduleSettledSnapshot();
+}
+
+function scheduleSettledSnapshot() {
+  clearTimeout(settledSnapshotTimer);
+  settledSnapshotTimer = setTimeout(() => {
+    if (sync.isHost) sync.publishSnapshot(snapshot());
+  }, 1250);
 }
 
 function setNotice(title, copy) {
@@ -213,13 +252,17 @@ function appCards(items) {
   return `<div class="app-card-grid">${items.map(item => `<button class="app-card" type="button" data-card="${item[0]}"><span class="card-chip">${item[2] || 'OPEN'}</span><b>${item[0]}</b><small>${item[1]}</small></button>`).join('')}</div>`;
 }
 
+function vaultMarkup() {
+  const page = clamp(state.vaultPage, 0, VAULT_PAGE_COUNT - 1);
+  const visible = cartridges.slice(page * VAULT_PAGE_SIZE, (page + 1) * VAULT_PAGE_SIZE);
+  return `<div class="cartridge-vault">
+    <div class="cartridge-grid">${visible.map(game => `<button class="cartridge-card" type="button" data-game="${game.id}" style="--game-color:${game.color}"><span>${game.mark}</span><div><b>${game.title}</b><small>${game.genre}</small></div></button>`).join('')}</div>
+    <div class="vault-pages"><button type="button" data-vault-page="-1">PREV</button><span>${page + 1} / ${VAULT_PAGE_COUNT}</span><button type="button" data-vault-page="1">NEXT</button></div>
+  </div>`;
+}
+
 function applicationMarkup(app) {
-  if (app.id === 'vault') return appCards([
-    ['SP CLASSICS', '21 ORIGINAL CARTRIDGES READY', '21'],
-    ['DUO EXCLUSIVES', 'BUILT FOR BOTH SCREENS', '4'],
-    ['RECENTLY PLAYED', 'NEON SERPENT - SCORE 1840', 'PLAY'],
-    ['DOWNLOADS', 'NEW CARTRIDGES COMING SOON', 'SOON']
-  ]);
+  if (app.id === 'vault') return vaultMarkup();
   if (app.id === 'kart') return appCards([
     ['QUICK RACE', 'JUMP INTO A THREE-LAP CIRCUIT', 'GO'],
     ['GRAND PRIX', 'FOUR RACES - ONE CHAMPION', '0%'],
@@ -289,13 +332,44 @@ function renderApplicationContent() {
   $('#app-content').innerHTML = applicationMarkup(app);
 }
 
+function gameFrameURL(gameId) {
+  const target = new URL('../', location.href);
+  target.searchParams.set('embed', 'duo');
+  target.searchParams.set('game', gameId);
+  target.searchParams.set('duoVersion', '0.2.0');
+  ['ownerId', 'ownerName', 'ownerDisplay', 'leaderboard'].forEach(name => {
+    const value = params.get(name);
+    if (value) target.searchParams.set(name, value);
+  });
+  if (config.endpoint && config.room && config.token) {
+    target.searchParams.set('sync', config.endpoint);
+    target.searchParams.set('room', `${config.room}-game`);
+    target.searchParams.set('token', config.token);
+  }
+  return target.toString();
+}
+
+function renderGame(game) {
+  document.documentElement.style.setProperty('--active-color', game.color);
+  $('#game-control-title').textContent = game.title;
+  if (config.mode === 'bottom') return;
+  const frame = $('#game-frame');
+  if (frame.dataset.gameId === game.id) return;
+  frame.dataset.gameId = game.id;
+  frame.src = gameFrameURL(game.id);
+}
+
 function showInterface() {
   const app = apps.find(item => item.id === state.openApp);
-  $('.top-home').hidden = Boolean(app);
-  $('.bottom-home').hidden = Boolean(app);
-  $('.top-app').hidden = !app;
-  $('.bottom-app').hidden = !app;
-  if (app) renderOpenApplication(app);
+  const game = cartridges.find(item => item.id === state.gameId);
+  $('.top-home').hidden = Boolean(app || game);
+  $('.bottom-home').hidden = Boolean(app || game);
+  $('.top-app').hidden = !app || Boolean(game);
+  $('.bottom-app').hidden = !app || Boolean(game);
+  $('.top-game').hidden = !game;
+  $('.bottom-game').hidden = !game;
+  if (game) renderGame(game);
+  else if (app) renderOpenApplication(app);
 }
 
 function renderOpenApplication(app) {
@@ -315,6 +389,7 @@ function renderOpenApplication(app) {
 function openApplication(id = currentApp().id, broadcast = true) {
   const app = apps.find(item => item.id === id);
   if (!app || state.sleeping || booting) return;
+  if (app.gameId) return launchGame(app.gameId, broadcast);
   if (app.id === 'power') {
     state.openApp = 'power';
   } else {
@@ -327,7 +402,31 @@ function openApplication(id = currentApp().id, broadcast = true) {
   if (broadcast) sendAction('open', { id: app.id, selected: state.selected });
 }
 
+function launchGame(gameId, broadcast = true) {
+  const game = cartridges.find(item => item.id === gameId);
+  if (!game || state.sleeping || booting) return;
+  state.gameId = game.id;
+  state.openApp = 'vault';
+  showInterface();
+  tone(720, .065);
+  setTimeout(() => tone(1040, .09), 70);
+  if (broadcast) sendAction('launchGame', { gameId: game.id });
+}
+
+function exitDuoGame(broadcast = true) {
+  if (!state.gameId) return;
+  state.gameId = '';
+  const frame = $('#game-frame');
+  frame.dataset.gameId = '';
+  frame.src = 'about:blank';
+  showInterface();
+  renderApplicationContent();
+  tone(300, .05);
+  if (broadcast) sendAction('exitGame');
+}
+
 function closeApplication(broadcast = true) {
+  if (state.gameId) return exitDuoGame(broadcast);
   if (!state.openApp) return;
   state.openApp = '';
   showInterface();
@@ -406,6 +505,29 @@ function moveSelection(key) {
   select(next);
 }
 
+function makeInputId() {
+  return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function forwardGameInput(key, pressed, eventId) {
+  if (!state.gameId || config.mode === 'bottom') return;
+  const frame = $('#game-frame');
+  if (!frame.contentWindow) return;
+  frame.contentWindow.postMessage({
+    type: 'ksr-duo-input',
+    key,
+    pressed: pressed !== false,
+    eventId
+  }, location.origin);
+}
+
+function sendGameInput(key, pressed = true) {
+  if (!state.gameId) return;
+  const eventId = makeInputId();
+  forwardGameInput(key, pressed, eventId);
+  sync.sendAction({ action: 'gameInput', key, pressed: pressed !== false, eventId });
+}
+
 function applyAction(payload, broadcast = false) {
   if (!payload || typeof payload.action !== 'string') return;
   if (payload.action === 'select') select(Number(payload.selected), broadcast);
@@ -415,12 +537,22 @@ function applyAction(payload, broadcast = false) {
   }
   if (payload.action === 'open') openApplication(payload.id, broadcast);
   if (payload.action === 'close') closeApplication(broadcast);
+  if (payload.action === 'launchGame') launchGame(payload.gameId, broadcast);
+  if (payload.action === 'exitGame') exitDuoGame(broadcast);
+  if (payload.action === 'gameInput') forwardGameInput(String(payload.key || ''), payload.pressed !== false, String(payload.eventId || ''));
+  if (payload.action === 'vaultPage') {
+    state.vaultPage = clamp(Number(payload.page) || 0, 0, VAULT_PAGE_COUNT - 1);
+    renderApplicationContent();
+  }
   if (payload.action === 'theme') setTheme(payload.theme, broadcast);
   if (payload.action === 'mute') setMuted(payload.muted, broadcast);
   if (payload.action === 'sleep') sleep(broadcast);
   if (payload.action === 'wake') runBoot();
   if (payload.action === 'notice') setNotice(payload.title || 'KSR DUO', payload.copy || 'SYSTEM READY');
-  if (!broadcast && sync.isHost) sync.publishSnapshot(snapshot());
+  if (!broadcast && payload.action !== 'gameInput' && sync.isHost) {
+    sync.publishSnapshot(snapshot());
+    scheduleSettledSnapshot();
+  }
 }
 
 function hydrate(data) {
@@ -428,6 +560,8 @@ function hydrate(data) {
   state.selected = clamp(Number(data.selected) || 0, 0, apps.length - 1);
   state.page = clamp(Number(data.page) || 0, 0, PAGE_COUNT - 1);
   state.openApp = apps.some(app => app.id === data.openApp) ? data.openApp : '';
+  state.gameId = cartridges.some(game => game.id === data.gameId) ? data.gameId : '';
+  state.vaultPage = clamp(Number(data.vaultPage) || 0, 0, VAULT_PAGE_COUNT - 1);
   setTheme(data.theme || state.theme, false);
   setMuted(Boolean(data.muted), false);
   renderSelection();
@@ -496,6 +630,16 @@ $('#profile-button').addEventListener('click', () => openApplication('friends'))
 document.querySelectorAll('.wake-layer').forEach(layer => layer.addEventListener('click', () => wake()));
 
 $('#app-content').addEventListener('click', event => {
+  const gameButton = event.target.closest('[data-game]');
+  if (gameButton) return launchGame(gameButton.dataset.game);
+  const vaultPageButton = event.target.closest('[data-vault-page]');
+  if (vaultPageButton) {
+    state.vaultPage = (state.vaultPage + Number(vaultPageButton.dataset.vaultPage) + VAULT_PAGE_COUNT) % VAULT_PAGE_COUNT;
+    renderApplicationContent();
+    tone(420, .035);
+    sendAction('vaultPage', { page: state.vaultPage });
+    return;
+  }
   const setting = event.target.closest('[data-setting]')?.dataset.setting;
   if (setting === 'theme') {
     const themes = ['pearl', 'midnight', 'sunset'];
@@ -512,6 +656,31 @@ $('#app-content').addEventListener('click', event => {
   const copy = 'FEATURE PREVIEW SELECTED ON THE TOUCH SCREEN';
   setNotice(title, copy);
   sendAction('notice', { title, copy });
+});
+
+$('#game-home').addEventListener('click', () => exitDuoGame());
+
+function releaseGameButton(button) {
+  if (!button.classList.contains('pressed')) return;
+  button.classList.remove('pressed');
+  sendGameInput(button.dataset.gameInput, false);
+}
+
+$('.game-controls').addEventListener('pointerdown', event => {
+  if (config.mode === 'top' || !state.gameId) return;
+  const button = event.target.closest('[data-game-input]');
+  if (!button) return;
+  event.preventDefault();
+  button.classList.add('pressed');
+  try { button.setPointerCapture(event.pointerId); } catch {}
+  sendGameInput(button.dataset.gameInput, true);
+});
+
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach(type => {
+  $('.game-controls').addEventListener(type, event => {
+    const button = event.target.closest?.('[data-game-input]');
+    if (button) releaseGameButton(button);
+  });
 });
 
 let swipe = null;
@@ -548,8 +717,23 @@ const keyMap = {
   q: 'page-left', Q: 'page-left', e: 'page-right', E: 'page-right'
 };
 
+const gameKeyMap = {
+  ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down',
+  z: 'a', Z: 'a', x: 'b', X: 'b', Enter: 'start', Shift: 'select'
+};
+
 document.addEventListener('keydown', event => {
   if (config.mode === 'top' || event.repeat) return;
+  if (state.gameId) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      return exitDuoGame();
+    }
+    const gameKey = gameKeyMap[event.key];
+    if (!gameKey) return;
+    event.preventDefault();
+    return sendGameInput(gameKey, true);
+  }
   const key = keyMap[event.key];
   if (!key) return;
   event.preventDefault();
@@ -562,6 +746,14 @@ document.addEventListener('keydown', event => {
   moveSelection(key);
 });
 
+document.addEventListener('keyup', event => {
+  if (config.mode === 'top' || !state.gameId) return;
+  const gameKey = gameKeyMap[event.key];
+  if (!gameKey) return;
+  event.preventDefault();
+  sendGameInput(gameKey, false);
+});
+
 $('#top-screen').addEventListener('pointermove', event => {
   if (config.mode === 'bottom' || state.openApp || state.sleeping || booting) return;
   const bounds = $('#top-screen').getBoundingClientRect();
@@ -571,6 +763,11 @@ $('#top-screen').addEventListener('pointermove', event => {
 });
 
 $('#top-screen').addEventListener('pointerleave', () => $('#hero-icon').style.removeProperty('transform'));
+window.addEventListener('message', event => {
+  const frame = $('#game-frame');
+  if (event.source !== frame.contentWindow || event.origin !== location.origin) return;
+  if (event.data?.type === 'ksr-duo-game-exit') exitDuoGame();
+});
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('dragstart', event => event.preventDefault());
 window.addEventListener('resize', fit);
@@ -584,6 +781,7 @@ sync.on('status', status => {
 
 window.addEventListener('beforeunload', () => {
   clearBootTimers();
+  clearTimeout(settledSnapshotTimer);
   sync.close();
   audio?.close?.();
 });
@@ -591,6 +789,7 @@ window.addEventListener('beforeunload', () => {
 window.KSRDuo = Object.freeze({
   select,
   open: openApplication,
+  play: launchGame,
   close: closeApplication,
   sleep,
   wake,
